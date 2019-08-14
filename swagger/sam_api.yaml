@@ -1,0 +1,474 @@
+swagger: "2.0"
+info:
+  description: "Service maps BSCS GL accounts to SAP OFI accounts in order to enable export of financial from BSCS to SAP."
+  version: "1.0.0"
+  title: "SAM (SAP Account Mapper)"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "pawel.wojdowski@external.t-mobile.pl"
+  license:
+    name: "All Rights Reserved"
+    url: "http://t-mobile.pl"
+host: "dummy.t-mobile.pl"
+basePath: "/v1"
+tags:
+- name: "ofi"
+  description: "SAP OFI Account Dictionary"
+- name: "gl"
+  description: "BSCS GL Account Dictionary (read only)"
+- name: "segment"
+  description: "Market segment dictionary"
+schemes:
+- "https"
+- "http"
+paths:
+  /account/ofi:
+    get:
+      tags:
+      - "ofi"
+      summary: "Return list of SAP OFI accounts"
+      description: ""
+      operationId: "getAllOFI"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "status"
+        type: "string"
+        description: "Account status filter"
+        default: "active"
+        enum:
+        - "active"
+        - "inactive"
+        - "all"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/FinancialAccount" 
+#      security:
+#      - sam_auth:
+#        - "read:ofi"
+    post:
+      tags:
+      - "ofi"
+      summary: "Add a new SAP OFI account to dictionary"
+      description: ""
+      operationId: "addOFI"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Financial Account that needs to be added to the dictionary"
+        required: true
+        schema:
+          $ref: "#/definitions/FinancialAccount"
+      responses:
+        200:
+          description: "Success"
+        405:
+          description: "Invalid input"
+        409:
+          description: "Duplicated account number"
+#      security:
+#      - sam_auth:
+#        - "write:ofi"
+#        - "read:ofi"
+  /account/ofi/{accountId}:
+    parameters:
+    - name: "accountId"
+      in: "path"
+      description: "ID of OFI account"
+      required: true
+      type: "integer"
+      format: "int64"
+    get:
+      tags:
+      - "ofi"
+      summary: "Return SAP OFI account by ID"
+      description: "Returns a single SAP OFI account"
+      operationId: "getOFI"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/FinancialAccount"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Account not found"
+#      security:
+#      - sam_auth:
+#        - "read:ofi"
+    patch:
+      tags:
+      - "ofi"
+      summary: "Update SAP OFI account"
+      description: "Updates an existing SAP OFI account"
+      operationId: "updateOFI"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Financial Account that needs to be added to the dictionary"
+        required: true
+        schema:
+          $ref: "#/definitions/FinancialAccount"
+      responses:
+        200:
+          description: "Success"
+        405:
+          description: "Invalid input"
+    delete:
+      tags:
+      - "ofi"
+      summary: "Remove SAP OFI account"
+      description: "Removes an existing OFI account from the dictionary. Only accounts which are not used in any mapping may be removed."
+      operationId: "deleteOFI"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Financial Account that needs to be added to the dictionary"
+        required: true
+        schema:
+          $ref: "#/definitions/FinancialAccount"
+      responses:
+        200:
+          description: "Success"
+        405:
+          description: "Invalid input"
+  /account/gl:
+    get:
+      tags:
+      - "gl"
+      summary: "Return list of BSCS GL accounts"
+      description: ""
+      operationId: "getAllGL"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "status"
+        type: "string"
+        description: "Account status filter"
+        default: "active"
+        enum:
+        - "active"
+        - "inactive"
+        - "all"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/FinancialAccount" 
+#      security:
+#      - sam_auth:
+#        - "read:ofi"
+  /account/gl/{accountId}:
+    get:
+      tags:
+      - "gl"
+      summary: "Return BSCS GL account by ID"
+      description: "Returns a single BSCS GL account"
+      operationId: "getGL"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "accountId"
+        description: "ID of GL account"
+        required: true
+        type: "string"
+        maxLength: 30
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/FinancialAccount"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Account not found"
+#      security:
+#      - sam_auth:
+#        - "read:ofi"
+  /account/import/ofi:
+    post:
+      tags:
+      - "ofi"
+      summary: "Import SAP OFI accounts from a file"
+      description: ""
+      operationId: "importOFI"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "formData"
+        name: "file"
+        type: "file"
+        description: "The file to be upload"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              imported:
+                type: "integer"
+                format: "int32"
+                description: "Number of OFI accounts in the input file"
+              new:
+                type: "integer"
+                format: "int32"
+                description: "Number of new OFI accounts imported"
+              updated:
+                type: "integer"
+                format: "int32"
+                description: "Number of updated OFI accounts"
+        405:
+          description: "Invalid input file"
+  /segment:
+    get:
+      tags:
+      - "segment"
+      summary: "Return list of Market Segments"
+      description: ""
+      operationId: "getAllSegments"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MarketSegment"
+    post:
+      tags:
+      - "segment"
+      summary: "Add a new market segment to dictionary"
+      description: ""
+      operationId: "addSegment"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Market Segment that needs to be added to the dictionary"
+        required: true
+        schema:
+          $ref: "#/definitions/MarketSegmentReq"
+      responses:
+        200:
+          description: "Success"
+        405:
+          description: "Invalid input"
+        409:
+          description: "Duplicated segment name"
+  /segment/{segmentId}:
+    parameters:
+    - in: "path"
+      name: "segmentId"
+      type: "string"
+      required: true
+    get:
+      tags:
+      - "segment"
+      summary: "Return a single Market Segment"
+      description: ""
+      operationId: "getSegment"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/MarketSegment"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Segment not found"
+    delete:
+      tags:
+      - "segment"
+      summary: "Remove an existing market segment"
+      description: "Removes an existing market segment from the dictionary. Only markets which are not used in any mapping may be removed."
+      operationId: "deleteSegment"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Segment not found"
+        405:
+          description: "Cannot remove used market segment"
+securityDefinitions:
+  sam_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:ofi: "Modify SAP OFI account"
+      read:ofi: "Read SAP OFI account"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  FinancialAccount:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        maxLength: 30
+        description: "Account number"
+      name:
+        type: "string"
+        maxLength: 120
+        description: "Account description"
+      status:
+        type: "string"
+        description: "Account status"
+        default: "active"
+        enum:
+        - "active"
+        - "inactive"
+      type:
+        type: "string"
+        description: "Account type"
+  MarketSegment:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        maxLength: 30
+      category:
+        type: "string"
+        enum:
+        - "BIZ"
+        - "PRIV"
+      entryDate:
+        type: "string"
+        format: "date-time"
+  MarketSegmentReq:
+    type: "object"
+    required: [id,category]
+    properties:
+      id:
+        type: "string"
+        maxLength: 30
+      category:
+        type: "string"
+        enum:
+        - "PRIV"
+  AccountMap:
+    type: "object"
+    properties:
+      glAccount:
+        $ref: "#/definitions/FinancialAccount" 
+      ofiAccount:
+        $ref: "#/definitions/FinancialAccount"
+      validFrom:
+        type: "string"
+        format: "date"
+        description: "Start date of the mapping validity."
+      vatCodeInd:
+        type: "boolean"
+      sapSegmentText:
+        type: "string"
+        maxLength: 120
+      ofiWbsCode:
+        type: "string"
+        maxLength: 24
+        description: "SAP OFI WBS code. Work Breakdown Structure Element"
+      citMarkerVatFlag:
+        type: "integer"
+        format: "int32"
+        enum: [0, 1]
+      status:
+        type: "string"
+        enum:
+        - "approved"
+        - "not approved"
+  AccountMapReq:
+    type: "object"
+    required: [glAccountId,ofiAccountId,validFrom]
+    properties:
+      glAccountId:
+        type: "string"
+        maxLength: 30
+        description: "BSCS GL account number"
+      ofiAccountId:
+        type: "string"
+        maxLength: 30
+        description: "SAP OFI account number"
+      validFrom:
+        type: "string"
+        format: "date"
+        description: "Start date of the mapping validity. Must be first day of the month"
+      vatCodeInd:
+        type: "boolean"
+      sapSegmentText:
+        type: "string"
+        maxLength: 120
+      ofiWbsCode:
+        type: "string"
+        maxLength: 24
+        description: "SAP OFI WBS code. Work Breakdown Structure Element"
+      citMarkerVatFlag:
+        type: "integer"
+        format: "int32"
+        enum: [0, 1]
+  SegmentMap:
+    type: "object"
+    properties:
+      glAccount:
+        $ref: "#/definitions/FinancialAccount" 
+      validFrom:
+        type: "string"
+        format: "date"
+        description: "Start date of the mapping validity."
+      segments:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            segmentId:
+              type: "string"
+              maxLength: 30
+            orderNumber:
+              type: "integer"
+              format: "int64"
+  SegmentMapReq:
+    type: "object"
+    properties:
+      validFrom:
+        type: "string"
+        format: "date"
+        description: "Start date of the mapping validity. Must be first day of the month"
+externalDocs:
+  description: "Find out more about SAP Account Mapper"
+  url: "http://t-mobile.pl"
