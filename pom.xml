@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pl.t-mobile.bscs</groupId>
+    <artifactId>sam-app</artifactId>
+    <version>0.2</version>
+
+    <packaging>pom</packaging>
+    <name>sam-app</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <spring.boot.version>2.0.3.RELEASE</spring.boot.version>
+    </properties>
+
+    <modules>
+        <module>backend</module>
+        <module>bscs-db</module>
+        <module>frontend</module>
+        <module>swagger</module>
+        <module>swagger-to-react-generator</module>
+    </modules>
+
+</project>

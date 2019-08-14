@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bscs-db/bscs_db.iml" filepath="$PROJECT_DIR$/bscs-db/bscs_db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/sam-app.iml" filepath="$PROJECT_DIR$/.idea/sam-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swagger-to-react-generator/swagger-parser.iml" filepath="$PROJECT_DIR$/swagger-to-react-generator/swagger-parser.iml" />
+    </modules>
+  </component>
+</project>
