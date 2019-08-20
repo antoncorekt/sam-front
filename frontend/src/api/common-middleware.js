@@ -1,9 +1,22 @@
-/**
- * @author Anton Kozlovskyi
- * @date 05 May 2019
- */
+// @flow
+class Pet { id:number; name:string; tag:string;  }
+class Error { code:number; message:string;  }
 
-import {actionSuccess, failedAction} from "../actions/connectToBackendActions";
+class CallApiBuilder {
+
+    props: ApiProperties;
+
+    withContentType(contentType){this.props.contentType = contentType;}
+    withUrl(url){this.props.url = url;}
+    withHttpMethod(httpMethod){this.props.httpMethod = httpMethod;}
+    withBody(body){this.props.body = body;}
+    withHeaders(headers){this.props.headers = headers;}
+
+    // todo add validation for props
+    static _validate(props:{CallApiProperties}){
+        return true;
+    }
+}
 
 function* idMaker() {
     let index = 0;
@@ -11,36 +24,59 @@ function* idMaker() {
         yield index++;
 }
 
-const gen = idMaker();
+const idGenerator = idMaker();
+
+class ApiProperties {
+    contentType: string;
+    url: string;
+    httpMethod: string;
+    body: any;
+    headers: HeadersInit;
+}
 
 
-// kiwi
-// emu
-// winkom
 
-export const commonCallApi = (url, data, requestAction, successAction, failAction, param) => (dispatch) => {
+const fetchFunction = (url: string, props: ApiProperties): Promise<Response> => {
 
-    const idRequest = gen.next().value;
 
-    const customHeader =  {
-        "Content-Type": "application/json; charset=utf-8",
-
+    const settings: RequestInit = {
+        method: props.httpMethod,
+        mode: 'cors',
+        headers: props.headers,
+        body: props.body
     };
 
-    const customBody = JSON.stringify({
-        header: {},
-        data: data,
-        routedData: {id: idRequest}
-    });
+    return fetch(props.url, settings)
+        .then(typeResolver)
+        .then(responseHandler)
+        .catch(errorHandler);
+};
+
+const typeResolver = (response: Response): Promise<any> => {
+
+    return response.json();
+};
+
+const responseHandler = (response: any): Promise<any> => {
+
+};
+
+const errorHandler = (response: any): Promise<any> => {
+
+};
+
+const commonCallApi = (props: ApiProperties) => (dispatch) => {
+
+    const idRequest = idGenrator.next().value;
 
     const settings = {
-        method: "POST",
+        method: props.httpMethod,
         mode: 'cors',
-        headers: customHeader,
-        body: customBody
+        headers: props.headers,
+        body: props.body
     };
 
-    let entryPoint = url;
+    let entryPoint = props.url;
 
     const dispFail = res =>
         (failAction === undefined)
@@ -53,24 +89,17 @@ export const commonCallApi = (url, data, requestAction, successAction, failActio
 
     const request = Object.assign({url:url}, data, {message: msg});
 
-    const dateNow = Date.now();
-
     dispatch(
         requestAction(request)
     );
 
-    console.log(`send to ${entryPoint}; body:`,customBody);
-
     return fetch(entryPoint, settings)
 
         .then(response => {
-
             let contentType = response.headers.get("content-type");
-
             if (contentType && contentType.includes("application/json")) {
                 return response.json();
             }
-
         })
         .then(json => {
             console.log("response: ", json);
@@ -78,20 +107,6 @@ export const commonCallApi = (url, data, requestAction, successAction, failActio
             if (json.status.code <299) {
                 dispatch(successAction(Object.assign(json, {request: request})));
 
-                // if (json.status.code < 400) {
-                //     dispatch(REQUEST_QUEQUE_ACTION.removeRequestQueueSuccess(idRequest, msg, (Date.now() - dateNow), false, json.status.trace));
-                //     Log.warn({
-                //         message: "Warn " + json.status.code,
-                //         description: "" + json.status.message
-                //     })
-                // } else {
-                //     dispatch(REQUEST_QUEQUE_ACTION.removeRequestQueueFail(idRequest, msg, (Date.now() - dateNow), "ERROR " + json.status.code + " " + json.status.message, customRequest(request).type, "test", header, data, request, false, json.status.trace));
-                //     Log.error({
-                //         message: "Error " + json.status.code,
-                //         description: "" + json.status.message,
-                //         trace: json.status.trace
-                //     })
-                // }
             } else {
 
 
@@ -112,15 +127,5 @@ export const commonCallApi = (url, data, requestAction, successAction, failActio
         });
 
 };
-
-const kiwiCallApi = () => {
-
-    return "";
-};
-
-// callApi()();
-
-
-
 
 
