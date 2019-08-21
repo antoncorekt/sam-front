@@ -4,6 +4,8 @@ import io.swagger.models.*;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.parser.SwaggerParser;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 /**
@@ -12,7 +14,7 @@ import java.util.Map;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, URISyntaxException {
         Swagger swagger = new SwaggerParser().read("C:\\Users\\an392262\\Documents\\SolutionDesign\\Swaggers\\CBM - Customer Billing Mmgt\\CBM.customerBills.yaml");
 
 

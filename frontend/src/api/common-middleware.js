@@ -52,6 +52,21 @@ const fetchFunction = (url: string, props: ApiProperties): Promise<Response> => 
         .catch(errorHandler);
 };
 
+
+// call GET `/account/map/history?dateFrom=${dateFrom}&dateTo=${dateTo}&user=${user}&glAccount=${glAccount}&ofiAccount=${ofiAccount}`
+const getAccountMapHistory = (dateFrom:string,dateTo:string,user:string,glAccount:string,ofiAccount:string) =>  {
+
+    const apiProps: ApiProperties = {
+        contentType: 'application/json',
+        url: `/account/map/history?dateFrom=${dateFrom}&dateTo=${dateTo}&user=${user}&glAccount=${glAccount}&ofiAccount=${ofiAccount}`,
+        httpMethod: 'GET',
+        body: undefined,
+        headers: undefined
+    };
+
+    return commonCallApi(apiProps);
+};
+
 const typeResolver = (response: Response): Promise<any> => {
 
     return response.json();

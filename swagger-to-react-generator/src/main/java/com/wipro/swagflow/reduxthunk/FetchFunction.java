@@ -19,9 +19,9 @@ import java.util.stream.Stream;
 @Data
 public class FetchFunction implements FlowElement {
 
-    private FlowFunction typeResolverFunction;
-    private FlowFunction successHandler;
-    private FlowFunction errorHandler;
+    private final FlowFunction typeResolverFunction;
+    private final FlowFunction successHandler;
+    private final FlowFunction errorHandler;
 
     private String urlVarName = "url";
     private String settingsVarName = "settings";
@@ -29,14 +29,14 @@ public class FetchFunction implements FlowElement {
     public FetchFunction() throws URISyntaxException, IOException {
 
 
-        typeResolverFunction = FlowFunction.parseFromString(getStringFromFile("typeResolverFunctionBody.js"));
-        successHandler = FlowFunction.parseFromString(getStringFromFile("handlerSuccess.js"));
-        errorHandler = FlowFunction.parseFromString(getStringFromFile("errorHandler.js"));
+        typeResolverFunction = FlowFunction.parseFromString(getStringFromFile(this,"typeResolverFunctionBody.js"));
+        successHandler = FlowFunction.parseFromString(getStringFromFile(this,"handlerSuccess.js"));
+        errorHandler = FlowFunction.parseFromString(getStringFromFile(this,"errorHandler.js"));
 
     }
 
-    private String getStringFromFile(String fileName) throws URISyntaxException, IOException {
-        Path path = Paths.get(getClass().getClassLoader()
+    public static String getStringFromFile(FlowElement that, String fileName) throws URISyntaxException, IOException {
+        Path path = Paths.get(that.getClass().getClassLoader()
                 .getResource(fileName).toURI());
 
         Stream<String> lines = Files.lines(path);

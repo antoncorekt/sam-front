@@ -12,6 +12,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-api:5.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apiguardian:apiguardian-api:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.opentest4j:opentest4j:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.junit.platform:junit-platform-commons:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: io.swagger.parser.v3:swagger-parser:2.0.13" level="project" />
     <orderEntry type="library" name="Maven: io.swagger.parser.v3:swagger-parser-v2-converter:2.0.13" level="project" />
     <orderEntry type="library" name="Maven: io.swagger:swagger-parser:1.0.45" level="project" />

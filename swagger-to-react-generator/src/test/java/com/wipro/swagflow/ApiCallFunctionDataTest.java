@@ -3,6 +3,8 @@ package com.wipro.swagflow;
 import io.swagger.models.HttpMethod;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,7 @@ class ApiCallFunctionDataTest {
     }
 
     @Test
-    void getFunctionName5() {
+    void getFunctionName5() throws IOException, URISyntaxException {
         apiCallFunctionData.setMethod(HttpMethod.PATCH);
         apiCallFunctionData.setPath("/store/{petType}/buy");
 

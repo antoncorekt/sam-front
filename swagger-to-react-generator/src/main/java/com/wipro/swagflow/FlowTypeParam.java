@@ -18,9 +18,20 @@ public class FlowTypeParam {
     String name;
     String type;
     boolean required;
+    Object defaultValue;
+    FlowTypeParamEnum flowTypeParamEnum;
 
     public String toCode(){
-        return name + ":" + type;
+
+
+        return name + ":" + type + (defaultValue != null ? " = '" + defaultValue.toString() +"'" : "");
+    }
+
+
+    public enum FlowTypeParamEnum {
+        QUERY,
+        BODY,
+        PATH
     }
 
 }

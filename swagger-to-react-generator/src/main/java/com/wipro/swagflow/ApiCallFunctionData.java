@@ -1,5 +1,6 @@
 package com.wipro.swagflow;
 
+import com.wipro.swagflow.reduxthunk.ApiCallFunction;
 import io.swagger.models.HttpMethod;
 import io.swagger.models.ParamType;
 import io.swagger.models.Response;
@@ -7,6 +8,8 @@ import io.swagger.models.auth.In;
 import lombok.Data;
 import org.omg.PortableInterceptor.SUCCESSFUL;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +38,9 @@ public class ApiCallFunctionData {
 
     private FlowElement actionsCode;
 
-    private FlowFunction apiCallFunction;
+    private ApiCallFunction apiCallFunction;
 
-    public void init(){
+    public void init() {
         functionName = getFunctionName();
         actionSuccessName = firstSymToUpperCase(functionName) + ACTION_SUCCESS_MARKER;
         actionFailName = firstSymToUpperCase(functionName) + ACTION_FAIL_MARKER;
@@ -52,7 +55,7 @@ public class ApiCallFunctionData {
             return stringBuilder.toString();
         };
 
-        apiCallFunction = new FlowFunction(functionName);
+        apiCallFunction = new ApiCallFunction(functionName, this);
 
         apiCallFunction.setParams(params);
         apiCallFunction.setBody("// function body");

@@ -1,6 +1,8 @@
 package com.wipro.swagflow;
 
+import com.wipro.swagflow.reduxthunk.ApiCallFunction;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +41,7 @@ public class FlowFunction extends FlowType {
         String[] params = str.substring(str.indexOf("(") + 1, str.indexOf(")")).split(",");
         for (String param : params) {
             FlowTypeParam flowTypeParam = new FlowTypeParam();
+            if (StringUtils.isEmpty(param)) continue;
             if (param.contains(":")){
                 flowTypeParam.setName(param.substring(0, param.indexOf(":")));
                 flowTypeParam.setType(param.substring(param.indexOf(":")+1));
@@ -51,4 +54,6 @@ public class FlowFunction extends FlowType {
         res.setBody(str.substring(str.indexOf("{")+1, str.lastIndexOf("}")));
         return res;
     }
+
+
 }

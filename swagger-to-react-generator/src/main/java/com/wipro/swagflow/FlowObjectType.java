@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FlowObjectType extends FlowType {
 
-    List<FlowTypeParam> flowClassParams = new ArrayList<>();
+    private List<FlowTypeParam> flowClassParams = new ArrayList<>();
 
     public FlowObjectType(String name, List<FlowTypeParam> flowClassParams) {
         super(name);

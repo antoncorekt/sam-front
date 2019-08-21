@@ -1,10 +1,16 @@
 package com.wipro.swagflow;
 
+import com.wipro.swagflow.reduxthunk.ApiCallGeneralFunctions;
 import io.swagger.models.*;
+import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
+import io.swagger.models.parameters.PathParameter;
+import io.swagger.models.parameters.QueryParameter;
 import io.swagger.models.properties.*;
 import lombok.Data;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +26,12 @@ public class JsFlowGenerator {
     private List<FlowEnum> enums = new ArrayList<>();
     private List<FlowType> models = new ArrayList<>();
 
+    private ApiCallGeneralFunctions apiCallGeneralFunctions = new ApiCallGeneralFunctions();
+
     private List<ApiCallFunctionData> apiCallFunctionData = new ArrayList<>();
+
+    public JsFlowGenerator() throws IOException, URISyntaxException {
+    }
 
     private void addToStringBuilder(List<? extends FlowElement> elements, StringBuilder builder, String firstLine){
         if (!elements.isEmpty()){
@@ -31,12 +42,19 @@ public class JsFlowGenerator {
         }
     }
 
-    public String generate(){
+    public String generate() {
 
         StringBuilder b = new StringBuilder();
 
         addToStringBuilder(enums, b, "\n// ----- Enums ------\n");
         addToStringBuilder(models, b, "\n// ----- Models ------\n");
+
+        b.append("\n// general components for function\n");
+        b.append(apiCallGeneralFunctions.toCode());
+        b.append("\n// functions\n");
+        for (ApiCallFunctionData apiCallFunctionDatum : apiCallFunctionData) {
+            b.append(apiCallFunctionDatum.getApiCallFunction().toCode()).append("\n");
+        }
 
         return b.toString();
     }
@@ -58,11 +76,42 @@ public class JsFlowGenerator {
             apiCallFunctionData.setSummary(o.getValue().getSummary());
             List<FlowTypeParam> flowTypeParams = new ArrayList<>();
             for (Parameter parameter : o.getValue().getParameters()) {
-                flowTypeParams.add(FlowTypeParam.builder()
-                        .name(parameter.getName())
-                        .required(parameter.getRequired())
-//                        .type(parameter.ge) // todo param type
-                        .build());
+
+                if (parameter instanceof QueryParameter){
+                    flowTypeParams.add(FlowTypeParam.builder()
+                            .name(parameter.getName())
+                            .required(parameter.getRequired())
+                            .flowTypeParamEnum(FlowTypeParam.FlowTypeParamEnum.QUERY)
+                            .defaultValue(((QueryParameter) parameter).getDefaultValue())
+                            .type((((QueryParameter) parameter).getType()))
+                            .build());
+                    continue;
+                }
+
+                if (parameter instanceof PathParameter){
+                    flowTypeParams.add(FlowTypeParam.builder()
+                            .name(parameter.getName())
+                            .required(parameter.getRequired())
+                            .defaultValue(((PathParameter) parameter).getDefaultValue())
+                            .flowTypeParamEnum(FlowTypeParam.FlowTypeParamEnum.PATH)
+                            .type((((PathParameter) parameter).getType()))
+                            .build());
+                    continue;
+                }
+
+                if (parameter instanceof BodyParameter){
+
+                    flowTypeParams.add(FlowTypeParam.builder()
+                            .name(parameter.getName())
+                            .required(parameter.getRequired())
+                            .type(((RefModel)((BodyParameter) parameter).getSchema()).getSimpleRef())
+                            .build());
+
+                    continue;
+                }
+
+
+
             }
             apiCallFunctionData.setParams(flowTypeParams);
 
@@ -73,27 +122,8 @@ public class JsFlowGenerator {
             }
             apiCallFunctionData.setResponses(flowTypes);
         }
-//
-//        for (Map.Entry<String, Path> p : paths.entrySet()) {
-//            Path path = p.getValue();
-//            Map<HttpMethod, Operation> operations = path.getOperationMap();
-//            for (Map.Entry<HttpMethod, Operation> o : operations.entrySet()) {
-//                System.out.println("===");
-//                System.out.println("PATH:" + p.getKey());
-//                System.out.println("Http method:" + o.getKey());
-//                System.out.println("Summary:" + o.getValue().getSummary());
-//                System.out.println("Parameters number: " + o.getValue().getParameters().size());
-//                for (Parameter parameter : o.getValue().getParameters()) {
-//                    System.out.println(" - " + parameter.getName());
-//                }
-//                System.out.println("Responses:");
-//                for (Map.Entry<String, Response> r : o.getValue().getResponses().entrySet()) {
-//                    System.out.println(" - " + r.getKey() + ": " + r.getValue().getDescription());
-//                }
-//                System.out.println("");
-//            }
-//
-//        }
+
+        this.apiCallFunctionData.add(apiCallFunctionData);
 
     }
 
@@ -127,7 +157,7 @@ public class JsFlowGenerator {
 
             if (property.getType().equals("string")) {
 
-                if (property instanceof DateTimeProperty){
+                if (property instanceof DateTimeProperty || property instanceof DateProperty){
                     flowTypeParam.setType("Date");
                 }
                 else {
