@@ -1,37 +1,31 @@
 package com.wipro.swagflow;
 
+import io.swagger.annotations.OAuth2Definition;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Anton Kozlovskyi
- * @date 13 Aug 2019
+ * @date 20 Aug 2019
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class FlowType {
+public abstract class FlowType implements FlowElement {
 
-    String name;
-    List<FlowTypeParam> flowClassParams = new ArrayList<>();
+    protected String name;
 
-    public String toCode(){
-        StringBuilder params = new StringBuilder();
-        for (FlowTypeParam flowClassParam : flowClassParams) {
-            params.append(flowClassParam.toCode()).append("; ");
-        }
-
-        return "class " + name + " { " + params + " } \n";
+    public FlowType(String name) {
+        this.name = name;
     }
 
-//    public enum Type {
-//        String("string")
-//    }
+    public enum Types {
+        Object,
+        Array,
+        String,
+        Function,
+        Number
+    }
+
+    public abstract Types getType();
 
 }
