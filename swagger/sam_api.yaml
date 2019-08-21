@@ -18,6 +18,10 @@ tags:
   description: "BSCS GL Account Dictionary (read only)"
 - name: "segment"
   description: "Market segment dictionary"
+- name: "account map"
+  description: "Mapping of BSCS GL accounts to SAP OFI accounts"
+- name: "segment map"
+  description: "Mapping of market segments to SAP control order numbers"
 schemes:
 - "https"
 - "http"
@@ -69,7 +73,7 @@ paths:
         schema:
           $ref: "#/definitions/FinancialAccount"
       responses:
-        200:
+        201:
           description: "Success"
         405:
           description: "Invalid input"
@@ -225,7 +229,7 @@ paths:
         type: "file"
         description: "The file to be upload"
       responses:
-        200:
+        201:
           description: "Success"
           schema:
             type: "object"
@@ -279,7 +283,7 @@ paths:
         schema:
           $ref: "#/definitions/MarketSegmentReq"
       responses:
-        200:
+        201:
           description: "Success"
         405:
           description: "Invalid input"
@@ -325,6 +329,83 @@ paths:
           description: "Segment not found"
         405:
           description: "Cannot remove used market segment"
+  /account/map:
+    get:
+      tags:
+      - "account map"
+      summary: "Return account mapping"
+      description: ""
+      operationId: "getMap"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "status"
+        type: "string"
+        description: "Entry status filter"
+        default: "all"
+        enum:
+        - "approved"
+        - "unapproved"
+        - "all"
+      - in: "query"
+        name: "glAccount"
+        type: "string"
+        description: "BSCS GL account number"
+      - in: "query"
+        name: "ofiAccount"
+        type: "string"
+        description: "SAP OFI account number"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/AccountMap"
+        400:
+          description: "Invalid parameter supplied"
+  /account/map/history:
+    get:
+      tags:
+      - "account map"
+      summary: "Return history of changes in account mapping"
+      description: ""
+      operationId: "getMapLog"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "dateFrom"
+        type: "string"
+        format: "date-time"
+        description: "Lower change date boundary."
+      - in: "query"
+        name: "dateTo"
+        type: "string"
+        format: "date-time"
+        description: "Upper change date boundary."
+      - in: "query"
+        name: "user"
+        type: "string"
+        description: "User introducing the change"
+      - in: "query"
+        name: "glAccount"
+        type: "string"
+        description: "BSCS GL account number"
+      - in: "query"
+        name: "ofiAccount"
+        type: "string"
+        description: "SAP OFI account number"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/AccountMapLog"
+        400:
+          description: "Invalid parameter supplied"
 securityDefinitions:
   sam_auth:
     type: "oauth2"
@@ -412,7 +493,7 @@ definitions:
         type: "string"
         enum:
         - "approved"
-        - "not approved"
+        - "unapproved"
   AccountMapReq:
     type: "object"
     required: [glAccountId,ofiAccountId,validFrom]
@@ -442,6 +523,24 @@ definitions:
         type: "integer"
         format: "int32"
         enum: [0, 1]
+  AccountMapLog:
+    type: object
+    properties:
+      old:
+        $ref: "#/definitions/AccountMap"
+      new:
+        $ref: "#/definitions/AccountMap"
+      user:
+        type: "string"
+      action:
+        type: "string"
+        enum:
+        - insert
+        - update
+        - delete
+      actionDate:
+        type: "string"
+        format: "date-time"
   SegmentMap:
     type: "object"
     properties:
