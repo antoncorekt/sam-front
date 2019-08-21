@@ -541,6 +541,15 @@ definitions:
       actionDate:
         type: "string"
         format: "date-time"
+  SegmentMapEntry:
+    type: "object"
+    properties:
+      segmentId:
+        type: "string"
+        maxLength: 30
+      orderNumber:
+        type: "integer"
+        format: "int64"
   SegmentMap:
     type: "object"
     properties:
@@ -553,14 +562,7 @@ definitions:
       segments:
         type: "array"
         items:
-          type: "object"
-          properties:
-            segmentId:
-              type: "string"
-              maxLength: 30
-            orderNumber:
-              type: "integer"
-              format: "int64"
+          $ref: "#/definitions/SegmentMapEntry"
   SegmentMapReq:
     type: "object"
     properties:
