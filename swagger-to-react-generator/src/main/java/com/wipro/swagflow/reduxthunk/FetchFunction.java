@@ -47,9 +47,9 @@ public class FetchFunction implements FlowElement {
 
     @Override
     public String toCode() {
-        return "fetch(" + urlVarName + ", " + settingsVarName + ")" +
-                ".then(" + typeResolverFunction.getName() + ")" +
-                ".then(" + successHandler.getName() + ")" +
-                ".catch(" + errorHandler.getName() + ")";
+        return "fetch(" + urlVarName + ", " + settingsVarName + ") \n" +
+                "\t\t.then(" + typeResolverFunction.getName() + ")  \n" +
+                "\t\t.then(" + successHandler.getName() + ")  \n" +
+                "\t\t.catch(" + errorHandler.getName() + "(props, requestAction, dispatch));";
     }
 }

@@ -19,6 +19,7 @@ public class ApiCallGeneralFunctions implements FlowElement {
     private final FlowFunction additionalFunctions;
 
     private final FlowElement additionalFunctionsUsage;
+    private final FlowElement apiPropertiesClass;
 
     public ApiCallGeneralFunctions() throws IOException, URISyntaxException {
         this.additionalFunctions = FlowFunction.parseFromString(getStringFromFile(this, "additionalFunctions.js"));
@@ -26,12 +27,21 @@ public class ApiCallGeneralFunctions implements FlowElement {
                                          "const idGen = _.idMaker;";
 
         ;
+        apiPropertiesClass = () -> "class ApiProperties {\n" +
+                "    contentType: string;\n" +
+                "    url: string;\n" +
+                "    httpMethod: string;\n" +
+                "    body: any;\n" +
+                "    type: string;\n" +
+                "    headers: HeadersInit;\n" +
+                "}";
     }
 
     @Override
     public String toCode() {
         return additionalFunctions.toCode() + "\n"
-                + additionalFunctionsUsage.toCode()
+                + additionalFunctionsUsage.toCode() +"\n"
+                + apiPropertiesClass.toCode()
                 ;
     }
 }

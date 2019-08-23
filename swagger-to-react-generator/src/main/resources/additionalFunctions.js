@@ -1,4 +1,5 @@
-const additionalFunctions = ():any => {
+const additionalFunctions = ( ) => {
+
     function* idMaker() {
         let index = 0;
         while (true)
@@ -9,6 +10,7 @@ const additionalFunctions = ():any => {
         request: any;
         date: Date;
         url: string;
+        type: string;
         method: string;
     }
 
@@ -17,7 +19,10 @@ const additionalFunctions = ():any => {
         response: any;
         date: Date;
         timeDiff: Date;
-        fail: boolean
+        fail: boolean;
+        msg: string;
+        code: string;
+        errorType: string;
     }
 
     function requestActionCreatorFunction(props: ApiProperties): ActionRequestData {
@@ -25,32 +30,54 @@ const additionalFunctions = ():any => {
             request: props.body,
             date: new Date(),
             url: props.url,
-            method: props.httpMethod
+            method: props.httpMethod,
+            type: props.requestType
         }
     }
 
-    function successActionCreatorFunction(response: any, requestAction: ActionRequestData): ResponseData {
+    function successActionCreatorFunction(response: any, requestAction: ActionRequestData, msg: string, code: string): ResponseData {
         const date = new Date();
         return {
             requestAction: requestAction,
             date: date,
             response: response,
+            type: requestAction.type,
+            msg: msg,
+            code: code,
             timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
             fail: false
         }
     }
 
-    function failActionCreatorFunction(response: any, requestAction: ActionRequestData): ResponseData {
+    function failActionCreatorFunctionBackendError(response: any, requestAction: ActionRequestData,  msg: string, code: string): ResponseData {
         return {
-            ...successActionCreatorFunction(response, requestAction),
-            fail: true
+            ...successActionCreatorFunction(response, requestAction, msg, code),
+            fail: true,
+            errorType: "backend"
+        }
+    }
+
+    function failActionCreatorFunctionNetworkError(type:string, reason:string, requestAction: ActionRequestData,  msg: string, code: string): ResponseData {
+        const date = new Date();
+        return {
+            type: type,
+            requestAction: requestAction,
+            date: date,
+            msg: msg,
+            code: code,
+            timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
+            fail: true,
+            errorType: "network"
         }
     }
 
     return {
+        ActionRequestData,
         idMaker: idMaker(),
         requestActionCreator: requestActionCreatorFunction,
         successActionCreator: successActionCreatorFunction,
-        failActionCreator: failActionCreatorFunction
+        failActionCreatorBackendError: failActionCreatorFunctionBackendError,
+        failActionCreatorNetworkError: failActionCreatorFunctionNetworkError
     }
+
 };

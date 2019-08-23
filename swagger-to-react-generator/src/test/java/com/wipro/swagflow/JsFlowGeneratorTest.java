@@ -47,7 +47,9 @@ public class JsFlowGeneratorTest {
 
         swagger.getPaths().entrySet().forEach(jsFlowGenerator::addApiCallFunction);
 
-        jsFlowGenerator.getApiCallFunctionData().forEach(ApiCallFunctionData::init);
+        for (ApiCallFunctionData apiCallFunctionData : jsFlowGenerator.getApiCallFunctionData()) {
+            apiCallFunctionData.init();
+        }
 
         for (Map.Entry<String, Model> p : swagger.getDefinitions().entrySet()) {
             jsFlowGenerator.addModel(p);

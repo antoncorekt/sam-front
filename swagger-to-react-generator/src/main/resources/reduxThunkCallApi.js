@@ -1,16 +1,6 @@
-
-class ApiProperties {
-    contentType: string;
-    url: string;
-    httpMethod: string;
-    body: any;
-    headers: HeadersInit;
-    msg: string = "Proszę czekać...";
-}
-
 const commonCallApi = (props: ApiProperties) => (dispatch) => {
 
-    // idGen already have from ApiCallGeneralFunctions
+
     const idRequest = _.idMaker.next().value;
 
     // setting for fetch function
@@ -20,17 +10,19 @@ const commonCallApi = (props: ApiProperties) => (dispatch) => {
         headers: props.headers,
         body: props.body
     };
-    const url = props.url;
+    const url = BACKEND_URL + props.url;
 
-    const dispFail = res =>
-        (failAction === undefined)
-            ? dispatch(failedAction(Object.assign(res, {request: data})))
-            : dispatch(failAction(Object.assign(res, {request: data})));
+    // const dispFail = res =>
+    //     (failAction === undefined)
+    //         ? dispatch(failedAction(Object.assign(res, {request: data})))
+    //         : dispatch(failAction(Object.assign(res, {request: data})));
+    //
+    // const request = Object.assign({url:url}, data, {message: msg});
 
-    const request = Object.assign({url:url}, data, {message: msg});
+    const requestAction =  _.requestActionCreator(props);
 
     dispatch(
-        _.requestActionCreator(request)
+        requestAction
     );
 
     // this will be return fetch function like this

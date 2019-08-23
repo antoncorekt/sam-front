@@ -17,7 +17,7 @@ import static com.wipro.swagflow.reduxthunk.FetchFunction.getStringFromFile;
 public class ReduxThunkCallApi implements FlowElement {
 
     private final FlowFunction internalLogic;
-
+    private final String name;
     private final FetchFunction fetchFunction;
 
     public ReduxThunkCallApi(FetchFunction fetchFunction) throws IOException, URISyntaxException {
@@ -25,11 +25,14 @@ public class ReduxThunkCallApi implements FlowElement {
         this.fetchFunction = fetchFunction;
 
         this.internalLogic = FlowFunction.parseFromString(getStringFromFile(this,"reduxThunkCallApi.js"));
+        name = internalLogic.getName();
+        internalLogic.setBody(internalLogic.getBody() + "\t return " + fetchFunction.toCode());
     }
 
 
     @Override
     public String toCode() {
-        return null;
+
+        return "\n" + internalLogic.toCode() + "\n";
     }
 }

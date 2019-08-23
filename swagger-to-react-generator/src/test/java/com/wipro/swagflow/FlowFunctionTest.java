@@ -10,7 +10,7 @@ class FlowFunctionTest {
     void parseFromString() {
 
         FlowFunction func =
-            FlowFunction.parseFromString("const f = (id:number) => {id !== null ? return true : return false}");
+            FlowFunction.parseFromString("const f = (id:number, k:string) => (dispatch) => (otherParam:number) => {id !== null ? return true : return false}");
 
 
         System.out.println(func.toCode());

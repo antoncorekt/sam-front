@@ -10,6 +10,7 @@ import org.omg.PortableInterceptor.SUCCESSFUL;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,9 +21,9 @@ import java.util.Map;
 @Data
 public class ApiCallFunctionData {
 
-    private static final String ACTION_SUCCESS_MARKER = "Success";
-    private static final String ACTION_REQUEST_MARKER = "Request";
-    private static final String ACTION_FAIL_MARKER = "Fail";
+    public static final String ACTION_SUCCESS_MARKER = "Success";
+    public static final String ACTION_REQUEST_MARKER = "Request";
+    public static final String ACTION_FAIL_MARKER = "Fail";
 
     private String path;
     private HttpMethod method;
@@ -32,6 +33,7 @@ public class ApiCallFunctionData {
     private Map<String, Response> responses;
 
     private String functionName;
+    private String actionBaseName;
     private String actionRequestName;
     private String actionSuccessName;
     private String actionFailName;
@@ -40,11 +42,12 @@ public class ApiCallFunctionData {
 
     private ApiCallFunction apiCallFunction;
 
-    public void init() {
+    public void init() throws IOException, URISyntaxException {
         functionName = getFunctionName();
-        actionSuccessName = firstSymToUpperCase(functionName) + ACTION_SUCCESS_MARKER;
-        actionFailName = firstSymToUpperCase(functionName) + ACTION_FAIL_MARKER;
-        actionRequestName = firstSymToUpperCase(functionName) + ACTION_REQUEST_MARKER;
+        actionBaseName = firstSymToUpperCase(functionName);
+        actionSuccessName = actionBaseName + ACTION_SUCCESS_MARKER;
+        actionFailName = actionBaseName + ACTION_FAIL_MARKER;
+        actionRequestName = actionBaseName + ACTION_REQUEST_MARKER;
 
         actionsCode = () -> {
             StringBuilder stringBuilder = new StringBuilder();
@@ -57,8 +60,8 @@ public class ApiCallFunctionData {
 
         apiCallFunction = new ApiCallFunction(functionName, this);
 
-        apiCallFunction.setParams(params);
-        apiCallFunction.setBody("// function body");
+        apiCallFunction.getFuncAdditionalParam().add(params);
+        apiCallFunction.bodyInit();
     }
 
     /**
