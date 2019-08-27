@@ -2,6 +2,6 @@ const handlerFunctionError = (props:ApiProperties, requestAction: any, dispatch)
 
     console.error("handlerFunctionError", error);
     dispatch(
-        _.failActionCreatorNetworkError(props.type,error, requestAction, "Network error: ", 404)
+        _.failActionCreatorNetworkError(props.failType,error, requestAction, "Network error: ", 404)
     );
 };

@@ -32,7 +32,9 @@ public class ApiCallGeneralFunctions implements FlowElement {
                 "    url: string;\n" +
                 "    httpMethod: string;\n" +
                 "    body: any;\n" +
-                "    type: string;\n" +
+                "    failType: string;\n" +
+                "    successType: string;\n" +
+                "    requestType: string;\n" +
                 "    headers: HeadersInit;\n" +
                 "}";
     }

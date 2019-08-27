@@ -1,5 +1,8 @@
+// @flow
 
 import {BACKEND_URL} from './conf';
+import {func} from "prop-types";
+import {Dispatch} from "redux";
 
 // ----- Enums ------
 type FinancialAccountStatusEnum = 'active' | 'inactive';
@@ -9,51 +12,90 @@ type AccountMapStatusEnum = 'approved' | 'unapproved';
 type AccountMapLogActionEnum = 'insert' | 'update' | 'delete';
 
 // ----- Models ------
-class FinancialAccount { id:string; name:string; status:FinancialAccountStatusEnum; type:string;  }
+export class FinancialAccount {
+    id:string; // Account number
+    name:string;
+    status:FinancialAccountStatusEnum = 'active';
+    "@type":string;
+
+    get type():string {return this["@type"]}
+    set type(s:string):void {this["@type"]=s}
+
+    static get Builder() {
+        class Builder {
+            _model: FinancialAccount = new FinancialAccount();
+            withId(id: string):Builder {
+                this._model.id = id;
+                if (id.length > 120) throw new Error("Data error. Max id length is " + 120);
+                return this;
+            }
+            withName(name: string):Builder {
+                this._model.name = name;
+                return this;
+            }
+            withType(type: string):Builder {
+                this._model.type = type;
+                return this;
+            }
+            withStatus(status: FinancialAccountStatusEnum):Builder {
+                this._model.type = status;
+                return this;
+            }
+            build():FinancialAccount {
+                return this._model;
+            }
+        }
+        return Builder;
+    }
+}
+
 class MarketSegment { id:string; category:MarketSegmentCategoryEnum; entryDate:Date;  }
 class MarketSegmentReq { id:string; category:MarketSegmentReqCategoryEnum;  }
 class AccountMap { glAccount:FinancialAccount; ofiAccount:FinancialAccount; validFrom:Date; vatCodeInd:boolean; sapSegmentText:string; ofiWbsCode:string; citMarkerVatFlag:number; status:AccountMapStatusEnum;  }
-class AccountMapReq { glAccountId:string; ofiAccountId:string; validFrom:Date; vatCodeInd:boolean; sapSegmentText:string; ofiWbsCode:string; citMarkerVatFlag:number;  }
-class AccountMapLog { old:AccountMap; new:AccountMap; user:string; action:AccountMapLogActionEnum; actionDate:Date;  }
-class SegmentMapEntry { segmentId:string; orderNumber:number;  }
-class SegmentMap { glAccount:FinancialAccount; validFrom:Date; segments:Array<SegmentMapEntry>;  }
+export class AccountMapReq { glAccountId:string; ofiAccountId:string; validFrom:Date; vatCodeInd:boolean; sapSegmentText:string; ofiWbsCode:string; citMarkerVatFlag:number;  }
+export class AccountMapLog { old:AccountMap; new:AccountMap; user:string; action:AccountMapLogActionEnum; actionDate:Date;  }
+export class SegmentMapEntry { segmentId:string; orderNumber:number;  }
+export class SegmentMap { glAccount:FinancialAccount; validFrom:Date; segments:Array<SegmentMapEntry>;  }
 class SegmentMapReq { validFrom:Date;  }
+
+export class ActionRequestData<T> {
+    body: T;
+    date: Date;
+    url: string;
+    type: string;
+    method: string;
+}
 
 // general components for function
 const additionalFunctions = ( ) => {
 
-    function* idMaker() {
+
+    function* idMaker(): any {
         let index = 0;
         while (true)
             yield index++;
     }
 
-    class ActionRequestData {
-        request: any;
-        date: Date;
-        url: string;
-        type: string;
-        method: string;
-    }
 
-    class ResponseData {
+
+    type ResponseData = {
         requestAction: any;
-        response: any;
+        response?: any;
         date: Date;
-        timeDiff: Date;
+        timeDiff: number;
         fail: boolean;
-        msg: string;
-        code: string;
-        errorType: string;
+        msg?: string;
+        code?: string;
+        errorType?: string;
     }
 
     function requestActionCreatorFunction(props: ApiProperties): ActionRequestData {
         return {
-            request: props.body,
+            body: props.body,
             date: new Date(),
             url: props.url,
             method: props.httpMethod,
-            type: props.type
+            type: props.requestType
         }
     }
 
@@ -85,7 +127,7 @@ const additionalFunctions = ( ) => {
             type: type,
             requestAction: requestAction,
             date: date,
-            msg: msg,
+            msg: msg + " reason[" + reason + "]",
             code: code,
             timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
             fail: true,
@@ -94,7 +136,6 @@ const additionalFunctions = ( ) => {
     }
 
     return {
-        ActionRequestData,
         idMaker: idMaker(),
         requestActionCreator: requestActionCreatorFunction,
         successActionCreator: successActionCreatorFunction,
@@ -102,33 +143,25 @@ const additionalFunctions = ( ) => {
         failActionCreatorNetworkError: failActionCreatorFunctionNetworkError
     }
 
+
 };
 
-export const _ = additionalFunctions();
-
-class ApiProperties {
-    contentType: string;
+export const _ = additionalFunctions();const idGen = _.idMaker;
+type ApiProperties = {
+    contentType?: string;
     url: string;
     httpMethod: string;
     body: any;
-    type: string;
-    headers: HeadersInit;
+    failType: string;
+    successType: string;
+    requestType: string;
+    headers?: HeadersInit;
 }
 // function for fetches
-const commonCallApi = (props: ApiProperties )=>( dispatch) => {
+const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A>) => {
 
 
 
-    // class ApiProperties {
-    //     contentType: string;
-    //     url: string;
-    //     httpMethod: string;
-    //     body: any;
-    //     headers: HeadersInit;
-    //     msg: string = "Proszę czekać...";
-    // }
-
-    // idGen already have from ApiCallGeneralFunctions
     const idRequest = _.idMaker.next().value;
 
     // setting for fetch function
@@ -174,15 +207,17 @@ const typeResolveFunctionBody = (response:any) => {
 
 };
 
-const handlerFunctionError = (props:ApiProperties, requestAction: any, dispatch) => (error:any) => {
+const handlerFunctionError = (props:ApiProperties, requestAction: any, dispatch )=>( error:any) => {
+
 
     console.error("handlerFunctionError", error);
     dispatch(
-        _.failActionCreatorNetworkError(props.errorType,error, requestAction, "Network error: ", 404)
+        _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
     );
+
 };
 
-const handlerFunctionSuccess = (response:any) => {
+const handlerFunctionSuccess = (props:ApiProperties, requestAction: any, dispatch ) => <T>(response:T) => {
 
     // magic with redux
 
@@ -196,7 +231,9 @@ const postAccountOfi = (body:FinancialAccount) => {
         url:`/account/ofi`,
         httpMethod: 'POST',
         body:JSON.stringify(body),
-        type: 'PostAccountOfi'
+        requestType: 'PostAccountOfiRequest',
+        successType: 'PostAccountOfiSuccess',
+        failType: 'PostAccountOfiFail'
     };
     return commonCallApi(settings);
 };
@@ -207,7 +244,9 @@ const postAccountImportOfi = () => {
         url:`/account/import/ofi`,
         httpMethod: 'POST',
         body:undefined,
-        type: 'PostAccountImportOfi'
+        requestType: 'PostAccountImportOfiRequest',
+        successType: 'PostAccountImportOfiSuccess',
+        failType: 'PostAccountImportOfiFail'
     };
     return commonCallApi(settings);
 };
@@ -218,7 +257,9 @@ const postSegment = (body:MarketSegmentReq) => {
         url:`/segment`,
         httpMethod: 'POST',
         body:JSON.stringify(body),
-        type: 'PostSegment'
+        requestType: 'PostSegmentRequest',
+        successType: 'PostSegmentSuccess',
+        failType: 'PostSegmentFail'
     };
     return commonCallApi(settings);
 };
@@ -229,7 +270,9 @@ const getAccountOfi = (status:string = 'active') => {
         url:`/account/ofi?status=${status}`,
         httpMethod: 'GET',
         body:undefined,
-        type: 'GetAccountOfi'
+        requestType: 'GetAccountOfiRequest',
+        successType: 'GetAccountOfiSuccess',
+        failType: 'GetAccountOfiFail'
     };
     return commonCallApi(settings);
 };
@@ -240,7 +283,9 @@ const getAccountOfiByAccountId = (accountId:number) => {
         url:`/account/ofi/${accountId}`,
         httpMethod: 'GET',
         body:undefined,
-        type: 'GetAccountOfiByAccountId'
+        requestType: 'GetAccountOfiByAccountIdRequest',
+        successType: 'GetAccountOfiByAccountIdSuccess',
+        failType: 'GetAccountOfiByAccountIdFail'
     };
     return commonCallApi(settings);
 };
@@ -251,7 +296,9 @@ const getAccountGl = (status:string = 'active') => {
         url:`/account/gl?status=${status}`,
         httpMethod: 'GET',
         body:undefined,
-        type: 'GetAccountGl'
+        requestType: 'GetAccountGlRequest',
+        successType: 'GetAccountGlSuccess',
+        failType: 'GetAccountGlFail'
     };
     return commonCallApi(settings);
 };
@@ -262,7 +309,9 @@ const getAccountGlByAccountId = (accountId:string) => {
         url:`/account/gl/${accountId}`,
         httpMethod: 'GET',
         body:undefined,
-        type: 'GetAccountGlByAccountId'
+        requestType: 'GetAccountGlByAccountIdRequest',
+        successType: 'GetAccountGlByAccountIdSuccess',
+        failType: 'GetAccountGlByAccountIdFail'
     };
     return commonCallApi(settings);
 };
@@ -273,7 +322,9 @@ const getSegment = () => {
         url:`/segment`,
         httpMethod: 'GET',
         body:undefined,
-        type: 'GetSegment'
+        requestType: 'GetSegmentRequest',
+        successType: 'GetSegmentSuccess',
+        failType: 'GetSegmentFail'
     };
     return commonCallApi(settings);
 };
@@ -284,7 +335,9 @@ const getSegmentBySegmentId = (segmentId:string) => {
         url:`/segment/${segmentId}`,
         httpMethod: 'GET',
         body:undefined,
-        type: 'GetSegmentBySegmentId'
+        requestType: 'GetSegmentBySegmentIdRequest',
+        successType: 'GetSegmentBySegmentIdSuccess',
+        failType: 'GetSegmentBySegmentIdFail'
     };
     return commonCallApi(settings);
 };
@@ -295,7 +348,9 @@ const getAccountMap = (status:string = 'all',glAccount:string,ofiAccount:string)
         url:`/account/map?status=${status}&glAccount=${glAccount}&ofiAccount=${ofiAccount}`,
         httpMethod: 'GET',
         body:undefined,
-        type: 'GetAccountMap'
+        requestType: 'GetAccountMapRequest',
+        successType: 'GetAccountMapSuccess',
+        failType: 'GetAccountMapFail'
     };
     return commonCallApi(settings);
 };
@@ -306,7 +361,9 @@ const getAccountMapHistory = (dateFrom:string,dateTo:string,user:string,glAccoun
         url:`/account/map/history?dateFrom=${dateFrom}&dateTo=${dateTo}&user=${user}&glAccount=${glAccount}&ofiAccount=${ofiAccount}`,
         httpMethod: 'GET',
         body:undefined,
-        type: 'GetAccountMapHistory'
+        requestType: 'GetAccountMapHistoryRequest',
+        successType: 'GetAccountMapHistorySuccess',
+        failType: 'GetAccountMapHistoryFail'
     };
     return commonCallApi(settings);
 };
@@ -317,7 +374,9 @@ const patchAccountOfiByAccountId = (accountId:number,body:FinancialAccount) => {
         url:`/account/ofi/${accountId}`,
         httpMethod: 'PATCH',
         body:JSON.stringify(body),
-        type: 'PatchAccountOfiByAccountId'
+        requestType: 'PatchAccountOfiByAccountIdRequest',
+        successType: 'PatchAccountOfiByAccountIdSuccess',
+        failType: 'PatchAccountOfiByAccountIdFail'
     };
     return commonCallApi(settings);
 };
@@ -328,7 +387,9 @@ const deleteAccountOfiByAccountId = (accountId:number,body:FinancialAccount) => 
         url:`/account/ofi/${accountId}`,
         httpMethod: 'DELETE',
         body:JSON.stringify(body),
-        type: 'DeleteAccountOfiByAccountId'
+        requestType: 'DeleteAccountOfiByAccountIdRequest',
+        successType: 'DeleteAccountOfiByAccountIdSuccess',
+        failType: 'DeleteAccountOfiByAccountIdFail'
     };
     return commonCallApi(settings);
 };
@@ -339,7 +400,9 @@ const deleteSegmentBySegmentId = (segmentId:string) => {
         url:`/segment/${segmentId}`,
         httpMethod: 'DELETE',
         body:undefined,
-        type: 'DeleteSegmentBySegmentId'
+        requestType: 'DeleteSegmentBySegmentIdRequest',
+        successType: 'DeleteSegmentBySegmentIdSuccess',
+        failType: 'DeleteSegmentBySegmentIdFail'
     };
     return commonCallApi(settings);
 };

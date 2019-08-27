@@ -63,7 +63,7 @@ const additionalFunctions = ( ) => {
             type: type,
             requestAction: requestAction,
             date: date,
-            msg: msg,
+            msg: msg + " reason[" + reason + "]",
             code: code,
             timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
             fail: true,
@@ -72,7 +72,6 @@ const additionalFunctions = ( ) => {
     }
 
     return {
-        ActionRequestData,
         idMaker: idMaker(),
         requestActionCreator: requestActionCreatorFunction,
         successActionCreator: successActionCreatorFunction,

@@ -15,10 +15,19 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { combineReducers } from 'redux';
 import ErrorBoundaryWrapper from "./components/error-boundary/ErrorBoundaryWrapper";
+import {createReducer, postAccountOfiHandler} from "./api/common-reducers";
 
-export const reducer = combineReducers({
+export function f(state = [], action) {
+
+    return state;
+}
+
+export const reducer = combineReducers(
     // add reducers
-});
+    {accountOfi: createReducer({}, postAccountOfiHandler())}
+);
+
+
 
 const middleware = [thunk];
 

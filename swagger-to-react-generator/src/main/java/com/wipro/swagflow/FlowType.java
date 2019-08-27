@@ -14,6 +14,8 @@ public abstract class FlowType implements FlowElement {
 
     protected String name;
 
+    protected boolean exported = true;
+
     public FlowType(String name) {
         this.name = name;
     }

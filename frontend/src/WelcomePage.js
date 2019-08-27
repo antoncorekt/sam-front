@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './WelcomePage.css';
 import {connect} from "react-redux";
 import {Button} from "antd";
-import {API} from "./api/common-middleware";
+import {API, FinancialAccount} from "./api/common-middleware";
 
 class WelcomePage extends Component {
 
@@ -12,7 +12,6 @@ class WelcomePage extends Component {
 
         const finAccount =  new API.MODELS.FinancialAccount();
         finAccount.status = "active";
-
         return (
           <div className="App">
             <Button onClick={()=>this.props.testRedux("hello test redux")}>Test redux</Button>
@@ -27,9 +26,16 @@ export default connect(
     }),
     dispatch => ({
         testRedux: (param) => {
+
+          const finAccount = new FinancialAccount();
+          finAccount.status = "inactive";
+          finAccount.id = "_id";
+          finAccount.name = "accountName";
+          finAccount.type = "finType";
+
           dispatch(
-              API.CALL.deleteSegmentBySegmentId("SEGMENT_ID")
-              // getAccountOfiByAccountId("sd")
+              API.CALL.postAccountOfi(finAccount)
+            
           )
         }
     })

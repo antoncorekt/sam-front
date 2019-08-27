@@ -41,7 +41,8 @@ public class ApiCallFunction extends FlowFunction {
                 .filter(param -> param.getFlowTypeParamEnum().equals(FlowTypeParam.FlowTypeParamEnum.BODY))
                 .findFirst()
                 .ifPresent(param -> {
-                    body.set("JSON.stringify(" + param.getName() + ")");
+//                    body.set("JSON.stringify(" + param.getName() + ")");
+                    body.set(param.getName());
                 });
 
         setBody(
@@ -49,9 +50,9 @@ public class ApiCallFunction extends FlowFunction {
                         "\t\t// set settings data\n" +
                         "\t\turl:"  + this.buildUrl("") + ",\n" +
                         "\t\thttpMethod: '" + apiCallFunctionData.getMethod() + "',\n" +
-                        "\t\tbody:"+ body + ",\n" +
-                        "\t\trequestType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_REQUEST_MARKER + ",'\n" +
-                        "\t\tsuccessType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_SUCCESS_MARKER +  ",'\n" +
+                        "\t\tbody:JSON.stringify("+ body + "),\n" +
+                        "\t\trequestType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_REQUEST_MARKER + "',\n" +
+                        "\t\tsuccessType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_SUCCESS_MARKER +  "',\n" +
                         "\t\tfailType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_FAIL_MARKER + "'\n" +
                  "\t};\n\t" +
                  "return " + reduxThunkCallApi.getName() + "(settings);"

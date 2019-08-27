@@ -15,20 +15,29 @@ import java.util.List;
 
 public class FlowObjectType extends FlowType {
 
-    private List<FlowTypeParam> flowClassParams = new ArrayList<>();
+    private final List<FlowTypeParam> flowClassParams;
+
+    private final FlowObjectInternalBuilder flowObjectInternalBuilder;
 
     public FlowObjectType(String name, List<FlowTypeParam> flowClassParams) {
         super(name);
         this.flowClassParams = flowClassParams;
+        this.flowObjectInternalBuilder = new FlowObjectInternalBuilder(this);
     }
 
     public String toCode(){
         StringBuilder params = new StringBuilder();
         for (FlowTypeParam flowClassParam : flowClassParams) {
-            params.append(flowClassParam.toCode()).append("; ");
+            params.append("\t").append(flowClassParam.toCode()).append(";\n ");
         }
 
-        return "class " + name + " { " + params + " } \n";
+        return (isExported() ? "export " : "") + "class " + name + " { \n" + params +
+
+                 "\n" + flowObjectInternalBuilder.toCode() +"\n } \n";
+    }
+
+    public List<FlowTypeParam> getFlowClassParams() {
+        return flowClassParams;
     }
 
     @Override

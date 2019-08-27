@@ -15,6 +15,8 @@ public class FlowTypeParam {
 
     String name;
     String type;
+    String description;
+    Integer maxLen;
     boolean required;
     Object defaultValue;
     FlowTypeParamEnum flowTypeParamEnum;
@@ -39,6 +41,8 @@ public class FlowTypeParam {
     public static class FlowTypeParamBuilder {
         private String name;
         private String type;
+        private String description;
+        private Integer maxLen;
         private boolean required;
         private Object defaultValue;
         private FlowTypeParamEnum flowTypeParamEnum;
@@ -48,6 +52,15 @@ public class FlowTypeParam {
 
         public FlowTypeParamBuilder name(String name) {
             this.name = name;
+            return this;
+        }
+
+        public FlowTypeParamBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+        public FlowTypeParamBuilder maxLen(Integer maxLen) {
+            this.maxLen = maxLen;
             return this;
         }
 
@@ -77,7 +90,7 @@ public class FlowTypeParam {
         }
 
         public FlowTypeParam build() {
-            return new FlowTypeParam(name, type, required, defaultValue, flowTypeParamEnum);
+            return new FlowTypeParam(name, type, description, maxLen, required, defaultValue, flowTypeParamEnum);
         }
 
         public String toString() {
