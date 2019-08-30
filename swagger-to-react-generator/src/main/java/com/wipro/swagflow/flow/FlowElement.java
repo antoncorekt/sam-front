@@ -1,4 +1,4 @@
-package com.wipro.swagflow;
+package com.wipro.swagflow.flow;
 
 /**
  * @author Anton Kozlovskyi

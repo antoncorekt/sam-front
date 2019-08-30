@@ -1,9 +1,11 @@
 package com.wipro.swagflow;
 
-import com.google.common.collect.Lists;
+import com.wipro.swagflow.files.AbstractJsFile;
+import com.wipro.swagflow.files.JsCodeFile;
+import com.wipro.swagflow.flow.*;
 import com.wipro.swagflow.reduxthunk.ApiCallFunction;
+import com.wipro.swagflow.reduxthunk.ApiCallFunctionData;
 import com.wipro.swagflow.reduxthunk.ApiCallGeneralFunctions;
-import com.wipro.swagflow.reduxthunk.ReduxThunkCallApi;
 import io.swagger.models.*;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
@@ -27,6 +29,11 @@ import static java.util.Comparator.comparing;
 @Data
 public class JsFlowGenerator {
 
+    private final JsCodeFile actionsFile;
+    private final JsCodeFile modelsFile;
+    private final JsCodeFile apiFuncFile;
+    private final JsCodeFile handlers;
+
     private List<FlowEnum> enums = new ArrayList<>();
     private List<FlowType> models = new ArrayList<>();
 
@@ -39,6 +46,10 @@ public class JsFlowGenerator {
     private FlowElement importer = () -> "import {BACKEND_URL} from './conf';";
 
     public JsFlowGenerator() throws IOException, URISyntaxException {
+        actionsFile = new JsCodeFile("api-actions-defs.js", "generated/");
+        modelsFile = new JsCodeFile("api-models.js", "generated/");
+        apiFuncFile = new JsCodeFile("api-func.js", "generated/");
+        handlers = new JsCodeFile("api-handlers.js", "generated/");
     }
 
     private void addToStringBuilder(List<? extends FlowElement> elements, StringBuilder builder, String firstLine){
@@ -48,6 +59,32 @@ public class JsFlowGenerator {
                     .map(FlowElement::toCode)
                     .forEach(builder::append);
         }
+    }
+
+    public void generateFiles(){
+
+        apiCallFunctionData
+                .forEach(x->{
+                    actionsFile.addElement(x.getActionsCode());
+                    if (x.getQueryParametersClass() != null)
+                        models.add(x.getQueryParametersClass());
+                    handlers.addElement(x.getReducerHandler());
+                });
+
+        modelsFile.addElement("\n// ----- Enums ------\n");
+        modelsFile.addElement(enums);
+        modelsFile.addElement("\n// ----- Models ------\n");
+        modelsFile.addElement(models);
+
+        apiCallFunctionData.sort(comparing(ApiCallFunctionData::getMethod));
+        for (ApiCallFunctionData apiCallFunctionDatum : apiCallFunctionData) {
+            apiFuncFile.addElement(apiCallFunctionDatum.getApiCallFunction());
+        }
+
+        modelsFile.writeToFile();
+        actionsFile.writeToFile();
+        apiFuncFile.writeToFile();
+        handlers.writeToFile();
     }
 
     public String generate() {

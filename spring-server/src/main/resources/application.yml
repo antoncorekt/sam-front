@@ -1,0 +1,15 @@
+#springfox.documentation.swagger.v2.path=/api-docs
+#server.port=8080
+#spring.jackson.date-format=io.swagger.RFC3339DateFormat
+#spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
+
+spring:
+  jackson:
+    date-format: io.swagger.RFC3339DateFormat
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  datasource:
+    url: jdbc:oracle:thin:@aixtestdb1.unx.era.pl:1522:T13BILL
+    username: cgsysadm
+    password: cgsysadm_t13
+    driver-class-name: oracle.jdbc.driver.OracleDriver

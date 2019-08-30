@@ -1,7 +1,7 @@
 package com.wipro.swagflow.reduxthunk;
 
-import com.wipro.swagflow.FlowElement;
-import com.wipro.swagflow.FlowFunction;
+import com.wipro.swagflow.flow.FlowElement;
+import com.wipro.swagflow.flow.FlowFunction;
 import lombok.Data;
 
 import java.io.IOException;

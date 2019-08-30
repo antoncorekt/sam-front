@@ -1,4 +1,4 @@
-package com.wipro.swagflow;
+package com.wipro.swagflow.flow;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +23,7 @@ public class FlowEnum implements FlowElement{
 
     @Override
     public String toCode() {
-        return "type " + name + " = " + param.stream().map(flowEnumParam ->  "'" + flowEnumParam + "'").collect(Collectors.joining(" | ")) + ";\n";
+        return "class " + name + " {\n " +
+                param.stream().map(flowEnumParam ->  "\t static get " + flowEnumParam.toUpperCase() + "(){ return '" + flowEnumParam + "'; }").collect(Collectors.joining("\n")) + "\n}\n";
     }
 }

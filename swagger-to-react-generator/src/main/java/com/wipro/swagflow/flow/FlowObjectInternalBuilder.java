@@ -1,4 +1,4 @@
-package com.wipro.swagflow;
+package com.wipro.swagflow.flow;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -37,9 +37,9 @@ public class FlowObjectInternalBuilder implements FlowElement {
                 "\t\t\t _model: " + flowObjectType.getName() + " = new " + flowObjectType.getName() + "();\n" +
                 flowObjectType.getFlowClassParams().stream().filter(Objects::nonNull).map(this::generateBuildMethod).collect(Collectors.joining("\n")) +
                 "\t\t\t" + "build(){\n" +
-                "\t\t\t\t" + "return _model;\n" +
-                "\t\t\t" + "}\n" +
-                "\t\treturn Builder;" +
+                "\t\t\t\t" + "return this._model;\n" +
+                "\t\t\t" + "}\n\t\t}\n" +
+                "\t\treturn Builder;\n" +
                 "\t}";
     }
 }

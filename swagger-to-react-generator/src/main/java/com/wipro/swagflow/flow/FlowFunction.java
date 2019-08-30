@@ -1,12 +1,9 @@
-package com.wipro.swagflow;
+package com.wipro.swagflow.flow;
 
-import com.wipro.swagflow.reduxthunk.ApiCallFunction;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

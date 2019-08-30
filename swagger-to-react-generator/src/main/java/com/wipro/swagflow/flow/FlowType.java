@@ -1,9 +1,6 @@
-package com.wipro.swagflow;
+package com.wipro.swagflow.flow;
 
-import io.swagger.annotations.OAuth2Definition;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Anton Kozlovskyi

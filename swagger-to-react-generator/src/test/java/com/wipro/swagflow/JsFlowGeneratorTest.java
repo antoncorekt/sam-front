@@ -1,8 +1,7 @@
 package com.wipro.swagflow;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wipro.swagflow.reduxthunk.ApiCallFunctionData;
 import io.swagger.models.*;
-import io.swagger.models.parameters.Parameter;
 import io.swagger.parser.SwaggerParser;
 import org.junit.jupiter.api.Test;
 
@@ -62,6 +61,30 @@ public class JsFlowGeneratorTest {
 
 
         System.err.println(code);
+    }
+
+    @Test
+    public void test23() throws IOException, URISyntaxException {
+
+        Swagger swagger = new SwaggerParser().read("C:\\Users\\an392262\\Documents\\sam-app\\swagger\\sam_api.yaml");
+
+        JsFlowGenerator jsFlowGenerator = new JsFlowGenerator();
+
+        swagger.getPaths().entrySet().forEach(jsFlowGenerator::addApiCallFunction);
+
+        for (ApiCallFunctionData apiCallFunctionData : jsFlowGenerator.getApiCallFunctionData()) {
+            apiCallFunctionData.init();
+        }
+
+        for (Map.Entry<String, Model> p : swagger.getDefinitions().entrySet()) {
+            jsFlowGenerator.addModel(p);
+        }
+
+        System.out.println("start");
+
+
+        jsFlowGenerator.generateFiles();
+
     }
 
 }

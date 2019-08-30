@@ -15,7 +15,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { combineReducers } from 'redux';
 import ErrorBoundaryWrapper from "./components/error-boundary/ErrorBoundaryWrapper";
-import {createReducer, postAccountOfiHandler} from "./api/common-reducers";
+import {createReducer, GetAccountGlHandler, GetAccountOfiHandler, postAccountOfiHandler} from "./api/common-reducers";
 
 export function f(state = [], action) {
 
@@ -24,7 +24,8 @@ export function f(state = [], action) {
 
 export const reducer = combineReducers(
     // add reducers
-    {accountOfi: createReducer({}, postAccountOfiHandler())}
+    {accountOfi: createReducer({init: 1}, GetAccountGlHandler())
+    }
 );
 
 

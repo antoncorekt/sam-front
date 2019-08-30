@@ -58,12 +58,59 @@ export class SegmentMapEntry { segmentId:string; orderNumber:number;  }
 export class SegmentMap { glAccount:FinancialAccount; validFrom:Date; segments:Array<SegmentMapEntry>;  }
 class SegmentMapReq { validFrom:Date;  }
 
-export class ActionRequestData<T> {
+class GetAccountOfiUrlParametersStatusEnum {
+    static get ACTIVE(){
+        return 'active';
+    }
+    static get INACTIVE(){
+        return 'inactive';
+    }
+    static get ALL(){
+        return 'all';
+    }
+}
+export class GetAccountOfiUrlParameters {
+    status: GetAccountOfiUrlParametersStatusEnum;
+
+    static get Builder() {
+        class Builder {
+            _model: GetAccountOfiUrlParameters = new GetAccountOfiUrlParameters();
+            withStatus(status: GetAccountOfiUrlParametersStatusEnum):Builder {
+                this._model.status=status;
+                return this;
+            }
+            build():GetAccountOfiUrlParameters {
+                return this._model;
+            }
+        }
+        return Builder;
+    }
+}
+
+let params = new GetAccountOfiUrlParameters();
+console.warn("params1", params);
+params.status = GetAccountOfiUrlParametersStatusEnum.INACTIVE;
+
+console.warn("params2", params);
+
+export class ActionRequestData<T, P> {
     body: T;
+    parameners: P;
     date: Date;
     url: string;
     type: string;
     method: string;
+}
+
+export class ActionResponseData<T, R>  {
+    requestAction: R;
+    response: T;
+    date: Date;
+    timeDiff: number;
+    fail: boolean;
+    msg: string;
+    code: string;
+    errorType: string;
 }
 
 // general components for function
@@ -78,16 +125,7 @@ const additionalFunctions = ( ) => {
 
 
 
-    type ResponseData = {
-        requestAction: any;
-        response?: any;
-        date: Date;
-        timeDiff: number;
-        fail: boolean;
-        msg?: string;
-        code?: string;
-        errorType?: string;
-    }
+
 
     function requestActionCreatorFunction(props: ApiProperties): ActionRequestData {
         return {
@@ -99,13 +137,13 @@ const additionalFunctions = ( ) => {
         }
     }
 
-    function successActionCreatorFunction(response: any, requestAction: ActionRequestData, msg: string, code: string): ResponseData {
+    function successActionCreatorFunction(type:string, response: any, requestAction: ActionRequestData, msg: string, code: string): ActionResponseData {
         const date = new Date();
         return {
             requestAction: requestAction,
             date: date,
             response: response,
-            type: requestAction.type,
+            type: type,
             msg: msg,
             code: code,
             timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
@@ -113,7 +151,7 @@ const additionalFunctions = ( ) => {
         }
     }
 
-    function failActionCreatorFunctionBackendError(response: any, requestAction: ActionRequestData,  msg: string, code: string): ResponseData {
+    function failActionCreatorFunctionBackendError(response: any, requestAction: ActionRequestData,  msg: string, code: string): ActionResponseData {
         return {
             ...successActionCreatorFunction(response, requestAction, msg, code),
             fail: true,
@@ -158,7 +196,7 @@ type ApiProperties = {
     headers?: HeadersInit;
 }
 // function for fetches
-const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A>) => {
+export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A>) => {
 
 
 
@@ -171,7 +209,7 @@ const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A>) => {
         headers: props.headers,
         body: props.body
     };
-    const url = BACKEND_URL + props.url;
+    const url = props.url;
 
     // const dispFail = res =>
     //     (failAction === undefined)
@@ -193,7 +231,7 @@ const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A>) => {
     //     .catch(f2)
     return fetch(url, settings)
         .then(typeResolveFunctionBody)
-        .then(handlerFunctionSuccess)
+        .then(handlerFunctionSuccess(props, requestAction, dispatch))
         .catch(handlerFunctionError(props, requestAction, dispatch));
 };
 
@@ -220,7 +258,9 @@ const handlerFunctionError = (props:ApiProperties, requestAction: any, dispatch 
 const handlerFunctionSuccess = (props:ApiProperties, requestAction: any, dispatch ) => <T>(response:T) => {
 
     // magic with redux
-
+    dispatch(
+        _.successActionCreator(props.successType, response, requestAction, "OK", "200")
+    )
 };
 
 
@@ -264,8 +304,7 @@ const postSegment = (body:MarketSegmentReq) => {
     return commonCallApi(settings);
 };
 
-// call Return list of SAP OFI accounts
-const getAccountOfi = (status:string = 'active') => {
+const getAccountOfiParam = (status: GetAccountOfiUrlParametersStatusEnum) => {
     const settings = {		// set settings data
         url:`/account/ofi?status=${status}`,
         httpMethod: 'GET',
@@ -276,6 +315,55 @@ const getAccountOfi = (status:string = 'active') => {
     };
     return commonCallApi(settings);
 };
+
+// call Return list of SAP OFI accounts
+const getAccountOfi = (urlParams: GetAccountOfiUrlParameters) => {
+    return getAccountOfiParam(urlParams.status)
+};
+
+//
+// class GetAccountOfiCallClassBuilder {
+//     _urlParams: GetAccountOfiUrlParameters = new GetAccountOfiUrlParameters();
+//     _body: FinancialAccount = new FinancialAccount();
+//
+//     uriParams(uriBuilder: GetAccountOfiUrlParameters): GetAccountOfiCallClassBuilder{
+//         this._urlParams = uriBuilder;
+//         return this;
+//     }
+//
+//     bodyParams(finAcc: FinancialAccount): GetAccountOfiCallClassBuilder {
+//         this._body = finAcc;
+//         return this;
+//     }
+//
+//     call(){
+//         const settings = {		// set settings data
+//             url:`/account/ofi?status=${this._urlParams.status}`,
+//             httpMethod: 'GET',
+//             body: this._body,
+//             requestType: 'GetAccountOfiRequest',
+//             successType: 'GetAccountOfiSuccess',
+//             failType: 'GetAccountOfiFail'
+//         };
+//         return commonCallApi(settings);
+//     }
+// }
+//
+// export const getAccountOfiCallCl = new GetAccountOfiCallClassBuilder();
+//
+// getAccountOfiCallCl
+//     .uriParams(new GetAccountOfiUrlParameters.Builder()
+//         .withStatus(GetAccountOfiUrlParametersStatusEnum.ACTIVE)
+//         .build()
+//     )
+//     .bodyParams(new FinancialAccount.Builder()
+//         .withId("id")
+//         .withName("name")
+//         .withType("type")
+//         .build()
+//     )
+//     .call();
+
 
 // call Return SAP OFI account by ID
 const getAccountOfiByAccountId = (accountId:number) => {
