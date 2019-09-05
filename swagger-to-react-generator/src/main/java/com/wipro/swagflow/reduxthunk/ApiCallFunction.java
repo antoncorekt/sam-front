@@ -52,7 +52,7 @@ public class ApiCallFunction extends FlowFunction {
                         "\t\t// set settings data\n" +
                         "\t\turl:"  + this.buildUrl("") + ",\n" +
                         "\t\thttpMethod: '" + apiCallFunctionData.getMethod() + "',\n" +
-                        "\t\tbody:JSON.stringify("+ body + "),\n" +
+                        "\t\tbody:" + (body.get().equals("undefined") ? body : "JSON.stringify("+ body + ")") +",\n" +
                         "\t\trequestType: '"+ apiCallFunctionData.getActionRequestName() + "',\n" +
                         "\t\tsuccessType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_SUCCESS_MARKER +  "',\n" +
                         "\t\tfailType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_FAIL_MARKER + "'\n" +

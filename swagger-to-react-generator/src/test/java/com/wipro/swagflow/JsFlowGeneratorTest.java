@@ -3,6 +3,9 @@ package com.wipro.swagflow;
 import com.wipro.swagflow.reduxthunk.ApiCallFunctionData;
 import io.swagger.models.*;
 import io.swagger.parser.SwaggerParser;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.parser.OpenAPIV3Parser;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -66,7 +69,7 @@ public class JsFlowGeneratorTest {
     @Test
     public void test23() throws IOException, URISyntaxException {
 
-        Swagger swagger = new SwaggerParser().read("C:\\Users\\an392262\\Documents\\sam-app\\swagger\\sam_api.yaml");
+        Swagger swagger = new SwaggerParser().read("sam-apiv2.yaml");
 
         JsFlowGenerator jsFlowGenerator = new JsFlowGenerator();
 
@@ -79,6 +82,39 @@ public class JsFlowGeneratorTest {
         for (Map.Entry<String, Model> p : swagger.getDefinitions().entrySet()) {
             jsFlowGenerator.addModel(p);
         }
+
+        System.out.println("start");
+
+
+        jsFlowGenerator.generateFiles();
+
+    }
+
+    @Test
+    public void testOpenApi() throws IOException, URISyntaxException {
+
+
+        OpenAPI openAPI = new OpenAPIV3Parser().read("test.yaml");
+
+        JsFlowGenerator jsFlowGenerator = new JsFlowGenerator();
+
+        for (Map.Entry<String, PathItem> stringPathItemEntry : openAPI.getPaths().entrySet()) {
+
+            PathItem pathItem = stringPathItemEntry.getValue();
+
+            String pathName = (String) stringPathItemEntry.getKey();
+
+        }
+
+//        swagger.getPaths().entrySet().forEach(jsFlowGenerator::addApiCallFunction);
+
+//        for (ApiCallFunctionData apiCallFunctionData : jsFlowGenerator.getApiCallFunctionData()) {
+//            apiCallFunctionData.init();
+//        }
+//
+//        for (Map.Entry<String, Model> p : swagger.getDefinitions().entrySet()) {
+//            jsFlowGenerator.addModel(p);
+//        }
 
         System.out.println("start");
 

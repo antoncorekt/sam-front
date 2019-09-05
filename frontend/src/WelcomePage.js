@@ -24,7 +24,9 @@ const f = <T>(func) => (data) => {
     return func(data)
 };
 
-class WelcomePage extends Component<{accountOfi:ActionResponseData<Array<FinancialAccount>,ActionRequestData<null, GetAccountGlQueryParams>>}> {
+class WelcomePage extends Component<{
+    accountOfi: ActionResponseData<Array<FinancialAccount>,ActionRequestData<null, GetAccountGlQueryParams>>
+}> {
 
 
   render() {
@@ -34,12 +36,8 @@ class WelcomePage extends Component<{accountOfi:ActionResponseData<Array<Financi
         return (
           <div className="App">
             <Button onClick={()=>this.props.testRedux("hello test redux")}>Test redux</Button>
-              {/*{renderIfSuccess(this.props.accountOfi)}*/}
               {
-                  ""+this.props.acc.date
-              }
-              {
-                  ""+this.props.acc.timeDiff
+
               }
 
           </div>

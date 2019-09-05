@@ -12,6 +12,7 @@ import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.parameters.QueryParameter;
 import io.swagger.models.properties.*;
+import io.swagger.v3.oas.models.PathItem;
 import lombok.Data;
 
 import java.io.IOException;
@@ -137,6 +138,12 @@ public class JsFlowGenerator {
         return s.replaceAll("@", "");
     }
 
+    public void addApiCallFunctionOpenApi(Map.Entry<String, PathItem> pathEntry){
+        PathItem path = pathEntry.getValue();
+
+
+    }
+
     public void addApiCallFunction(Map.Entry<String, Path> pathEntry){
 
 
@@ -176,11 +183,26 @@ public class JsFlowGenerator {
 
                 if (parameter instanceof BodyParameter){
 
+                    String type = null;
+
+                    Model schema = ((BodyParameter) parameter).getSchema();
+
+                    if (schema instanceof RefModel){
+                        type = ((RefModel) schema).getSimpleRef();
+                    }
+                    else {
+                        if (schema instanceof ModelImpl){
+                            ModelImpl model = ((ModelImpl) schema);
+
+                            throw new IllegalStateException("Not implement object model. Please define separate model in swagger");
+                        }
+                    }
+
                     flowTypeParams.add(FlowTypeParam.builder()
                             .name(parameter.getName())
                             .required(parameter.getRequired())
                             .flowTypeParamEnum(FlowTypeParam.FlowTypeParamEnum.BODY)
-                            .type(((RefModel)((BodyParameter) parameter).getSchema()).getSimpleRef())
+                            .type(type)
                             .build());
 
                     continue;
