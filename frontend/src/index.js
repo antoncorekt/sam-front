@@ -6,28 +6,31 @@ import * as serviceWorker from './serviceWorker';
 import { notification } from "antd";
 import { CookiesProvider } from 'react-cookie';
 import plPL from 'antd/lib/locale-provider/pl_PL';
-import {LocaleProvider} from 'antd';
+import { LocaleProvider } from 'antd';
 import './ngkew.less';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import {BrowserRouter, Route, Link, Switch} from 'react-router-dom'
+import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { combineReducers } from 'redux';
 import ErrorBoundaryWrapper from "./components/error-boundary/ErrorBoundaryWrapper";
-import {createReducer, postAccountOfiHandler} from "./api/common-reducers";
+import { createReducer, postAccountOfiHandler } from "./api/common-reducers";
+import MainScreen from './components/main-screen/MainScreen';
+import { tabsState } from './reducers/tabReducer';
+import "react-table/react-table.css";
 
 export function f(state = [], action) {
-
     return state;
 }
 
 export const reducer = combineReducers(
     // add reducers
-    {accountOfi: createReducer({}, postAccountOfiHandler())}
+    {
+        accountOfi: createReducer({}, postAccountOfiHandler()),
+        tabsState
+    }
 );
-
-
 
 const middleware = [thunk];
 
@@ -40,7 +43,7 @@ ReactDOM.render(
                 <LocaleProvider locale={plPL}>
                     <BrowserRouter basename={process.env.REACT_APP_ROUTER_BASE || ''}>
                         <Switch>
-                            <Route exact path="*" component={WelcomePage} />
+                            <Route exact path="*" component={MainScreen} />
                         </Switch>
                     </BrowserRouter>
                 </LocaleProvider>

@@ -1,0 +1,133 @@
+.sap-accounts .flex-end-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.sap-accounts .checkbox {
+    margin: 8px 12px 0px 0px;
+}
+
+.sap-accounts .table-container {
+    margin-top: 4px;
+    background-color: white;
+}
+
+.sap-accounts .rt-thead {
+    background-color: steelblue;
+    color: white;
+    font-weight: bold;
+}
+
+.sap-accounts .rt-thead.-filters {
+    background-color: lightsteelblue;
+    color: black;
+}
+
+.sap-accounts .pagination-container {
+    margin: 6px 0px 6px 0px;
+}
+
+.segments .flex-end-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.segments .table-container {
+    margin-top: 4px;
+    background-color: white;
+}
+
+.segments .rt-thead {
+    background-color: steelblue;
+    color: white;
+    font-weight: bold;
+}
+
+.segments .rt-thead.-filters {
+    background-color: lightsteelblue;
+    color: black;
+}
+
+.segments .pagination-container {
+    margin: 6px 0px 6px 0px;
+}
+
+.bscs-to-sap-mappings .flex-end-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.bscs-to-sap-mappings .right-margin {
+    margin-right: 6px;
+}
+
+.bscs-to-sap-mappings .table-container {
+    margin-top: 4px;
+    background-color: white;
+}
+
+.bscs-to-sap-mappings .rt-thead {
+    background-color: steelblue;
+    color: white;
+    font-weight: bold;
+}
+
+.bscs-to-sap-mappings .rt-thead.-filters {
+    background-color: lightsteelblue;
+    color: black;
+}
+
+.bscs-to-sap-mappings .checkbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.bscs-to-sap-mappings .centered-text {
+    text-align: center
+}
+
+.bscs-to-sap-mappings .pagination-container {
+    margin: 6px 0px 6px 0px;
+}
+
+.sap-to-segment-mappings .flex-end-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.sap-to-segment-mappings .right-margin {
+    margin-right: 6px;
+}
+
+.sap-to-segment-mappings .select {
+    width: 190px;
+}
+
+.sap-to-segment-mappings .table-container {
+    margin-top: 4px;
+    background-color: white;
+}
+
+.sap-to-segment-mappings .rt-thead {
+    background-color: steelblue;
+    color: white;
+    font-weight: bold;
+}
+
+.sap-to-segment-mappings .rt-thead.-filters {
+    background-color: lightsteelblue;
+    color: black;
+}
+
+.sap-to-segment-mappings .centered-text {
+    text-align: center
+}
+
+.sap-to-segment-mappings .pagination-container {
+    margin: 6px 0px 6px 0px;
+}
