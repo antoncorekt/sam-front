@@ -230,7 +230,7 @@ public class JsFlowGenerator {
 
         String typeName = modelEntry.getKey();
 
-        if (typeName.equals("AccountMapReq")){
+        if (typeName.equals("Role")){
             System.out.println("bla");
         }
 
