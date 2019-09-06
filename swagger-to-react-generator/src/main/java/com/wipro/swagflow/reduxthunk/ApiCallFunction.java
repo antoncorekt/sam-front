@@ -53,9 +53,9 @@ public class ApiCallFunction extends FlowFunction {
                         "\t\turl:"  + this.buildUrl("") + ",\n" +
                         "\t\thttpMethod: '" + apiCallFunctionData.getMethod() + "',\n" +
                         "\t\tbody:" + (body.get().equals("undefined") ? body : "JSON.stringify("+ body + ")") +",\n" +
-                        "\t\trequestType: '"+ apiCallFunctionData.getActionRequestName() + "',\n" +
-                        "\t\tsuccessType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_SUCCESS_MARKER +  "',\n" +
-                        "\t\tfailType: '"+ apiCallFunctionData.getActionBaseName() + ACTION_FAIL_MARKER + "'\n" +
+                        "\t\trequestType: ACT."+ apiCallFunctionData.getActionRequestName() + ",\n" +
+                        "\t\tsuccessType: ACT."+ apiCallFunctionData.getActionBaseName() + ACTION_SUCCESS_MARKER +  ",\n" +
+                        "\t\tfailType: ACT."+ apiCallFunctionData.getActionBaseName() + ACTION_FAIL_MARKER + "\n" +
                  "\t};\n\t" +
                  "return " + reduxThunkCallApi.getName() + "(settings);"
         );

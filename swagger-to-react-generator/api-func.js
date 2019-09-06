@@ -4,9 +4,9 @@ const postUserLogin = (body:RequestSetUserLogin) => {
 		url:`/user/login`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostUserLoginRequest',
-		successType: 'PostUserLoginSuccess',
-		failType: 'PostUserLoginFail'
+		requestType: ACT.PostUserLoginRequest,
+		successType: ACT.PostUserLoginSuccess,
+		failType: ACT.PostUserLoginFail
 	};
 	return commonCallApi(settings); 
 };
@@ -18,9 +18,9 @@ const postUserLogoff = (body:RequestSetUserLogoff) => {
 		url:`/user/logoff`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostUserLogoffRequest',
-		successType: 'PostUserLogoffSuccess',
-		failType: 'PostUserLogoffFail'
+		requestType: ACT.PostUserLogoffRequest,
+		successType: ACT.PostUserLogoffSuccess,
+		failType: ACT.PostUserLogoffFail
 	};
 	return commonCallApi(settings); 
 };
@@ -32,9 +32,9 @@ const postAccount = (body:RequestSetAccount) => {
 		url:`/account`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostAccountRequest',
-		successType: 'PostAccountSuccess',
-		failType: 'PostAccountFail'
+		requestType: ACT.PostAccountRequest,
+		successType: ACT.PostAccountSuccess,
+		failType: ACT.PostAccountFail
 	};
 	return commonCallApi(settings); 
 };
@@ -46,9 +46,9 @@ const postAccountRelease = () => {
 		url:`/account/release`,
 		httpMethod: 'POST',
 		body:undefined,
-		requestType: 'PostAccountReleaseRequest',
-		successType: 'PostAccountReleaseSuccess',
-		failType: 'PostAccountReleaseFail'
+		requestType: ACT.PostAccountReleaseRequest,
+		successType: ACT.PostAccountReleaseSuccess,
+		failType: ACT.PostAccountReleaseFail
 	};
 	return commonCallApi(settings); 
 };
@@ -60,9 +60,9 @@ const postOrder = (body:RequestSetOrder) => {
 		url:`/order`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostOrderRequest',
-		successType: 'PostOrderSuccess',
-		failType: 'PostOrderFail'
+		requestType: ACT.PostOrderRequest,
+		successType: ACT.PostOrderSuccess,
+		failType: ACT.PostOrderFail
 	};
 	return commonCallApi(settings); 
 };
@@ -74,9 +74,9 @@ const postDictionaryAccountBscs = (body:RequestSetAccountDictBscs) => {
 		url:`/dictionary/account/bscs`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostDictionaryAccountBscsRequest',
-		successType: 'PostDictionaryAccountBscsSuccess',
-		failType: 'PostDictionaryAccountBscsFail'
+		requestType: ACT.PostDictionaryAccountBscsRequest,
+		successType: ACT.PostDictionaryAccountBscsSuccess,
+		failType: ACT.PostDictionaryAccountBscsFail
 	};
 	return commonCallApi(settings); 
 };
@@ -88,9 +88,9 @@ const postDictionaryAccountSap = (body:RequestSetAccountDictSap) => {
 		url:`/dictionary/account/sap`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostDictionaryAccountSapRequest',
-		successType: 'PostDictionaryAccountSapSuccess',
-		failType: 'PostDictionaryAccountSapFail'
+		requestType: ACT.PostDictionaryAccountSapRequest,
+		successType: ACT.PostDictionaryAccountSapSuccess,
+		failType: ACT.PostDictionaryAccountSapFail
 	};
 	return commonCallApi(settings); 
 };
@@ -102,9 +102,9 @@ const postDictionarySegment = (body:RequestSetSegment) => {
 		url:`/dictionary/segment`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostDictionarySegmentRequest',
-		successType: 'PostDictionarySegmentSuccess',
-		failType: 'PostDictionarySegmentFail'
+		requestType: ACT.PostDictionarySegmentRequest,
+		successType: ACT.PostDictionarySegmentSuccess,
+		failType: ACT.PostDictionarySegmentFail
 	};
 	return commonCallApi(settings); 
 };
@@ -116,9 +116,9 @@ const getSystemVersion = () => {
 		url:`/system/version`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: 'GetSystemVersionRequest',
-		successType: 'GetSystemVersionSuccess',
-		failType: 'GetSystemVersionFail'
+		requestType: ACT.GetSystemVersionRequest,
+		successType: ACT.GetSystemVersionSuccess,
+		failType: ACT.GetSystemVersionFail
 	};
 	return commonCallApi(settings); 
 };
@@ -130,37 +130,37 @@ const getSystemStatus = () => {
 		url:`/system/status`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: 'GetSystemStatusRequest',
-		successType: 'GetSystemStatusSuccess',
-		failType: 'GetSystemStatusFail'
+		requestType: ACT.GetSystemStatusRequest,
+		successType: ACT.GetSystemStatusSuccess,
+		failType: ACT.GetSystemStatusFail
 	};
 	return commonCallApi(settings); 
 };
 
 
 // call readAccountByStatusRelease
-const getAccountByStatusByRelease = (status:string,release:string) => {
+const getAccountByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: 'GetAccountByStatusByReleaseRequest',
-		successType: 'GetAccountByStatusByReleaseSuccess',
-		failType: 'GetAccountByStatusByReleaseFail'
+		requestType: ACT.GetAccountByStatusByReleaseRequest,
+		successType: ACT.GetAccountByStatusByReleaseSuccess,
+		failType: ACT.GetAccountByStatusByReleaseFail
 	};
 	return commonCallApi(settings); 
 };
 
 
 // call readOrderByStatusRelease
-const getOrderByStatusByRelease = (status:string,release:string) => {
+const getOrderByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: 'GetOrderByStatusByReleaseRequest',
-		successType: 'GetOrderByStatusByReleaseSuccess',
-		failType: 'GetOrderByStatusByReleaseFail'
+		requestType: ACT.GetOrderByStatusByReleaseRequest,
+		successType: ACT.GetOrderByStatusByReleaseSuccess,
+		failType: ACT.GetOrderByStatusByReleaseFail
 	};
 	return commonCallApi(settings); 
 };
@@ -172,9 +172,9 @@ const getDictionaryAccountBscs = () => {
 		url:`/dictionary/account/bscs`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: 'GetDictionaryAccountBscsRequest',
-		successType: 'GetDictionaryAccountBscsSuccess',
-		failType: 'GetDictionaryAccountBscsFail'
+		requestType: ACT.GetDictionaryAccountBscsRequest,
+		successType: ACT.GetDictionaryAccountBscsSuccess,
+		failType: ACT.GetDictionaryAccountBscsFail
 	};
 	return commonCallApi(settings); 
 };
@@ -186,9 +186,9 @@ const getDictionaryAccountSap = () => {
 		url:`/dictionary/account/sap`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: 'GetDictionaryAccountSapRequest',
-		successType: 'GetDictionaryAccountSapSuccess',
-		failType: 'GetDictionaryAccountSapFail'
+		requestType: ACT.GetDictionaryAccountSapRequest,
+		successType: ACT.GetDictionaryAccountSapSuccess,
+		failType: ACT.GetDictionaryAccountSapFail
 	};
 	return commonCallApi(settings); 
 };
@@ -200,37 +200,37 @@ const getDictionarySegment = () => {
 		url:`/dictionary/segment`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: 'GetDictionarySegmentRequest',
-		successType: 'GetDictionarySegmentSuccess',
-		failType: 'GetDictionarySegmentFail'
+		requestType: ACT.GetDictionarySegmentRequest,
+		successType: ACT.GetDictionarySegmentSuccess,
+		failType: ACT.GetDictionarySegmentFail
 	};
 	return commonCallApi(settings); 
 };
 
 
 // call updateAccount
-const putAccountByStatusByReleaseByBscsAccount = (status:string,release:string,bscsAccount:string) => {
+const putAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}/${bscsAccount}`,
 		httpMethod: 'PUT',
 		body:undefined,
-		requestType: 'PutAccountByStatusByReleaseByBscsAccountRequest',
-		successType: 'PutAccountByStatusByReleaseByBscsAccountSuccess',
-		failType: 'PutAccountByStatusByReleaseByBscsAccountFail'
+		requestType: ACT.PutAccountByStatusByReleaseByBscsAccountRequest,
+		successType: ACT.PutAccountByStatusByReleaseByBscsAccountSuccess,
+		failType: ACT.PutAccountByStatusByReleaseByBscsAccountFail
 	};
 	return commonCallApi(settings); 
 };
 
 
 // call updateOrder
-const putOrderByStatusByReleaseByBscsAccountBySegment = (status:string,release:string,bscsAccount:string,segment:string) => {
+const putOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
 		httpMethod: 'PUT',
 		body:undefined,
-		requestType: 'PutOrderByStatusByReleaseByBscsAccountBySegmentRequest',
-		successType: 'PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess',
-		failType: 'PutOrderByStatusByReleaseByBscsAccountBySegmentFail'
+		requestType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentRequest,
+		successType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
+		failType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentFail
 	};
 	return commonCallApi(settings); 
 };
@@ -242,23 +242,23 @@ const deleteAccount = () => {
 		url:`/account`,
 		httpMethod: 'DELETE',
 		body:undefined,
-		requestType: 'DeleteAccountRequest',
-		successType: 'DeleteAccountSuccess',
-		failType: 'DeleteAccountFail'
+		requestType: ACT.DeleteAccountRequest,
+		successType: ACT.DeleteAccountSuccess,
+		failType: ACT.DeleteAccountFail
 	};
 	return commonCallApi(settings); 
 };
 
 
 // call deleteAccount
-const deleteAccountByStatusByReleaseByBscsAccount = (status:string,release:string,bscsAccount:string) => {
+const deleteAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}/${bscsAccount}`,
 		httpMethod: 'DELETE',
 		body:undefined,
-		requestType: 'DeleteAccountByStatusByReleaseByBscsAccountRequest',
-		successType: 'DeleteAccountByStatusByReleaseByBscsAccountSuccess',
-		failType: 'DeleteAccountByStatusByReleaseByBscsAccountFail'
+		requestType: ACT.DeleteAccountByStatusByReleaseByBscsAccountRequest,
+		successType: ACT.DeleteAccountByStatusByReleaseByBscsAccountSuccess,
+		failType: ACT.DeleteAccountByStatusByReleaseByBscsAccountFail
 	};
 	return commonCallApi(settings); 
 };
@@ -270,23 +270,23 @@ const deleteOrder = () => {
 		url:`/order`,
 		httpMethod: 'DELETE',
 		body:undefined,
-		requestType: 'DeleteOrderRequest',
-		successType: 'DeleteOrderSuccess',
-		failType: 'DeleteOrderFail'
+		requestType: ACT.DeleteOrderRequest,
+		successType: ACT.DeleteOrderSuccess,
+		failType: ACT.DeleteOrderFail
 	};
 	return commonCallApi(settings); 
 };
 
 
 // call deleteOrder
-const deleteOrderByStatusByReleaseByBscsAccountBySegment = (status:string,release:string,bscsAccount:string,segment:string) => {
+const deleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
 		httpMethod: 'DELETE',
 		body:undefined,
-		requestType: 'DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest',
-		successType: 'DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess',
-		failType: 'DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail'
+		requestType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest,
+		successType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
+		failType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail
 	};
 	return commonCallApi(settings); 
 };
@@ -298,9 +298,9 @@ const deleteDictionaryAccountBscs = () => {
 		url:`/dictionary/account/bscs`,
 		httpMethod: 'DELETE',
 		body:undefined,
-		requestType: 'DeleteDictionaryAccountBscsRequest',
-		successType: 'DeleteDictionaryAccountBscsSuccess',
-		failType: 'DeleteDictionaryAccountBscsFail'
+		requestType: ACT.DeleteDictionaryAccountBscsRequest,
+		successType: ACT.DeleteDictionaryAccountBscsSuccess,
+		failType: ACT.DeleteDictionaryAccountBscsFail
 	};
 	return commonCallApi(settings); 
 };
@@ -312,9 +312,9 @@ const deleteDictionaryAccountSap = () => {
 		url:`/dictionary/account/sap`,
 		httpMethod: 'DELETE',
 		body:undefined,
-		requestType: 'DeleteDictionaryAccountSapRequest',
-		successType: 'DeleteDictionaryAccountSapSuccess',
-		failType: 'DeleteDictionaryAccountSapFail'
+		requestType: ACT.DeleteDictionaryAccountSapRequest,
+		successType: ACT.DeleteDictionaryAccountSapSuccess,
+		failType: ACT.DeleteDictionaryAccountSapFail
 	};
 	return commonCallApi(settings); 
 };
@@ -326,9 +326,9 @@ const deleteDictionarySegment = () => {
 		url:`/dictionary/segment`,
 		httpMethod: 'DELETE',
 		body:undefined,
-		requestType: 'DeleteDictionarySegmentRequest',
-		successType: 'DeleteDictionarySegmentSuccess',
-		failType: 'DeleteDictionarySegmentFail'
+		requestType: ACT.DeleteDictionarySegmentRequest,
+		successType: ACT.DeleteDictionarySegmentSuccess,
+		failType: ACT.DeleteDictionarySegmentFail
 	};
 	return commonCallApi(settings); 
 };

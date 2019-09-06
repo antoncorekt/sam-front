@@ -14,6 +14,7 @@ import io.swagger.models.parameters.QueryParameter;
 import io.swagger.models.properties.*;
 import io.swagger.v3.oas.models.PathItem;
 import lombok.Data;
+import sun.text.normalizer.NormalizerBase;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -171,12 +172,31 @@ public class JsFlowGenerator {
                 }
 
                 if (parameter instanceof PathParameter){
+
+                    if (parameter.getName().equals("status")){
+                        int i =45;
+                    }
+                    PathParameter pathParameter = (PathParameter)parameter;
+
+                    String type = pathParameter.getType();
+
+                    if (pathParameter.getEnum() != null && !pathParameter.getEnum().isEmpty()){
+                        Optional<FlowEnum> existEnum = enums.stream()
+                                .filter(en -> en.isParamEquals(pathParameter.getEnum()))
+                                .findAny();
+
+                        if (existEnum.isPresent()){
+                            type = existEnum.get().getName();
+                        }
+
+                    }
+
                     flowTypeParams.add(FlowTypeParam.builder()
                             .name(parameter.getName())
                             .required(parameter.getRequired())
                             .defaultValue(((PathParameter) parameter).getDefaultValue())
                             .flowTypeParamEnum(FlowTypeParam.FlowTypeParamEnum.PATH)
-                            .type((((PathParameter) parameter).getType()))
+                            .type(type)
                             .build());
                     continue;
                 }
@@ -241,6 +261,22 @@ public class JsFlowGenerator {
             if (model instanceof ArrayModel && ((ArrayModel)model).getType().equals("array"))
                 models.add(new FlowArrayType(((RefProperty) ((ArrayModel) model).getItems()).getSimpleRef(), typeName));
 
+            if (model instanceof ModelImpl){
+                ModelImpl modelImpl = (ModelImpl)model;
+
+                if (!modelImpl.getEnum().isEmpty()){
+                    FlowEnum flowEnum = new FlowEnum();
+                    String enumName = removeIncorrectFlowSymbols(typeName);
+                    flowEnum.setName(enumName.substring(0,1).toUpperCase() + enumName.substring(1) + "Enum");
+                    flowEnum.setParam(modelImpl.getEnum());
+                    enums.add(flowEnum);
+                }
+                else {
+                    throw new IllegalStateException("Not implement ModelImpl object without enum. Example: " + typeName);
+                }
+
+            }
+
             return;
         }
 
@@ -264,7 +300,7 @@ public class JsFlowGenerator {
                     if (propEnums != null && !propEnums.isEmpty()) {
                         FlowEnum flowEnum = new FlowEnum();
                         String enumName = removeIncorrectFlowSymbols(stringPropertyEntry.getKey());
-                        flowEnum.setName(typeName + enumName.substring(0,1).toUpperCase() + enumName.substring(1) + "Enum");
+                        flowEnum.setName(enumName.substring(0,1).toUpperCase() + enumName.substring(1) + "PropEnum");
                         flowEnum.setParam(propEnums);
                         enums.add(flowEnum);
                         flowTypeParam.setType(flowEnum.getName());

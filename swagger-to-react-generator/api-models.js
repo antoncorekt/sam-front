@@ -1,6 +1,31 @@
 
 // ----- Enums ------
 
+class ReleaseEnum {
+ 	 static get 0(){ return '0'; }
+	 static get LAST(){ return 'last'; }
+}
+
+class RoleEnum {
+ 	 static get ADMIN(){ return 'Admin'; }
+	 static get BOOKER(){ return 'Booker'; }
+	 static get CONTROL(){ return 'Control'; }
+}
+
+class StatusEnum {
+ 	 static get OK(){ return 'Ok'; }
+}
+
+class Status14Enum {
+ 	 static get ERROR(){ return 'Error'; }
+}
+
+class Status15Enum {
+ 	 static get C(){ return 'C'; }
+	 static get P(){ return 'P'; }
+	 static get W(){ return 'W'; }
+}
+
 
 // ----- Models ------
 
@@ -869,18 +894,18 @@ export class UserLoginInfo {
  } 
 
 export class GetAccountByStatusByReleaseQueryParams { 
-	status:string;
- 	release:string;
+	status:Status15Enum;
+ 	release:ReleaseEnum;
  
 	static get Builder() {
 		class Builder {
 			 _model: GetAccountByStatusByReleaseQueryParams = new GetAccountByStatusByReleaseQueryParams();
-			withStatus(status:string): Builder { 
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
  				return this;
 			}
 
-			withRelease(release:string): Builder { 
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
  				return this;
 			}
@@ -893,19 +918,19 @@ export class GetAccountByStatusByReleaseQueryParams {
  } 
 
 export class PutAccountByStatusByReleaseByBscsAccountQueryParams { 
-	status:string;
- 	release:string;
+	status:Status15Enum;
+ 	release:ReleaseEnum;
  	bscsAccount:string;
  
 	static get Builder() {
 		class Builder {
 			 _model: PutAccountByStatusByReleaseByBscsAccountQueryParams = new PutAccountByStatusByReleaseByBscsAccountQueryParams();
-			withStatus(status:string): Builder { 
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
  				return this;
 			}
 
-			withRelease(release:string): Builder { 
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
  				return this;
 			}
@@ -923,19 +948,19 @@ export class PutAccountByStatusByReleaseByBscsAccountQueryParams {
  } 
 
 export class DeleteAccountByStatusByReleaseByBscsAccountQueryParams { 
-	status:string;
- 	release:string;
+	status:Status15Enum;
+ 	release:ReleaseEnum;
  	bscsAccount:string;
  
 	static get Builder() {
 		class Builder {
 			 _model: DeleteAccountByStatusByReleaseByBscsAccountQueryParams = new DeleteAccountByStatusByReleaseByBscsAccountQueryParams();
-			withStatus(status:string): Builder { 
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
  				return this;
 			}
 
-			withRelease(release:string): Builder { 
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
  				return this;
 			}
@@ -953,18 +978,18 @@ export class DeleteAccountByStatusByReleaseByBscsAccountQueryParams {
  } 
 
 export class GetOrderByStatusByReleaseQueryParams { 
-	status:string;
- 	release:string;
+	status:Status15Enum;
+ 	release:ReleaseEnum;
  
 	static get Builder() {
 		class Builder {
 			 _model: GetOrderByStatusByReleaseQueryParams = new GetOrderByStatusByReleaseQueryParams();
-			withStatus(status:string): Builder { 
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
  				return this;
 			}
 
-			withRelease(release:string): Builder { 
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
  				return this;
 			}
@@ -977,20 +1002,20 @@ export class GetOrderByStatusByReleaseQueryParams {
  } 
 
 export class PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams { 
-	status:string;
- 	release:string;
+	status:Status15Enum;
+ 	release:ReleaseEnum;
  	bscsAccount:string;
  	segment:string;
  
 	static get Builder() {
 		class Builder {
 			 _model: PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();
-			withStatus(status:string): Builder { 
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
  				return this;
 			}
 
-			withRelease(release:string): Builder { 
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
  				return this;
 			}
@@ -1013,20 +1038,20 @@ export class PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams {
  } 
 
 export class DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams { 
-	status:string;
- 	release:string;
+	status:Status15Enum;
+ 	release:ReleaseEnum;
  	bscsAccount:string;
  	segment:string;
  
 	static get Builder() {
 		class Builder {
 			 _model: DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();
-			withStatus(status:string): Builder { 
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
  				return this;
 			}
 
-			withRelease(release:string): Builder { 
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
  				return this;
 			}
