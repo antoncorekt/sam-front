@@ -206,7 +206,7 @@ const getDictionaryAccountSap = () => {
 
 
 // call readSegment
-const getDictionarySegment = () => {
+export const getDictionarySegment = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/segment`,
 		httpMethod: 'GET',

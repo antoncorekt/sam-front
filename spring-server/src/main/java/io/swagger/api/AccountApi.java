@@ -5,129 +5,102 @@
  */
 package io.swagger.api;
 
-import io.swagger.model.AccountMap;
-import io.swagger.model.AccountMapLog;
-import io.swagger.model.FinancialAccount;
-import io.swagger.model.InlineResponse201;
-import org.springframework.web.bind.annotation.*;
-import org.threeten.bp.OffsetDateTime;
-import org.springframework.core.io.Resource;
+import io.swagger.model.RequestSetAccount;
+import io.swagger.model.ResultSetAccount;
+import io.swagger.model.ResultSetAccounts;
+import io.swagger.model.ResultSetCount;
+import io.swagger.model.ResultSetError;
+import io.swagger.model.ResultSetOk;
+import java.util.UUID;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-08-30T09:02:23.196Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-09-06T13:08:35.508Z")
 
 @Api(value = "account", description = "the account API")
 public interface AccountApi {
 
-    @ApiOperation(value = "Add a new SAP OFI account to dictionary", nickname = "addOFI", notes = "", tags={ "ofi", })
+    @ApiOperation(value = "deleteAccount", nickname = "accountBscsAccountByStatusAndReleaseDelete", notes = "Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Only records in W like Working status may be manipulatd this way. Only records in W like Working status may be manipulatd this way.   Requires: - Booker role.", response = ResultSetCount.class, tags={ "account", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Success"),
-        @ApiResponse(code = 405, message = "Invalid input"),
-        @ApiResponse(code = 409, message = "Duplicated account number") })
-    @RequestMapping(value = "/account/ofi",
-        produces = { "application/json" }, 
-        consumes = { "application/json" },
-        method = RequestMethod.POST)
-    ResponseEntity<Void> addOFI(@ApiParam(value = "Financial Account that needs to be added to the dictionary" ,required=true )  @Valid @RequestBody FinancialAccount body);
-
-
-    @ApiOperation(value = "Remove SAP OFI account", nickname = "deleteOFI", notes = "Removes an existing OFI account from the dictionary. Only accounts which are not used in any mapping may be removed.", tags={ "ofi", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Success"),
-        @ApiResponse(code = 405, message = "Invalid input") })
-    @RequestMapping(value = "/account/ofi/{accountId}",
+        @ApiResponse(code = 200, message = "Successful operation", response = ResultSetCount.class),
+        @ApiResponse(code = 401, message = "Not authenticated", response = ResultSetError.class),
+        @ApiResponse(code = 200, message = "Server error", response = ResultSetError.class) })
+    @RequestMapping(value = "/account/{status}/{release}/{bscsAccount}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.DELETE)
-    ResponseEntity<Void> deleteOFI(@ApiParam(value = "ID of OFI account",required=true) @PathVariable("accountId") Long accountId,@ApiParam(value = "Financial Account that needs to be added to the dictionary" ,required=true )  @Valid @RequestBody FinancialAccount body);
+    ResponseEntity<ResultSetCount> accountBscsAccountByStatusAndReleaseDelete(@ApiParam(value = "status of the package, W for work P for production",required=true, allowableValues = "\"W\", \"C\", \"P\"") @PathVariable("status") String status,@ApiParam(value = "release sequential number, 0 for work, else production or last",required=true, allowableValues = "\"0\", \"last\"") @PathVariable("release") String release,@ApiParam(value = "BSCS account number",required=true) @PathVariable("bscsAccount") String bscsAccount,@ApiParam(value = "" ) @RequestHeader(value="X-Request-ID", required=false) UUID xRequestID);
 
 
-    @ApiOperation(value = "Return list of BSCS GL accounts", nickname = "getAllGL", notes = "", response = FinancialAccount.class, responseContainer = "List", tags={ "gl", })
+    @ApiOperation(value = "updateAccount", nickname = "accountBscsAccountByStatusAndReleasePut", notes = "Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Promotion from status value W like Working to C like Controlled may be done only with Controll role.  Requires:    - Booker role while in W like Work,    - Control role while in C like Control state and in transition from W like Work to C like Control.", response = ResultSetAccounts.class, tags={ "account", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Success", response = FinancialAccount.class, responseContainer = "List") })
-    @RequestMapping(value = "/account/gl",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<List<FinancialAccount>> getAllGL(@ApiParam(value = "Account status filter", allowableValues = "active, inactive, all", defaultValue = "active") @Valid @RequestParam(value = "status", required = false, defaultValue="active") String status);
-
-
-    @CrossOrigin
-    @ApiOperation(value = "Return list of SAP OFI accounts", nickname = "getAllOFI", notes = "", response = FinancialAccount.class, responseContainer = "List", tags={ "ofi", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Success", response = FinancialAccount.class, responseContainer = "List") })
-    @RequestMapping(value = "/account/ofi",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<List<FinancialAccount>> getAllOFI(@ApiParam(value = "Account status filter", allowableValues = "active, inactive, all", defaultValue = "active") @Valid @RequestParam(value = "status", required = false, defaultValue="active") String status);
-
-
-    @ApiOperation(value = "Return BSCS GL account by ID", nickname = "getGL", notes = "Returns a single BSCS GL account", response = FinancialAccount.class, tags={ "gl", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Success", response = FinancialAccount.class),
-        @ApiResponse(code = 400, message = "Invalid ID supplied"),
-        @ApiResponse(code = 404, message = "Account not found") })
-    @RequestMapping(value = "/account/gl/{accountId}",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<FinancialAccount> getGL(@Size(max=30) @ApiParam(value = "ID of GL account",required=true) @PathVariable("accountId") String accountId);
-
-
-    @ApiOperation(value = "Return account mapping", nickname = "getMap", notes = "", response = AccountMap.class, responseContainer = "List", tags={ "account map", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Success", response = AccountMap.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Invalid parameter supplied") })
-    @RequestMapping(value = "/account/map",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<List<AccountMap>> getMap(@ApiParam(value = "Entry status filter", allowableValues = "approved, unapproved, all", defaultValue = "all") @Valid @RequestParam(value = "status", required = false, defaultValue="all") String status,@ApiParam(value = "BSCS GL account number") @Valid @RequestParam(value = "glAccount", required = false) String glAccount,@ApiParam(value = "SAP OFI account number") @Valid @RequestParam(value = "ofiAccount", required = false) String ofiAccount);
-
-
-    @ApiOperation(value = "Return history of changes in account mapping", nickname = "getMapLog", notes = "", response = AccountMapLog.class, responseContainer = "List", tags={ "account map", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Success", response = AccountMapLog.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Invalid parameter supplied") })
-    @RequestMapping(value = "/account/map/history",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<List<AccountMapLog>> getMapLog(@ApiParam(value = "Lower change date boundary.") @Valid @RequestParam(value = "dateFrom", required = false) OffsetDateTime dateFrom,@ApiParam(value = "Upper change date boundary.") @Valid @RequestParam(value = "dateTo", required = false) OffsetDateTime dateTo,@ApiParam(value = "User introducing the change") @Valid @RequestParam(value = "user", required = false) String user,@ApiParam(value = "BSCS GL account number") @Valid @RequestParam(value = "glAccount", required = false) String glAccount,@ApiParam(value = "SAP OFI account number") @Valid @RequestParam(value = "ofiAccount", required = false) String ofiAccount);
-
-
-    @ApiOperation(value = "Return SAP OFI account by ID", nickname = "getOFI", notes = "Returns a single SAP OFI account", response = FinancialAccount.class, tags={ "ofi", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Success", response = FinancialAccount.class),
-        @ApiResponse(code = 400, message = "Invalid ID supplied"),
-        @ApiResponse(code = 404, message = "Account not found") })
-    @RequestMapping(value = "/account/ofi/{accountId}",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<FinancialAccount> getOFI(@ApiParam(value = "ID of OFI account",required=true) @PathVariable("accountId") Long accountId);
-
-
-    @ApiOperation(value = "Import SAP OFI accounts from a file", nickname = "importOFI", notes = "", response = InlineResponse201.class, tags={ "ofi", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Success", response = InlineResponse201.class),
-        @ApiResponse(code = 405, message = "Invalid input file") })
-    @RequestMapping(value = "/account/import/ofi",
-        produces = { "application/json" }, 
-        consumes = { "multipart/form-data" },
-        method = RequestMethod.POST)
-    ResponseEntity<InlineResponse201> importOFI(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file);
-
-
-    @ApiOperation(value = "Update SAP OFI account", nickname = "updateOFI", notes = "Updates an existing SAP OFI account", tags={ "ofi", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Success"),
-        @ApiResponse(code = 405, message = "Invalid input") })
-    @RequestMapping(value = "/account/ofi/{accountId}",
+        @ApiResponse(code = 200, message = "Successful operation", response = ResultSetAccounts.class),
+        @ApiResponse(code = 401, message = "Not authenticated", response = ResultSetError.class),
+        @ApiResponse(code = 200, message = "Server error", response = ResultSetError.class) })
+    @RequestMapping(value = "/account/{status}/{release}/{bscsAccount}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
-        method = RequestMethod.PATCH)
-    ResponseEntity<Void> updateOFI(@ApiParam(value = "ID of OFI account",required=true) @PathVariable("accountId") Long accountId,@ApiParam(value = "Financial Account that needs to be added to the dictionary" ,required=true )  @Valid @RequestBody FinancialAccount body);
+        method = RequestMethod.PUT)
+    ResponseEntity<ResultSetAccounts> accountBscsAccountByStatusAndReleasePut(@ApiParam(value = "status of the package, W for workm P for production",required=true, allowableValues = "\"W\", \"C\", \"P\"") @PathVariable("status") String status,@ApiParam(value = "release sequential number, 0 for work, else production or last for latst version",required=true, allowableValues = "\"0\", \"last\"") @PathVariable("release") String release,@ApiParam(value = "BSCS account code",required=true) @PathVariable("bscsAccount") String bscsAccount,@ApiParam(value = "" ) @RequestHeader(value="X-Request-ID", required=false) UUID xRequestID);
+
+
+    @ApiOperation(value = "readAccountByStatusRelease", nickname = "accountByStatusAndReleaseGet", notes = "A set of accouts is read and returned. The criteria is per status and version. The varsion must be known a priori. For work version release is always 0.", response = ResultSetAccounts.class, tags={ "account", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful operation", response = ResultSetAccounts.class),
+        @ApiResponse(code = 401, message = "Not authenticated", response = ResultSetError.class),
+        @ApiResponse(code = 200, message = "Server error", response = ResultSetError.class) })
+    @RequestMapping(value = "/account/{status}/{release}",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.GET)
+    ResponseEntity<ResultSetAccounts> accountByStatusAndReleaseGet(@ApiParam(value = "status of the package, W for workm P for production",required=true, allowableValues = "\"W\", \"C\", \"P\"") @PathVariable("status") String status,@ApiParam(value = "release sequential number, 0 for work, else production",required=true, allowableValues = "\"0\", \"last\"") @PathVariable("release") String release,@ApiParam(value = "" ) @RequestHeader(value="X-Request-ID", required=false) UUID xRequestID);
+
+
+    @ApiOperation(value = "deleteAccountsAll", nickname = "accountDelete", notes = "Unselective purge of the table. Used before bulk load.  Requires: - Admin role.", response = ResultSetCount.class, tags={ "account", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful operation", response = ResultSetCount.class),
+        @ApiResponse(code = 401, message = "Not authenticated", response = ResultSetError.class),
+        @ApiResponse(code = 200, message = "Server error", response = ResultSetError.class) })
+    @RequestMapping(value = "/account",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.DELETE)
+    ResponseEntity<ResultSetCount> accountDelete(@ApiParam(value = "" ) @RequestHeader(value="X-Request-ID", required=false) UUID xRequestID);
+
+
+    @ApiOperation(value = "createAccount", nickname = "accountPost", notes = "A new mapping is created in W like Working status. Attempts to create item in any other status will be errored out.   Requires: - Booker role.", response = ResultSetAccount.class, tags={ "account", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful operation", response = ResultSetAccount.class),
+        @ApiResponse(code = 401, message = "Not authenticated", response = ResultSetError.class),
+        @ApiResponse(code = 200, message = "Server error", response = ResultSetError.class) })
+    @RequestMapping(value = "/account",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    ResponseEntity<ResultSetAccount> accountPost(@ApiParam(value = "Creation of object Account" ,required=true )  @Valid @RequestBody RequestSetAccount body,@ApiParam(value = "" ) @RequestHeader(value="X-Request-ID", required=false) UUID xRequestID);
+
+
+    @ApiOperation(value = "doRelease", nickname = "accountReleasePost", notes = "Does a release of version in state C like Controlled to P like Production. The impact is on Account and Order entries. Existence of not controled entries with status W like Working causes failure. Other validation rules are applied as well, for example valid date check: it must be rounded down and in the future and no clash with entries in status P like Production found in Account or Order backednd tables.   Requires: - Control role.", response = ResultSetOk.class, tags={ "account", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful operation", response = ResultSetOk.class),
+        @ApiResponse(code = 401, message = "Not authenticated", response = ResultSetError.class),
+        @ApiResponse(code = 200, message = "Server error", response = ResultSetError.class) })
+    @RequestMapping(value = "/account/release",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    ResponseEntity<ResultSetOk> accountReleasePost(@ApiParam(value = "" ) @RequestHeader(value="X-Request-ID", required=false) UUID xRequestID);
 
 }

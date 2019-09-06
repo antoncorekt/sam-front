@@ -112,7 +112,9 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
     const settings = {
         method: props.httpMethod,
         mode: 'cors',
-        headers: props.headers,
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: props.body
     };
     const url = BACKEND_URL + props.url;

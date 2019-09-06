@@ -5,40 +5,40 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.threeten.bp.LocalDate;
+import io.swagger.model.AccountDictBscs;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * SegmentMapReq
+ * RequestSetAccountDictBscs
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-08-30T09:02:23.196Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-09-06T13:08:35.508Z")
 
-public class SegmentMapReq   {
-  @JsonProperty("validFrom")
-  private LocalDate validFrom = null;
+public class RequestSetAccountDictBscs   {
+  @JsonProperty("data")
+  private AccountDictBscs data = null;
 
-  public SegmentMapReq validFrom(LocalDate validFrom) {
-    this.validFrom = validFrom;
+  public RequestSetAccountDictBscs data(AccountDictBscs data) {
+    this.data = data;
     return this;
   }
 
   /**
-   * Start date of the mapping validity. Must be first day of the month
-   * @return validFrom
+   * Get data
+   * @return data
   **/
-  @ApiModelProperty(value = "Start date of the mapping validity. Must be first day of the month")
+  @ApiModelProperty(value = "")
 
   @Valid
 
-  public LocalDate getValidFrom() {
-    return validFrom;
+  public AccountDictBscs getData() {
+    return data;
   }
 
-  public void setValidFrom(LocalDate validFrom) {
-    this.validFrom = validFrom;
+  public void setData(AccountDictBscs data) {
+    this.data = data;
   }
 
 
@@ -50,21 +50,21 @@ public class SegmentMapReq   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    SegmentMapReq segmentMapReq = (SegmentMapReq) o;
-    return Objects.equals(this.validFrom, segmentMapReq.validFrom);
+    RequestSetAccountDictBscs requestSetAccountDictBscs = (RequestSetAccountDictBscs) o;
+    return Objects.equals(this.data, requestSetAccountDictBscs.data);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(validFrom);
+    return Objects.hash(data);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class SegmentMapReq {\n");
+    sb.append("class RequestSetAccountDictBscs {\n");
     
-    sb.append("    validFrom: ").append(toIndentedString(validFrom)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("}");
     return sb.toString();
   }

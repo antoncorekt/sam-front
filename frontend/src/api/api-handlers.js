@@ -328,14 +328,23 @@ export const GetDictionarySegmentHandler = () => {
     const expm = ACT.GetDictionarySegmentRequest;
     return {
         'GetDictionarySegmentRequest':(state:any, action:ActionRequestData<null, null>)=>{
-            return state;
+            return {
+                ...state,
+                ...action
+            };
         },
         'GetDictionarySegmentSuccess':(state:any, action:ActionResponseData<ResultSetSegments,ActionRequestData<null, null>>)=>{
-        return state;
-    },
-    'GetDictionarySegmentFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-        return state;
-    },
+            return {
+                ...state,
+                ...action
+            };
+        },
+        'GetDictionarySegmentFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
+            return {
+                ...state,
+                ...action
+            };
+        },
 }
 }
 export const PostDictionarySegmentHandler = () => {

@@ -16,11 +16,10 @@ import { Provider } from 'react-redux';
 import { combineReducers } from 'redux';
 import ErrorBoundaryWrapper from "./components/error-boundary/ErrorBoundaryWrapper";
 import {createReducer} from "./api/common-reducers";
-import {PostUserLoginHandler, PostUserLogoffHandler} from "./api/api-handlers";
-import { createReducer, postAccountOfiHandler } from "./api/common-reducers";
 import MainScreen from './components/main-screen/MainScreen';
 import { tabsState } from './reducers/tabReducer';
 import "react-table/react-table.css";
+import {GetDictionarySegmentHandler} from "./api/api-handlers";
 
 
 export function f(state = [], action) {
@@ -30,7 +29,8 @@ export function f(state = [], action) {
 export const reducer = combineReducers(
     // add reducers
     {
-        accountOfi: createReducer({}, postAccountOfiHandler()),
+        accountOfi: createReducer({}, []),
+        segments: createReducer({}, [GetDictionarySegmentHandler()]),
         tabsState
     }
 );

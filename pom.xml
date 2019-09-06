@@ -18,7 +18,7 @@
     </properties>
 
     <modules>
-        <module>backend</module>
+        <module>spring-server</module>
         <module>bscs-db</module>
         <module>frontend</module>
         <module>swagger</module>
