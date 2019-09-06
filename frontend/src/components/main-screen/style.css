@@ -1,0 +1,74 @@
+.main-screen-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 0 0 0;
+    background-color: midnightblue;
+}
+
+.main-screen-header .logo-img {
+    margin: 4px 2px -1px 2px;
+}
+
+.main-screen-header .horizontal-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.main-screen-header .vertical-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.main-screen-header .revision {
+    font-size: 10px;
+    color: lightblue;
+    margin-right: 20px;
+}
+
+.main-screen-header .request-queue-panel {
+    width: 300px;
+    margin: 2px 20px 2px 0px;
+    border: 1px solid;
+    border-color: lightblue;
+}
+
+.main-screen-header .request-queue-panel .stats {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    color: lightblue;
+    font-size: 14px;
+    margin: 2px 0px 0px 2px;
+}
+
+.main-screen-header .request-queue-panel .drop-down-icon {
+    margin: 2px 4px 0px 0px;
+}
+
+.main-screen-header .reporter-container {
+    margin: 8px 20px 0px 0px;
+}
+
+.main-screen-header .user {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    margin-right: 20px;
+}
+
+.main-screen-header .logout-button {
+    margin: 2px 2px
+}
+
+.main-screen-body {
+    background-color: azure;
+    width: 100%;
+}
+
+.main-screen-body .tab-panes {
+    margin: 0px 10px 0px 10px;
+}
