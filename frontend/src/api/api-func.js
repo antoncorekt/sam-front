@@ -1,249 +1,346 @@
-// call Add a new SAP OFI account to dictionary
+// call loginUser
+import {commonCallApi} from "./common-middleware";
 import {
-	FinancialAccount,
-	GetAccountOfiByAccountIdQueryParams,
-	GetAccountOfiQueryParams,
-	MarketSegmentReq
+	Order,
+	ReleaseEnum,
+	RequestSetAccount,
+	RequestSetAccountDictBscs, RequestSetAccountDictSap,
+	RequestSetOrder, RequestSetSegment,
+	RequestSetUserLogin,
+	RequestSetUserLogoff, Status15Enum
 } from "./api-models";
-import {ActionRequestData, ActionResponseData, commonCallApi} from "./common-middleware";
-import {BACKEND_URL} from "./conf";
+import * as ACT from "./api-actions-defs";
 
-const postAccountOfi = (body:FinancialAccount) => {
+export const postUserLogin = (body:RequestSetUserLogin) => {
 	const settings = {		// set settings data
-		url:`/account/ofi`,
+		url:`/user/login`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostAccountOfiRequest',
-		successType: 'PostAccountOfiSuccess',
-		failType: 'PostAccountOfiFail'
+		requestType: ACT.PostUserLoginRequest,
+		successType: ACT.PostUserLoginSuccess,
+		failType: ACT.PostUserLoginFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Import SAP OFI accounts from a file
-const postAccountImportOfi = () => {
+// call logoffUser
+const postUserLogoff = (body:RequestSetUserLogoff) => {
 	const settings = {		// set settings data
-		url:`/account/import/ofi`,
-		httpMethod: 'POST',
-		body:JSON.stringify(undefined),
-		requestType: 'PostAccountImportOfiRequest',
-		successType: 'PostAccountImportOfiSuccess',
-		failType: 'PostAccountImportOfiFail'
-	};
-	return commonCallApi(settings); 
-};
-
-
-// call Add a new market segment to dictionary
-const postSegment = (body:MarketSegmentReq) => {
-	const settings = {		// set settings data
-		url:`/segment`,
+		url:`/user/logoff`,
 		httpMethod: 'POST',
 		body:JSON.stringify(body),
-		requestType: 'PostSegmentRequest',
-		successType: 'PostSegmentSuccess',
-		failType: 'PostSegmentFail'
+		requestType: ACT.PostUserLogoffRequest,
+		successType: ACT.PostUserLogoffSuccess,
+		failType: ACT.PostUserLogoffFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Return list of SAP OFI accounts
-const getAccountOfi = (status:string = 'active') => {
+// call createAccount
+const postAccount = (body:RequestSetAccount) => {
 	const settings = {		// set settings data
-		url:`/account/ofi?status=${status}`,
-		httpMethod: 'GET',
-		body:JSON.stringify(undefined),
-		requestType: 'GetAccountOfiRequest',
-		successType: 'GetAccountOfiSuccess',
-		failType: 'GetAccountOfiFail'
+		url:`/account`,
+		httpMethod: 'POST',
+		body:JSON.stringify(body),
+		requestType: ACT.PostAccountRequest,
+		successType: ACT.PostAccountSuccess,
+		failType: ACT.PostAccountFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Return SAP OFI account by ID
-const getAccountOfiByAccountId = (accountId:number) => {
+// call doRelease
+const postAccountRelease = () => {
 	const settings = {		// set settings data
-		url:`/account/ofi/${accountId}`,
-		httpMethod: 'GET',
-		body:JSON.stringify(undefined),
-		requestType: 'GetAccountOfiByAccountIdRequest',
-		successType: 'GetAccountOfiByAccountIdSuccess',
-		failType: 'GetAccountOfiByAccountIdFail'
+		url:`/account/release`,
+		httpMethod: 'POST',
+		body:undefined,
+		requestType: ACT.PostAccountReleaseRequest,
+		successType: ACT.PostAccountReleaseSuccess,
+		failType: ACT.PostAccountReleaseFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Return list of BSCS GL accounts
-export const getAccountGl2 = (status:string = 'active') => {
+// call createOrder
+export const postOrder = (body:RequestSetOrder) => {
 	const settings = {		// set settings data
-		url:`${BACKEND_URL}/account/gl?status=${status}`,
+		url:`/order`,
+		httpMethod: 'POST',
+		body:JSON.stringify(body),
+		requestType: ACT.PostOrderRequest,
+		successType: ACT.PostOrderSuccess,
+		failType: ACT.PostOrderFail
+	};
+	return commonCallApi(settings); 
+};
+
+// call createAccountDictBscs
+const postDictionaryAccountBscs = (body:RequestSetAccountDictBscs) => {
+	const settings = {		// set settings data
+		url:`/dictionary/account/bscs`,
+		httpMethod: 'POST',
+		body:JSON.stringify(body),
+		requestType: ACT.PostDictionaryAccountBscsRequest,
+		successType: ACT.PostDictionaryAccountBscsSuccess,
+		failType: ACT.PostDictionaryAccountBscsFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call createAccountDictSap
+const postDictionaryAccountSap = (body: RequestSetAccountDictSap) => {
+	const settings = {		// set settings data
+		url: `/dictionary/account/sap`,
+		httpMethod: 'POST',
+		body: JSON.stringify(body),
+		requestType: ACT.PostDictionaryAccountSapRequest,
+		successType: ACT.PostDictionaryAccountSapSuccess,
+		failType: ACT.PostDictionaryAccountSapFail
+	};
+	return commonCallApi(settings);
+};
+
+
+// call createSegment
+const postDictionarySegment = (body:RequestSetSegment) => {
+	const settings = {		// set settings data
+		url:`/dictionary/segment`,
+		httpMethod: 'POST',
+		body:JSON.stringify(body),
+		requestType: ACT.PostDictionarySegmentRequest,
+		successType: ACT.PostDictionarySegmentSuccess,
+		failType: ACT.PostDictionarySegmentFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call systemVersion
+const getSystemVersion = () => {
+	const settings = {		// set settings data
+		url:`/system/version`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: 'GetAccountGlRequest',
-		successType: 'GetAccountGlSuccess',
-		failType: 'GetAccountGlFail'
+		requestType: ACT.GetSystemVersionRequest,
+		successType: ACT.GetSystemVersionSuccess,
+		failType: ACT.GetSystemVersionFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Return BSCS GL account by ID
-const getAccountGlByAccountId = (accountId:string) => {
+// call systemStatus
+const getSystemStatus = () => {
 	const settings = {		// set settings data
-		url:`/account/gl/${accountId}`,
+		url:`/system/status`,
 		httpMethod: 'GET',
-		body:JSON.stringify(undefined),
-		requestType: 'GetAccountGlByAccountIdRequest',
-		successType: 'GetAccountGlByAccountIdSuccess',
-		failType: 'GetAccountGlByAccountIdFail'
+		body:undefined,
+		requestType: ACT.GetSystemStatusRequest,
+		successType: ACT.GetSystemStatusSuccess,
+		failType: ACT.GetSystemStatusFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Return list of Market Segments
-const getSegment = () => {
+// call readAccountByStatusRelease
+const getAccountByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
 	const settings = {		// set settings data
-		url:`/segment`,
+		url:`/account/${status}/${release}`,
 		httpMethod: 'GET',
-		body:JSON.stringify(undefined),
-		requestType: 'GetSegmentRequest',
-		successType: 'GetSegmentSuccess',
-		failType: 'GetSegmentFail'
+		body:undefined,
+		requestType: ACT.GetAccountByStatusByReleaseRequest,
+		successType: ACT.GetAccountByStatusByReleaseSuccess,
+		failType: ACT.GetAccountByStatusByReleaseFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Return a single Market Segment
-const getSegmentBySegmentId = (segmentId:string) => {
+// call readOrderByStatusRelease
+const getOrderByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
 	const settings = {		// set settings data
-		url:`/segment/${segmentId}`,
+		url:`/order/${status}/${release}`,
 		httpMethod: 'GET',
-		body:JSON.stringify(undefined),
-		requestType: 'GetSegmentBySegmentIdRequest',
-		successType: 'GetSegmentBySegmentIdSuccess',
-		failType: 'GetSegmentBySegmentIdFail'
+		body:undefined,
+		requestType: ACT.GetOrderByStatusByReleaseRequest,
+		successType: ACT.GetOrderByStatusByReleaseSuccess,
+		failType: ACT.GetOrderByStatusByReleaseFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Return account mapping
-const getAccountMap = (status:string = 'all',glAccount:string,ofiAccount:string) => {
+// call readAccountDictBscs
+const getDictionaryAccountBscs = () => {
 	const settings = {		// set settings data
-		url:`/account/map?status=${status}&glAccount=${glAccount}&ofiAccount=${ofiAccount}`,
+		url:`/dictionary/account/bscs`,
 		httpMethod: 'GET',
-		body:JSON.stringify(undefined),
-		requestType: 'GetAccountMapRequest',
-		successType: 'GetAccountMapSuccess',
-		failType: 'GetAccountMapFail'
+		body:undefined,
+		requestType: ACT.GetDictionaryAccountBscsRequest,
+		successType: ACT.GetDictionaryAccountBscsSuccess,
+		failType: ACT.GetDictionaryAccountBscsFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Return history of changes in account mapping
-const getAccountMapHistory = (dateFrom:string,dateTo:string,user:string,glAccount:string,ofiAccount:string) => {
+// call readAccountDictSap
+const getDictionaryAccountSap = () => {
 	const settings = {		// set settings data
-		url:`/account/map/history?dateFrom=${dateFrom}&dateTo=${dateTo}&user=${user}&glAccount=${glAccount}&ofiAccount=${ofiAccount}`,
+		url:`/dictionary/account/sap`,
 		httpMethod: 'GET',
-		body:JSON.stringify(undefined),
-		requestType: 'GetAccountMapHistoryRequest',
-		successType: 'GetAccountMapHistorySuccess',
-		failType: 'GetAccountMapHistoryFail'
+		body:undefined,
+		requestType: ACT.GetDictionaryAccountSapRequest,
+		successType: ACT.GetDictionaryAccountSapSuccess,
+		failType: ACT.GetDictionaryAccountSapFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Update SAP OFI account
-const patchAccountOfiByAccountId = (accountId:number,body:FinancialAccount) => {
+// call readSegment
+const getDictionarySegment = () => {
 	const settings = {		// set settings data
-		url:`/account/ofi/${accountId}`,
-		httpMethod: 'PATCH',
-		body:JSON.stringify(body),
-		requestType: 'PatchAccountOfiByAccountIdRequest',
-		successType: 'PatchAccountOfiByAccountIdSuccess',
-		failType: 'PatchAccountOfiByAccountIdFail'
+		url:`/dictionary/segment`,
+		httpMethod: 'GET',
+		body:undefined,
+		requestType: ACT.GetDictionarySegmentRequest,
+		successType: ACT.GetDictionarySegmentSuccess,
+		failType: ACT.GetDictionarySegmentFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Remove SAP OFI account
-const deleteAccountOfiByAccountId = (accountId:number,body:FinancialAccount) => {
+// call updateAccount
+const putAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
 	const settings = {		// set settings data
-		url:`/account/ofi/${accountId}`,
+		url:`/account/${status}/${release}/${bscsAccount}`,
+		httpMethod: 'PUT',
+		body:undefined,
+		requestType: ACT.PutAccountByStatusByReleaseByBscsAccountRequest,
+		successType: ACT.PutAccountByStatusByReleaseByBscsAccountSuccess,
+		failType: ACT.PutAccountByStatusByReleaseByBscsAccountFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call updateOrder
+const putOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
+	const settings = {		// set settings data
+		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
+		httpMethod: 'PUT',
+		body:undefined,
+		requestType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentRequest,
+		successType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
+		failType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call deleteAccountsAll
+const deleteAccount = () => {
+	const settings = {		// set settings data
+		url:`/account`,
 		httpMethod: 'DELETE',
-		body:JSON.stringify(body),
-		requestType: 'DeleteAccountOfiByAccountIdRequest',
-		successType: 'DeleteAccountOfiByAccountIdSuccess',
-		failType: 'DeleteAccountOfiByAccountIdFail'
+		body:undefined,
+		requestType: ACT.DeleteAccountRequest,
+		successType: ACT.DeleteAccountSuccess,
+		failType: ACT.DeleteAccountFail
 	};
 	return commonCallApi(settings); 
 };
 
 
-// call Remove an existing market segment
-const deleteSegmentBySegmentId = (segmentId:string) => {
+// call deleteAccount
+const deleteAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
 	const settings = {		// set settings data
-		url:`/segment/${segmentId}`,
+		url:`/account/${status}/${release}/${bscsAccount}`,
 		httpMethod: 'DELETE',
-		body:JSON.stringify(undefined),
-		requestType: 'DeleteSegmentBySegmentIdRequest',
-		successType: 'DeleteSegmentBySegmentIdSuccess',
-		failType: 'DeleteSegmentBySegmentIdFail'
+		body:undefined,
+		requestType: ACT.DeleteAccountByStatusByReleaseByBscsAccountRequest,
+		successType: ACT.DeleteAccountByStatusByReleaseByBscsAccountSuccess,
+		failType: ACT.DeleteAccountByStatusByReleaseByBscsAccountFail
 	};
 	return commonCallApi(settings); 
 };
 
-export const GetAccountOfiHandler = <S>() => {
-	return {
-		'GetAccountOfiRequest':(state:S, action:ActionRequestData<null, GetAccountOfiQueryParams>)=>{
 
-			return state;
-		},
-		'GetAccountOfiSuccess':(state:S, action:ActionResponseData<Array<FinancialAccount>,ActionRequestData<null, GetAccountOfiQueryParams>>)=>{
-
-			return state;
-		},
-		'GetAccountOfiFail':(state:S, action:ActionRequestData<number>)=>{
-			return state;
-		},
-	}
+// call deleteOrdersAll
+const deleteOrder = () => {
+	const settings = {		// set settings data
+		url:`/order`,
+		httpMethod: 'DELETE',
+		body:undefined,
+		requestType: ACT.DeleteOrderRequest,
+		successType: ACT.DeleteOrderSuccess,
+		failType: ACT.DeleteOrderFail
+	};
+	return commonCallApi(settings); 
 };
 
 
-export const PostAccountOfiHandler = <S>() => {
-	return {
-		'PostAccountOfiRequest':(state:S, action:ActionRequestData<FinancialAccount, null>)=>{
-			return state;
-		},
-		'PostAccountOfiSuccess':(state:S, action:ActionResponseData<null,ActionRequestData<FinancialAccount, null>>)=>{
-			return state;
-		},
-		'PostAccountOfiFail':(state:S, action:ActionRequestData<number>)=>{
-			return state;
-		},
-	}
+// call deleteOrder
+const deleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
+	const settings = {		// set settings data
+		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
+		httpMethod: 'DELETE',
+		body:undefined,
+		requestType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest,
+		successType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
+		failType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail
+	};
+	return commonCallApi(settings); 
 };
 
 
-export const GetAccountOfiByAccountIdHandler = <S>() => {
-	return {
-		'GetAccountOfiByAccountIdRequest':(state:S, action:ActionRequestData<null, GetAccountOfiByAccountIdQueryParams>)=>{
-			return state;
-		},
-		'GetAccountOfiByAccountIdSuccess':(state:S, action:ActionResponseData<FinancialAccount,ActionRequestData<null, GetAccountOfiByAccountIdQueryParams>>)=>{
-			return state;
-		},
-		'GetAccountOfiByAccountIdFail':(state:S, action:ActionRequestData<null>)=>{
-			return state;
-		},
-	}
-}
+// call deleteAccountDictBscs
+const deleteDictionaryAccountBscs = () => {
+	const settings = {		// set settings data
+		url:`/dictionary/account/bscs`,
+		httpMethod: 'DELETE',
+		body:undefined,
+		requestType: ACT.DeleteDictionaryAccountBscsRequest,
+		successType: ACT.DeleteDictionaryAccountBscsSuccess,
+		failType: ACT.DeleteDictionaryAccountBscsFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call deleteAccountDictSap
+const deleteDictionaryAccountSap = () => {
+	const settings = {		// set settings data
+		url:`/dictionary/account/sap`,
+		httpMethod: 'DELETE',
+		body:undefined,
+		requestType: ACT.DeleteDictionaryAccountSapRequest,
+		successType: ACT.DeleteDictionaryAccountSapSuccess,
+		failType: ACT.DeleteDictionaryAccountSapFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call deleteSegment
+const deleteDictionarySegment = () => {
+	const settings = {		// set settings data
+		url:`/dictionary/segment`,
+		httpMethod: 'DELETE',
+		body:undefined,
+		requestType: ACT.DeleteDictionarySegmentRequest,
+		successType: ACT.DeleteDictionarySegmentSuccess,
+		failType: ACT.DeleteDictionarySegmentFail
+	};
+	return commonCallApi(settings); 
+};
+

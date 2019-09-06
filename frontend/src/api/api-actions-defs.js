@@ -1,84 +1,144 @@
 
-// actions for GET /account/ofi
-export const GetAccountOfiSuccess = "GetAccountOfiSuccess";
-export const GetAccountOfiRequest = "GetAccountOfiRequest";
-export const GetAccountOfiFail = "GetAccountOfiFail"
+// actions for GET /system/version
+export const GetSystemVersionSuccess = "GetSystemVersionSuccess";
+export const GetSystemVersionRequest = "GetSystemVersionRequest";
+export const GetSystemVersionFail = "GetSystemVersionFail"
 ;
 
-// actions for POST /account/ofi
-export const PostAccountOfiSuccess = "PostAccountOfiSuccess";
-export const PostAccountOfiRequest = "PostAccountOfiRequest";
-export const PostAccountOfiFail = "PostAccountOfiFail"
+// actions for GET /system/status
+export const GetSystemStatusSuccess = "GetSystemStatusSuccess";
+export const GetSystemStatusRequest = "GetSystemStatusRequest";
+export const GetSystemStatusFail = "GetSystemStatusFail"
 ;
 
-// actions for GET /account/ofi/{accountId}
-export const GetAccountOfiByAccountIdSuccess = "GetAccountOfiByAccountIdSuccess";
-export const GetAccountOfiByAccountIdRequest = "GetAccountOfiByAccountIdRequest";
-export const GetAccountOfiByAccountIdFail = "GetAccountOfiByAccountIdFail"
+// actions for POST /user/login
+export const PostUserLoginSuccess = "PostUserLoginSuccess";
+export const PostUserLoginRequest = "PostUserLoginRequest";
+export const PostUserLoginFail = "PostUserLoginFail"
 ;
 
-// actions for DELETE /account/ofi/{accountId}
-export const DeleteAccountOfiByAccountIdSuccess = "DeleteAccountOfiByAccountIdSuccess";
-export const DeleteAccountOfiByAccountIdRequest = "DeleteAccountOfiByAccountIdRequest";
-export const DeleteAccountOfiByAccountIdFail = "DeleteAccountOfiByAccountIdFail"
+// actions for POST /user/logoff
+export const PostUserLogoffSuccess = "PostUserLogoffSuccess";
+export const PostUserLogoffRequest = "PostUserLogoffRequest";
+export const PostUserLogoffFail = "PostUserLogoffFail"
 ;
 
-// actions for PATCH /account/ofi/{accountId}
-export const PatchAccountOfiByAccountIdSuccess = "PatchAccountOfiByAccountIdSuccess";
-export const PatchAccountOfiByAccountIdRequest = "PatchAccountOfiByAccountIdRequest";
-export const PatchAccountOfiByAccountIdFail = "PatchAccountOfiByAccountIdFail"
+// actions for POST /account
+export const PostAccountSuccess = "PostAccountSuccess";
+export const PostAccountRequest = "PostAccountRequest";
+export const PostAccountFail = "PostAccountFail"
 ;
 
-// actions for GET /account/gl
-export const GetAccountGlSuccess = "GetAccountGlSuccess";
-export const GetAccountGlRequest = "GetAccountGlRequest";
-export const GetAccountGlFail = "GetAccountGlFail"
+// actions for DELETE /account
+export const DeleteAccountSuccess = "DeleteAccountSuccess";
+export const DeleteAccountRequest = "DeleteAccountRequest";
+export const DeleteAccountFail = "DeleteAccountFail"
 ;
 
-// actions for GET /account/gl/{accountId}
-export const GetAccountGlByAccountIdSuccess = "GetAccountGlByAccountIdSuccess";
-export const GetAccountGlByAccountIdRequest = "GetAccountGlByAccountIdRequest";
-export const GetAccountGlByAccountIdFail = "GetAccountGlByAccountIdFail"
+// actions for GET /account/{status}/{release}
+export const GetAccountByStatusByReleaseSuccess = "GetAccountByStatusByReleaseSuccess";
+export const GetAccountByStatusByReleaseRequest = "GetAccountByStatusByReleaseRequest";
+export const GetAccountByStatusByReleaseFail = "GetAccountByStatusByReleaseFail"
 ;
 
-// actions for POST /account/import/ofi
-export const PostAccountImportOfiSuccess = "PostAccountImportOfiSuccess";
-export const PostAccountImportOfiRequest = "PostAccountImportOfiRequest";
-export const PostAccountImportOfiFail = "PostAccountImportOfiFail"
+// actions for PUT /account/{status}/{release}/{bscsAccount}
+export const PutAccountByStatusByReleaseByBscsAccountSuccess = "PutAccountByStatusByReleaseByBscsAccountSuccess";
+export const PutAccountByStatusByReleaseByBscsAccountRequest = "PutAccountByStatusByReleaseByBscsAccountRequest";
+export const PutAccountByStatusByReleaseByBscsAccountFail = "PutAccountByStatusByReleaseByBscsAccountFail"
 ;
 
-// actions for GET /segment
-export const GetSegmentSuccess = "GetSegmentSuccess";
-export const GetSegmentRequest = "GetSegmentRequest";
-export const GetSegmentFail = "GetSegmentFail"
+// actions for DELETE /account/{status}/{release}/{bscsAccount}
+export const DeleteAccountByStatusByReleaseByBscsAccountSuccess = "DeleteAccountByStatusByReleaseByBscsAccountSuccess";
+export const DeleteAccountByStatusByReleaseByBscsAccountRequest = "DeleteAccountByStatusByReleaseByBscsAccountRequest";
+export const DeleteAccountByStatusByReleaseByBscsAccountFail = "DeleteAccountByStatusByReleaseByBscsAccountFail"
 ;
 
-// actions for POST /segment
-export const PostSegmentSuccess = "PostSegmentSuccess";
-export const PostSegmentRequest = "PostSegmentRequest";
-export const PostSegmentFail = "PostSegmentFail"
+// actions for POST /account/release
+export const PostAccountReleaseSuccess = "PostAccountReleaseSuccess";
+export const PostAccountReleaseRequest = "PostAccountReleaseRequest";
+export const PostAccountReleaseFail = "PostAccountReleaseFail"
 ;
 
-// actions for GET /segment/{segmentId}
-export const GetSegmentBySegmentIdSuccess = "GetSegmentBySegmentIdSuccess";
-export const GetSegmentBySegmentIdRequest = "GetSegmentBySegmentIdRequest";
-export const GetSegmentBySegmentIdFail = "GetSegmentBySegmentIdFail"
+// actions for POST /order
+export const PostOrderSuccess = "PostOrderSuccess";
+export const PostOrderRequest = "PostOrderRequest";
+export const PostOrderFail = "PostOrderFail"
 ;
 
-// actions for DELETE /segment/{segmentId}
-export const DeleteSegmentBySegmentIdSuccess = "DeleteSegmentBySegmentIdSuccess";
-export const DeleteSegmentBySegmentIdRequest = "DeleteSegmentBySegmentIdRequest";
-export const DeleteSegmentBySegmentIdFail = "DeleteSegmentBySegmentIdFail"
+// actions for DELETE /order
+export const DeleteOrderSuccess = "DeleteOrderSuccess";
+export const DeleteOrderRequest = "DeleteOrderRequest";
+export const DeleteOrderFail = "DeleteOrderFail"
 ;
 
-// actions for GET /account/map
-export const GetAccountMapSuccess = "GetAccountMapSuccess";
-export const GetAccountMapRequest = "GetAccountMapRequest";
-export const GetAccountMapFail = "GetAccountMapFail"
+// actions for GET /order/{status}/{release}
+export const GetOrderByStatusByReleaseSuccess = "GetOrderByStatusByReleaseSuccess";
+export const GetOrderByStatusByReleaseRequest = "GetOrderByStatusByReleaseRequest";
+export const GetOrderByStatusByReleaseFail = "GetOrderByStatusByReleaseFail"
 ;
 
-// actions for GET /account/map/history
-export const GetAccountMapHistorySuccess = "GetAccountMapHistorySuccess";
-export const GetAccountMapHistoryRequest = "GetAccountMapHistoryRequest";
-export const GetAccountMapHistoryFail = "GetAccountMapHistoryFail"
+// actions for PUT /order/{status}/{release}/{bscsAccount}/{segment}
+export const PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess = "PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess";
+export const PutOrderByStatusByReleaseByBscsAccountBySegmentRequest = "PutOrderByStatusByReleaseByBscsAccountBySegmentRequest";
+export const PutOrderByStatusByReleaseByBscsAccountBySegmentFail = "PutOrderByStatusByReleaseByBscsAccountBySegmentFail"
+;
+
+// actions for DELETE /order/{status}/{release}/{bscsAccount}/{segment}
+export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess = "DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess";
+export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest = "DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest";
+export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail = "DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail"
+;
+
+// actions for GET /dictionary/account/bscs
+export const GetDictionaryAccountBscsSuccess = "GetDictionaryAccountBscsSuccess";
+export const GetDictionaryAccountBscsRequest = "GetDictionaryAccountBscsRequest";
+export const GetDictionaryAccountBscsFail = "GetDictionaryAccountBscsFail"
+;
+
+// actions for POST /dictionary/account/bscs
+export const PostDictionaryAccountBscsSuccess = "PostDictionaryAccountBscsSuccess";
+export const PostDictionaryAccountBscsRequest = "PostDictionaryAccountBscsRequest";
+export const PostDictionaryAccountBscsFail = "PostDictionaryAccountBscsFail"
+;
+
+// actions for DELETE /dictionary/account/bscs
+export const DeleteDictionaryAccountBscsSuccess = "DeleteDictionaryAccountBscsSuccess";
+export const DeleteDictionaryAccountBscsRequest = "DeleteDictionaryAccountBscsRequest";
+export const DeleteDictionaryAccountBscsFail = "DeleteDictionaryAccountBscsFail"
+;
+
+// actions for GET /dictionary/account/sap
+export const GetDictionaryAccountSapSuccess = "GetDictionaryAccountSapSuccess";
+export const GetDictionaryAccountSapRequest = "GetDictionaryAccountSapRequest";
+export const GetDictionaryAccountSapFail = "GetDictionaryAccountSapFail"
+;
+
+// actions for POST /dictionary/account/sap
+export const PostDictionaryAccountSapSuccess = "PostDictionaryAccountSapSuccess";
+export const PostDictionaryAccountSapRequest = "PostDictionaryAccountSapRequest";
+export const PostDictionaryAccountSapFail = "PostDictionaryAccountSapFail"
+;
+
+// actions for DELETE /dictionary/account/sap
+export const DeleteDictionaryAccountSapSuccess = "DeleteDictionaryAccountSapSuccess";
+export const DeleteDictionaryAccountSapRequest = "DeleteDictionaryAccountSapRequest";
+export const DeleteDictionaryAccountSapFail = "DeleteDictionaryAccountSapFail"
+;
+
+// actions for GET /dictionary/segment
+export const GetDictionarySegmentSuccess = "GetDictionarySegmentSuccess";
+export const GetDictionarySegmentRequest = "GetDictionarySegmentRequest";
+export const GetDictionarySegmentFail = "GetDictionarySegmentFail"
+;
+
+// actions for POST /dictionary/segment
+export const PostDictionarySegmentSuccess = "PostDictionarySegmentSuccess";
+export const PostDictionarySegmentRequest = "PostDictionarySegmentRequest";
+export const PostDictionarySegmentFail = "PostDictionarySegmentFail"
+;
+
+// actions for DELETE /dictionary/segment
+export const DeleteDictionarySegmentSuccess = "DeleteDictionarySegmentSuccess";
+export const DeleteDictionarySegmentRequest = "DeleteDictionarySegmentRequest";
+export const DeleteDictionarySegmentFail = "DeleteDictionarySegmentFail"
 ;

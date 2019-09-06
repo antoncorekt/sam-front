@@ -1,18 +1,42 @@
-
+// @flow
 // ----- Enums ------
 
+export class ReleaseEnum {
+ 	 static get 0(){ return '0'; }
+	 static get LAST(){ return 'last'; }
+}
+
+export class RoleEnum {
+ 	 static get ADMIN(){ return 'Admin'; }
+	 static get BOOKER(){ return 'Booker'; }
+	 static get CONTROL(){ return 'Control'; }
+}
+
+export class StatusEnum {
+ 	 static get OK(){ return 'Ok'; }
+}
+
+export class Status14Enum {
+ 	 static get ERROR(){ return 'Error'; }
+}
+
+export class Status15Enum {
+ 	 static get C(){ return 'C'; }
+	 static get P(){ return 'P'; }
+	 static get W(){ return 'W'; }
+}
 
 // ----- Models ------
 
-export class RequestSetSegment {
+export class RequestSetSegment { 
 	data:Segment;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: RequestSetSegment = new RequestSetSegment();
-			withData(data:Segment): Builder {
+			 _model: RequestSetSegment = new RequestSetSegment();
+			withData(data:Segment): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -20,65 +44,65 @@ export class RequestSetSegment {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class Account {
+export class Account { 
 	releaseId:number;
-	status:string;
-	bscsAccount:string;
-	ofiSapAccount:string;
-	validFromDate:Date;
-	vatCodeInd:string;
-	sapSegmText:string;
-	ofiSapWbsCode:string;
-	citMarkerVatFlag:number;
-
+ 	status:string;
+ 	bscsAccount:string;
+ 	ofiSapAccount:string;
+ 	validFromDate:Date;
+ 	vatCodeInd:string;
+ 	sapSegmText:string;
+ 	ofiSapWbsCode:string;
+ 	citMarkerVatFlag:number;
+ 
 	static get Builder() {
 		class Builder {
-			_model: Account = new Account();
-			withReleaseId(releaseId:number): Builder {
+			 _model: Account = new Account();
+			withReleaseId(releaseId:number): Builder { 
 				this._model.releaseId=releaseId;
-				return this;
+ 				return this;
 			}
 
-			withStatus(status:string): Builder {
+			withStatus(status:string): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withBscsAccount(bscsAccount:string): Builder {
+			withBscsAccount(bscsAccount:string): Builder { 
 				this._model.bscsAccount=bscsAccount;
-				return this;
+ 				return this;
 			}
 
-			withOfiSapAccount(ofiSapAccount:string): Builder {
+			withOfiSapAccount(ofiSapAccount:string): Builder { 
 				this._model.ofiSapAccount=ofiSapAccount;
-				return this;
+ 				return this;
 			}
 
-			withValidFromDate(validFromDate:Date): Builder {
+			withValidFromDate(validFromDate:Date): Builder { 
 				this._model.validFromDate=validFromDate;
-				return this;
+ 				return this;
 			}
 
-			withVatCodeInd(vatCodeInd:string): Builder {
+			withVatCodeInd(vatCodeInd:string): Builder { 
 				this._model.vatCodeInd=vatCodeInd;
-				return this;
+ 				return this;
 			}
 
-			withSapSegmText(sapSegmText:string): Builder {
+			withSapSegmText(sapSegmText:string): Builder { 
 				this._model.sapSegmText=sapSegmText;
-				return this;
+ 				return this;
 			}
 
-			withOfiSapWbsCode(ofiSapWbsCode:string): Builder {
+			withOfiSapWbsCode(ofiSapWbsCode:string): Builder { 
 				this._model.ofiSapWbsCode=ofiSapWbsCode;
-				return this;
+ 				return this;
 			}
 
-			withCitMarkerVatFlag(citMarkerVatFlag:number): Builder {
+			withCitMarkerVatFlag(citMarkerVatFlag:number): Builder { 
 				this._model.citMarkerVatFlag=citMarkerVatFlag;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -86,47 +110,47 @@ export class Account {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class Order {
+export class Order { 
 	releaseId:number;
-	status:string;
-	bscsAccount:string;
-	segmentCode:string;
-	orderNumber:string;
-	validFromDate:Date;
-
+ 	status:string;
+ 	bscsAccount:string;
+ 	segmentCode:string;
+ 	orderNumber:string;
+ 	validFromDate:Date;
+ 
 	static get Builder() {
 		class Builder {
-			_model: Order = new Order();
-			withReleaseId(releaseId:number): Builder {
+			 _model: Order = new Order();
+			withReleaseId(releaseId:number): Builder { 
 				this._model.releaseId=releaseId;
-				return this;
+ 				return this;
 			}
 
-			withStatus(status:string): Builder {
+			withStatus(status:string): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withBscsAccount(bscsAccount:string): Builder {
+			withBscsAccount(bscsAccount:string): Builder { 
 				this._model.bscsAccount=bscsAccount;
-				return this;
+ 				return this;
 			}
 
-			withSegmentCode(segmentCode:string): Builder {
+			withSegmentCode(segmentCode:string): Builder { 
 				this._model.segmentCode=segmentCode;
-				return this;
+ 				return this;
 			}
 
-			withOrderNumber(orderNumber:string): Builder {
+			withOrderNumber(orderNumber:string): Builder { 
 				this._model.orderNumber=orderNumber;
-				return this;
+ 				return this;
 			}
 
-			withValidFromDate(validFromDate:Date): Builder {
+			withValidFromDate(validFromDate:Date): Builder { 
 				this._model.validFromDate=validFromDate;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -134,17 +158,17 @@ export class Order {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetUserLogin {
+export class ResultSetUserLogin { 
 	data:UserLoginInfo;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetUserLogin = new ResultSetUserLogin();
-			withData(data:UserLoginInfo): Builder {
+			 _model: ResultSetUserLogin = new ResultSetUserLogin();
+			withData(data:UserLoginInfo): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -152,17 +176,17 @@ export class ResultSetUserLogin {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class RequestSetAccountDictBscs {
+export class RequestSetAccountDictBscs { 
 	data:AccountDictBscs;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: RequestSetAccountDictBscs = new RequestSetAccountDictBscs();
-			withData(data:AccountDictBscs): Builder {
+			 _model: RequestSetAccountDictBscs = new RequestSetAccountDictBscs();
+			withData(data:AccountDictBscs): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -170,17 +194,17 @@ export class RequestSetAccountDictBscs {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class RequestSetAccount {
+export class RequestSetAccount { 
 	data:Account;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: RequestSetAccount = new RequestSetAccount();
-			withData(data:Account): Builder {
+			 _model: RequestSetAccount = new RequestSetAccount();
+			withData(data:Account): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -188,23 +212,23 @@ export class RequestSetAccount {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetAccount {
+export class ResultSetAccount { 
 	status:Status;
-	data:Account;
-
+ 	data:Account;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetAccount = new ResultSetAccount();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetAccount = new ResultSetAccount();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withData(data:Account): Builder {
+			withData(data:Account): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -212,17 +236,17 @@ export class ResultSetAccount {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class UserLogoff {
+export class UserLogoff { 
 	user:string;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: UserLogoff = new UserLogoff();
-			withUser(user:string): Builder {
+			 _model: UserLogoff = new UserLogoff();
+			withUser(user:string): Builder { 
 				this._model.user=user;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -230,23 +254,23 @@ export class UserLogoff {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetOrder {
+export class ResultSetOrder { 
 	status:Status;
-	data:Order;
-
+ 	data:Order;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetOrder = new ResultSetOrder();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetOrder = new ResultSetOrder();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withData(data:Order): Builder {
+			withData(data:Order): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -254,23 +278,23 @@ export class ResultSetOrder {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class Segment {
+export class Segment { 
 	csTradeRef:string;
-	csType:number;
-
+ 	csType:number;
+ 
 	static get Builder() {
 		class Builder {
-			_model: Segment = new Segment();
-			withCsTradeRef(csTradeRef:string): Builder {
+			 _model: Segment = new Segment();
+			withCsTradeRef(csTradeRef:string): Builder { 
 				this._model.csTradeRef=csTradeRef;
-				return this;
+ 				return this;
 			}
 
-			withCsType(csType:number): Builder {
+			withCsType(csType:number): Builder { 
 				this._model.csType=csType;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -278,23 +302,23 @@ export class Segment {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetCount {
+export class ResultSetCount { 
 	status:Status;
-	count:number;
-
+ 	count:number;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetCount = new ResultSetCount();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetCount = new ResultSetCount();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withCount(count:number): Builder {
+			withCount(count:number): Builder { 
 				this._model.count=count;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -302,17 +326,17 @@ export class ResultSetCount {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class RequestSetAccountDictSap {
+export class RequestSetAccountDictSap { 
 	data:AccountDictSap;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: RequestSetAccountDictSap = new RequestSetAccountDictSap();
-			withData(data:AccountDictSap): Builder {
+			 _model: RequestSetAccountDictSap = new RequestSetAccountDictSap();
+			withData(data:AccountDictSap): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -320,77 +344,77 @@ export class RequestSetAccountDictSap {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetStatus {
+export class ResultSetStatus { 
 	status:Status;
-	memoryAlloc:number;
-	memoryTotalAlloc:number;
-	memorySys:number;
-	memoryNMalloc:number;
-	memoryNFree:number;
-	processedRequests:number;
-	processedRequestsErrors:number;
-	processedRequestsOk:number;
-	processingTimeTotalSec:number;
-	runningSince:string;
-
+ 	memoryAlloc:number;
+ 	memoryTotalAlloc:number;
+ 	memorySys:number;
+ 	memoryNMalloc:number;
+ 	memoryNFree:number;
+ 	processedRequests:number;
+ 	processedRequestsErrors:number;
+ 	processedRequestsOk:number;
+ 	processingTimeTotalSec:number;
+ 	runningSince:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetStatus = new ResultSetStatus();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetStatus = new ResultSetStatus();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withMemoryAlloc(memoryAlloc:number): Builder {
+			withMemoryAlloc(memoryAlloc:number): Builder { 
 				this._model.memoryAlloc=memoryAlloc;
-				return this;
+ 				return this;
 			}
 
-			withMemoryTotalAlloc(memoryTotalAlloc:number): Builder {
+			withMemoryTotalAlloc(memoryTotalAlloc:number): Builder { 
 				this._model.memoryTotalAlloc=memoryTotalAlloc;
-				return this;
+ 				return this;
 			}
 
-			withMemorySys(memorySys:number): Builder {
+			withMemorySys(memorySys:number): Builder { 
 				this._model.memorySys=memorySys;
-				return this;
+ 				return this;
 			}
 
-			withMemoryNMalloc(memoryNMalloc:number): Builder {
+			withMemoryNMalloc(memoryNMalloc:number): Builder { 
 				this._model.memoryNMalloc=memoryNMalloc;
-				return this;
+ 				return this;
 			}
 
-			withMemoryNFree(memoryNFree:number): Builder {
+			withMemoryNFree(memoryNFree:number): Builder { 
 				this._model.memoryNFree=memoryNFree;
-				return this;
+ 				return this;
 			}
 
-			withProcessedRequests(processedRequests:number): Builder {
+			withProcessedRequests(processedRequests:number): Builder { 
 				this._model.processedRequests=processedRequests;
-				return this;
+ 				return this;
 			}
 
-			withProcessedRequestsErrors(processedRequestsErrors:number): Builder {
+			withProcessedRequestsErrors(processedRequestsErrors:number): Builder { 
 				this._model.processedRequestsErrors=processedRequestsErrors;
-				return this;
+ 				return this;
 			}
 
-			withProcessedRequestsOk(processedRequestsOk:number): Builder {
+			withProcessedRequestsOk(processedRequestsOk:number): Builder { 
 				this._model.processedRequestsOk=processedRequestsOk;
-				return this;
+ 				return this;
 			}
 
-			withProcessingTimeTotalSec(processingTimeTotalSec:number): Builder {
+			withProcessingTimeTotalSec(processingTimeTotalSec:number): Builder { 
 				this._model.processingTimeTotalSec=processingTimeTotalSec;
-				return this;
+ 				return this;
 			}
 
-			withRunningSince(runningSince:string): Builder {
+			withRunningSince(runningSince:string): Builder { 
 				this._model.runningSince=runningSince;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -398,23 +422,23 @@ export class ResultSetStatus {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetAccountDictSap {
+export class ResultSetAccountDictSap { 
 	status:Status;
-	data:AccountDictSap;
-
+ 	data:AccountDictSap;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetAccountDictSap = new ResultSetAccountDictSap();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetAccountDictSap = new ResultSetAccountDictSap();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withData(data:AccountDictSap): Builder {
+			withData(data:AccountDictSap): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -422,23 +446,23 @@ export class ResultSetAccountDictSap {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetVersion {
+export class ResultSetVersion { 
 	status:Status;
-	version:string;
-
+ 	version:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetVersion = new ResultSetVersion();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetVersion = new ResultSetVersion();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withVersion(version:string): Builder {
+			withVersion(version:string): Builder { 
 				this._model.version=version;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -446,17 +470,17 @@ export class ResultSetVersion {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetOk {
+export class ResultSetOk { 
 	status:Status;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetOk = new ResultSetOk();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetOk = new ResultSetOk();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -464,23 +488,23 @@ export class ResultSetOk {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetSegment {
+export class ResultSetSegment { 
 	status:Status;
-	data:Segment;
-
+ 	data:Segment;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetSegment = new ResultSetSegment();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetSegment = new ResultSetSegment();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withData(data:Segment): Builder {
+			withData(data:Segment): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -488,23 +512,23 @@ export class ResultSetSegment {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetAccountDictBscs {
+export class ResultSetAccountDictBscs { 
 	status:Status;
-	data:AccountDictBscs;
-
+ 	data:AccountDictBscs;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetAccountDictBscs = new ResultSetAccountDictBscs();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetAccountDictBscs = new ResultSetAccountDictBscs();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withData(data:AccountDictBscs): Builder {
+			withData(data:AccountDictBscs): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -512,29 +536,29 @@ export class ResultSetAccountDictBscs {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class UserLogin {
+export class UserLogin { 
 	user:string;
-	role:Role;
-	password:string;
-
+ 	role:Role;
+ 	password:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: UserLogin = new UserLogin();
-			withUser(user:string): Builder {
+			 _model: UserLogin = new UserLogin();
+			withUser(user:string): Builder { 
 				this._model.user=user;
-				return this;
+ 				return this;
 			}
 
-			withRole(role:Role): Builder {
+			withRole(role:Role): Builder { 
 				this._model.role=role;
-				return this;
+ 				return this;
 			}
 
-			withPassword(password:string): Builder {
+			withPassword(password:string): Builder { 
 				this._model.password=password;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -542,29 +566,29 @@ export class UserLogin {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetOrders {
+export class ResultSetOrders { 
 	status:Status;
-	count:number;
-	data:Array<Order>;
-
+ 	count:number;
+ 	data:Array<Order>;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetOrders = new ResultSetOrders();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetOrders = new ResultSetOrders();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withCount(count:number): Builder {
+			withCount(count:number): Builder { 
 				this._model.count=count;
-				return this;
+ 				return this;
 			}
 
-			withData(data:Array<Order>): Builder {
+			withData(data:Array<Order>): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -572,29 +596,29 @@ export class ResultSetOrders {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetAccountDictSaps {
+export class ResultSetAccountDictSaps { 
 	status:Status;
-	count:number;
-	data:Array<AccountDictSap>;
-
+ 	count:number;
+ 	data:Array<AccountDictSap>;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetAccountDictSaps = new ResultSetAccountDictSaps();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetAccountDictSaps = new ResultSetAccountDictSaps();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withCount(count:number): Builder {
+			withCount(count:number): Builder { 
 				this._model.count=count;
-				return this;
+ 				return this;
 			}
 
-			withData(data:Array<AccountDictSap>): Builder {
+			withData(data:Array<AccountDictSap>): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -602,29 +626,29 @@ export class ResultSetAccountDictSaps {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetAccounts {
+export class ResultSetAccounts { 
 	status:Status;
-	count:number;
-	data:Array<Account>;
-
+ 	count:number;
+ 	data:Array<Account>;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetAccounts = new ResultSetAccounts();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetAccounts = new ResultSetAccounts();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withCount(count:number): Builder {
+			withCount(count:number): Builder { 
 				this._model.count=count;
-				return this;
+ 				return this;
 			}
 
-			withData(data:Array<Account>): Builder {
+			withData(data:Array<Account>): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -632,29 +656,29 @@ export class ResultSetAccounts {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class AccountDictSap {
+export class AccountDictSap { 
 	sapOfiAccount:string;
-	name:string;
-	status:string;
-
+ 	name:string;
+ 	status:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: AccountDictSap = new AccountDictSap();
-			withSapOfiAccount(sapOfiAccount:string): Builder {
+			 _model: AccountDictSap = new AccountDictSap();
+			withSapOfiAccount(sapOfiAccount:string): Builder { 
 				this._model.sapOfiAccount=sapOfiAccount;
-				return this;
+ 				return this;
 			}
 
-			withName(name:string): Builder {
+			withName(name:string): Builder { 
 				this._model.name=name;
-				return this;
+ 				return this;
 			}
 
-			withStatus(status:string): Builder {
+			withStatus(status:string): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -662,35 +686,35 @@ export class AccountDictSap {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class AccountDictBscs {
+export class AccountDictBscs { 
 	glCode:string;
-	glDes:string;
-	glType:string;
-	glActive:string;
-
+ 	glDes:string;
+ 	glType:string;
+ 	glActive:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: AccountDictBscs = new AccountDictBscs();
-			withGlCode(glCode:string): Builder {
+			 _model: AccountDictBscs = new AccountDictBscs();
+			withGlCode(glCode:string): Builder { 
 				this._model.glCode=glCode;
-				return this;
+ 				return this;
 			}
 
-			withGlDes(glDes:string): Builder {
+			withGlDes(glDes:string): Builder { 
 				this._model.glDes=glDes;
-				return this;
+ 				return this;
 			}
 
-			withGlType(glType:string): Builder {
+			withGlType(glType:string): Builder { 
 				this._model.glType=glType;
-				return this;
+ 				return this;
 			}
 
-			withGlActive(glActive:string): Builder {
+			withGlActive(glActive:string): Builder { 
 				this._model.glActive=glActive;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -698,29 +722,29 @@ export class AccountDictBscs {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetSegments {
+export class ResultSetSegments { 
 	status:Status;
-	count:number;
-	data:Array<Segment>;
-
+ 	count:number;
+ 	data:Array<Segment>;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetSegments = new ResultSetSegments();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetSegments = new ResultSetSegments();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withCount(count:number): Builder {
+			withCount(count:number): Builder { 
 				this._model.count=count;
-				return this;
+ 				return this;
 			}
 
-			withData(data:Array<Segment>): Builder {
+			withData(data:Array<Segment>): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -728,17 +752,17 @@ export class ResultSetSegments {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class RequestSetUserLogoff {
+export class RequestSetUserLogoff { 
 	data:UserLogoff;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: RequestSetUserLogoff = new RequestSetUserLogoff();
-			withData(data:UserLogoff): Builder {
+			 _model: RequestSetUserLogoff = new RequestSetUserLogoff();
+			withData(data:UserLogoff): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -746,17 +770,17 @@ export class RequestSetUserLogoff {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class RequestSetUserLogin {
+export class RequestSetUserLogin { 
 	data:UserLogin;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: RequestSetUserLogin = new RequestSetUserLogin();
-			withData(data:UserLogin): Builder {
+			 _model: RequestSetUserLogin = new RequestSetUserLogin();
+			withData(data:UserLogin): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -764,17 +788,17 @@ export class RequestSetUserLogin {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class RequestSetOrder {
+export class RequestSetOrder { 
 	data:Order;
-
+ 
 	static get Builder() {
 		class Builder {
-			_model: RequestSetOrder = new RequestSetOrder();
-			withData(data:Order): Builder {
+			 _model: RequestSetOrder = new RequestSetOrder();
+			withData(data:Order): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -782,29 +806,29 @@ export class RequestSetOrder {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetAccountDictBscss {
+export class ResultSetAccountDictBscss { 
 	status:Status;
-	count:number;
-	data:Array<AccountDictBscs>;
-
+ 	count:number;
+ 	data:Array<AccountDictBscs>;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetAccountDictBscss = new ResultSetAccountDictBscss();
-			withStatus(status:Status): Builder {
+			 _model: ResultSetAccountDictBscss = new ResultSetAccountDictBscss();
+			withStatus(status:Status): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withCount(count:number): Builder {
+			withCount(count:number): Builder { 
 				this._model.count=count;
-				return this;
+ 				return this;
 			}
 
-			withData(data:Array<AccountDictBscs>): Builder {
+			withData(data:Array<AccountDictBscs>): Builder { 
 				this._model.data=data;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -812,23 +836,23 @@ export class ResultSetAccountDictBscss {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class ResultSetError {
+export class ResultSetError { 
 	status:Status14;
-	message:string;
-
+ 	message:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: ResultSetError = new ResultSetError();
-			withStatus(status:Status14): Builder {
+			 _model: ResultSetError = new ResultSetError();
+			withStatus(status:Status14): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withMessage(message:string): Builder {
+			withMessage(message:string): Builder { 
 				this._model.message=message;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -836,29 +860,29 @@ export class ResultSetError {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class UserLoginInfo {
+export class UserLoginInfo { 
 	user:string;
-	role:Role;
-	token:string;
-
+ 	role:Role;
+ 	token:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: UserLoginInfo = new UserLoginInfo();
-			withUser(user:string): Builder {
+			 _model: UserLoginInfo = new UserLoginInfo();
+			withUser(user:string): Builder { 
 				this._model.user=user;
-				return this;
+ 				return this;
 			}
 
-			withRole(role:Role): Builder {
+			withRole(role:Role): Builder { 
 				this._model.role=role;
-				return this;
+ 				return this;
 			}
 
-			withToken(token:string): Builder {
+			withToken(token:string): Builder { 
 				this._model.token=token;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -866,23 +890,23 @@ export class UserLoginInfo {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class GetAccountByStatusByReleaseQueryParams {
-	status:string;
-	release:string;
-
+export class GetAccountByStatusByReleaseQueryParams { 
+	status:Status15Enum;
+ 	release:ReleaseEnum;
+ 
 	static get Builder() {
 		class Builder {
-			_model: GetAccountByStatusByReleaseQueryParams = new GetAccountByStatusByReleaseQueryParams();
-			withStatus(status:string): Builder {
+			 _model: GetAccountByStatusByReleaseQueryParams = new GetAccountByStatusByReleaseQueryParams();
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withRelease(release:string): Builder {
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -890,29 +914,29 @@ export class GetAccountByStatusByReleaseQueryParams {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class PutAccountByStatusByReleaseByBscsAccountQueryParams {
-	status:string;
-	release:string;
-	bscsAccount:string;
-
+export class PutAccountByStatusByReleaseByBscsAccountQueryParams { 
+	status:Status15Enum;
+ 	release:ReleaseEnum;
+ 	bscsAccount:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: PutAccountByStatusByReleaseByBscsAccountQueryParams = new PutAccountByStatusByReleaseByBscsAccountQueryParams();
-			withStatus(status:string): Builder {
+			 _model: PutAccountByStatusByReleaseByBscsAccountQueryParams = new PutAccountByStatusByReleaseByBscsAccountQueryParams();
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withRelease(release:string): Builder {
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
-				return this;
+ 				return this;
 			}
 
-			withBscsAccount(bscsAccount:string): Builder {
+			withBscsAccount(bscsAccount:string): Builder { 
 				this._model.bscsAccount=bscsAccount;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -920,29 +944,29 @@ export class PutAccountByStatusByReleaseByBscsAccountQueryParams {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class DeleteAccountByStatusByReleaseByBscsAccountQueryParams {
-	status:string;
-	release:string;
-	bscsAccount:string;
-
+export class DeleteAccountByStatusByReleaseByBscsAccountQueryParams { 
+	status:Status15Enum;
+ 	release:ReleaseEnum;
+ 	bscsAccount:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: DeleteAccountByStatusByReleaseByBscsAccountQueryParams = new DeleteAccountByStatusByReleaseByBscsAccountQueryParams();
-			withStatus(status:string): Builder {
+			 _model: DeleteAccountByStatusByReleaseByBscsAccountQueryParams = new DeleteAccountByStatusByReleaseByBscsAccountQueryParams();
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withRelease(release:string): Builder {
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
-				return this;
+ 				return this;
 			}
 
-			withBscsAccount(bscsAccount:string): Builder {
+			withBscsAccount(bscsAccount:string): Builder { 
 				this._model.bscsAccount=bscsAccount;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -950,23 +974,23 @@ export class DeleteAccountByStatusByReleaseByBscsAccountQueryParams {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class GetOrderByStatusByReleaseQueryParams {
-	status:string;
-	release:string;
-
+export class GetOrderByStatusByReleaseQueryParams { 
+	status:Status15Enum;
+ 	release:ReleaseEnum;
+ 
 	static get Builder() {
 		class Builder {
-			_model: GetOrderByStatusByReleaseQueryParams = new GetOrderByStatusByReleaseQueryParams();
-			withStatus(status:string): Builder {
+			 _model: GetOrderByStatusByReleaseQueryParams = new GetOrderByStatusByReleaseQueryParams();
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withRelease(release:string): Builder {
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -974,35 +998,35 @@ export class GetOrderByStatusByReleaseQueryParams {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams {
-	status:string;
-	release:string;
-	bscsAccount:string;
-	segment:string;
-
+export class PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams { 
+	status:Status15Enum;
+ 	release:ReleaseEnum;
+ 	bscsAccount:string;
+ 	segment:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();
-			withStatus(status:string): Builder {
+			 _model: PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withRelease(release:string): Builder {
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
-				return this;
+ 				return this;
 			}
 
-			withBscsAccount(bscsAccount:string): Builder {
+			withBscsAccount(bscsAccount:string): Builder { 
 				this._model.bscsAccount=bscsAccount;
-				return this;
+ 				return this;
 			}
 
-			withSegment(segment:string): Builder {
+			withSegment(segment:string): Builder { 
 				this._model.segment=segment;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -1010,35 +1034,35 @@ export class PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams {
 		}
 		return Builder;
 	}
-}
+ } 
 
-export class DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams {
-	status:string;
-	release:string;
-	bscsAccount:string;
-	segment:string;
-
+export class DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams { 
+	status:Status15Enum;
+ 	release:ReleaseEnum;
+ 	bscsAccount:string;
+ 	segment:string;
+ 
 	static get Builder() {
 		class Builder {
-			_model: DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();
-			withStatus(status:string): Builder {
+			 _model: DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();
+			withStatus(status:Status15Enum): Builder { 
 				this._model.status=status;
-				return this;
+ 				return this;
 			}
 
-			withRelease(release:string): Builder {
+			withRelease(release:ReleaseEnum): Builder { 
 				this._model.release=release;
-				return this;
+ 				return this;
 			}
 
-			withBscsAccount(bscsAccount:string): Builder {
+			withBscsAccount(bscsAccount:string): Builder { 
 				this._model.bscsAccount=bscsAccount;
-				return this;
+ 				return this;
 			}
 
-			withSegment(segment:string): Builder {
+			withSegment(segment:string): Builder { 
 				this._model.segment=segment;
-				return this;
+ 				return this;
 			}
 			build(){
 				return this._model;
@@ -1046,4 +1070,4 @@ export class DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams {
 		}
 		return Builder;
 	}
-}
+ } 
