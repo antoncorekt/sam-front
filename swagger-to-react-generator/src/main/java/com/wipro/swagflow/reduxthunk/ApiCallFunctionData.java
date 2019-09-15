@@ -1,9 +1,6 @@
 package com.wipro.swagflow.reduxthunk;
 
-import com.wipro.swagflow.flow.FlowElement;
-import com.wipro.swagflow.flow.FlowFunction;
-import com.wipro.swagflow.flow.FlowObjectType;
-import com.wipro.swagflow.flow.FlowTypeParam;
+import com.wipro.swagflow.flow.*;
 import io.swagger.models.*;
 import io.swagger.models.properties.RefProperty;
 import lombok.Data;
@@ -73,10 +70,10 @@ public class ApiCallFunctionData {
 
 
         if (!queryParams.isEmpty()) {
-            queryParametersClass = new FlowObjectType(firstSymToUpperCase(functionName) + "QueryParams", queryParams);
+            queryParametersClass = new FlowObjectType(JsWord.from(functionName + "QueryParams"), queryParams);
             flowTypeParams.add(FlowTypeParam.builder()
-                    .name(firstSymToLowCase(queryParametersClass.getName()))
-                    .type(queryParametersClass.getName())
+                    .name(queryParametersClass.getName())
+                    .type(queryParametersClass.getName().getJsLexicalWithUpperCase()) // todo type?
                     .build());
         }
 
@@ -104,7 +101,7 @@ public class ApiCallFunctionData {
                 });
 
         if (queryParametersClass != null)
-            query = queryParametersClass.getName();
+            query = queryParametersClass.getName().getJsLexicalWithUpperCase();
 
         List< FlowTypeParam> responsesWithParam = new ArrayList<>();
 
@@ -121,7 +118,7 @@ public class ApiCallFunctionData {
 
                     if (model instanceof RefModel){
                         responsesWithParam.add(FlowTypeParam.builder()
-                                .name(x.getKey())
+                                .name(JsWord.from(x.getKey()))
                                 .type(((RefModel)model).getSimpleRef())
                                 .build());
                         successType.set(((RefModel) model).getSimpleRef());
@@ -134,7 +131,7 @@ public class ApiCallFunctionData {
                             RefProperty refProperty = (RefProperty) arrayModel.getItems();
 
                             responsesWithParam.add(FlowTypeParam.builder()
-                                    .name(x.getKey())
+                                    .name(JsWord.from(x.getKey()))
                                     .type("Array<"+refProperty.getSimpleRef()+">")
                                     .build());
                             successType.set("Array<"+refProperty.getSimpleRef()+">");
@@ -183,10 +180,10 @@ public class ApiCallFunctionData {
                 res.append(firstSymToUpperCase(token));
             }
         }
-        return res.toString();
+        return JsWord.removeAllNonJsWordSymbols(res.toString());
     }
 
-    private String firstSymToUpperCase(String srt){ return srt.substring(0,1).toUpperCase() + srt.substring(1);}
-    private String firstSymToLowCase(String srt){ return srt.substring(0,1).toLowerCase() + srt.substring(1);}
+    public static String firstSymToUpperCase(String srt){ return srt.substring(0,1).toUpperCase() + srt.substring(1);}
+    public static String firstSymToLowCase(String srt){ return srt.substring(0,1).toLowerCase() + srt.substring(1);}
 
 }

@@ -9,7 +9,7 @@ public class FlowArrayType extends FlowType {
 
     private String arrayName;
 
-    public FlowArrayType(String name, String arrayName) {
+    public FlowArrayType(JsWord name, String arrayName) {
         super(name);
         this.arrayName = arrayName;
     }

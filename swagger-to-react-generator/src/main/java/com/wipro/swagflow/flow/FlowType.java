@@ -9,11 +9,11 @@ import lombok.Data;
 @Data
 public abstract class FlowType implements FlowElement {
 
-    protected String name;
+    protected JsWord name;
 
     protected boolean exported = true;
 
-    public FlowType(String name) {
+    public FlowType(JsWord name) {
         this.name = name;
     }
 

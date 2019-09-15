@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/bscs-db/bscs-db.iml" filepath="$PROJECT_DIR$/bscs-db/bscs-db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bscs-db/bscs-db.iml" filepath="$PROJECT_DIR$/bscs-db/bscs-db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sam-app.iml" filepath="$PROJECT_DIR$/sam-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/sam-app.iml" filepath="$PROJECT_DIR$/sam-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/swagger-to-react-generator/swagger-parser.iml" filepath="$PROJECT_DIR$/swagger-to-react-generator/swagger-parser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-server/swagger-spring.iml" filepath="$PROJECT_DIR$/spring-server/swagger-spring.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-server/swagger-spring.iml" filepath="$PROJECT_DIR$/spring-server/swagger-spring.iml" />
     </modules>
   </component>

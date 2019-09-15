@@ -108,7 +108,8 @@ public class JsFlowGenerator {
                         reduxThunkCallApi.getFetchFunction().getTypeResolverFunction(),
                         reduxThunkCallApi.getInternalLogic()))
         .flatMap(Collection::stream)
-        .collect(Collectors.toMap(FlowType::getName, Function.identity(), (x,y) -> x));
+        .collect(Collectors.toMap(x->x.getName().getOriginal()
+                , Function.identity(), (x,y) -> x));
 
         b.append("\n// general components for function\n");
         b.append(apiCallGeneralFunctions.toCode());
@@ -162,7 +163,7 @@ public class JsFlowGenerator {
 
                 if (parameter instanceof QueryParameter){
                     flowTypeParams.add(FlowTypeParam.builder()
-                            .name(parameter.getName())
+                            .name(new JsWord(parameter.getName()))
                             .required(parameter.getRequired())
                             .flowTypeParamEnum(FlowTypeParam.FlowTypeParamEnum.QUERY)
                             .defaultValue(((QueryParameter) parameter).getDefaultValue())
@@ -192,7 +193,7 @@ public class JsFlowGenerator {
                     }
 
                     flowTypeParams.add(FlowTypeParam.builder()
-                            .name(parameter.getName())
+                            .name(JsWord.from(parameter.getName()))
                             .required(parameter.getRequired())
                             .defaultValue(((PathParameter) parameter).getDefaultValue())
                             .flowTypeParamEnum(FlowTypeParam.FlowTypeParamEnum.PATH)
@@ -214,12 +215,17 @@ public class JsFlowGenerator {
                         if (schema instanceof ModelImpl){
                             ModelImpl model = ((ModelImpl) schema);
 
-                            throw new IllegalStateException("Not implement object model. Please define separate model in swagger");
+                            if (((ModelImpl) schema).getType().equals("string")){
+                                type = "string";
+                            }
+                            else {
+                                throw new IllegalStateException("Not implement object model. Please define separate model in swagger. " + parameter.getName());
+                            }
                         }
                     }
 
                     flowTypeParams.add(FlowTypeParam.builder()
-                            .name(parameter.getName())
+                            .name(JsWord.from(parameter.getName()))
                             .required(parameter.getRequired())
                             .flowTypeParamEnum(FlowTypeParam.FlowTypeParamEnum.BODY)
                             .type(type)
@@ -248,9 +254,9 @@ public class JsFlowGenerator {
 
     public void addModel(Map.Entry<String, Model> modelEntry){
 
-        String typeName = modelEntry.getKey();
+        JsWord typeNameJsWorld = new JsWord( modelEntry.getKey()) ;
 
-        if (typeName.equals("Role")){
+        if (typeNameJsWorld.getOriginal().equals("Role")){
             System.out.println("bla");
         }
 
@@ -259,20 +265,22 @@ public class JsFlowGenerator {
         if (modelEntry.getValue().getProperties() == null){
             Model model = modelEntry.getValue();
             if (model instanceof ArrayModel && ((ArrayModel)model).getType().equals("array"))
-                models.add(new FlowArrayType(((RefProperty) ((ArrayModel) model).getItems()).getSimpleRef(), typeName));
+                models.add(new FlowArrayType(JsWord.from(((RefProperty) ((ArrayModel) model).getItems()).getSimpleRef()), typeNameJsWorld.getJsLexicalWithUpperCase()));
 
             if (model instanceof ModelImpl){
                 ModelImpl modelImpl = (ModelImpl)model;
 
-                if (!modelImpl.getEnum().isEmpty()){
+                if (modelImpl.getEnum() != null && !modelImpl.getEnum().isEmpty()){
                     FlowEnum flowEnum = new FlowEnum();
-                    String enumName = removeIncorrectFlowSymbols(typeName);
-                    flowEnum.setName(enumName.substring(0,1).toUpperCase() + enumName.substring(1) + "Enum");
+                    flowEnum.setName(typeNameJsWorld.getJsLexicalWithUpperCase() + "Enum");
                     flowEnum.setParam(modelImpl.getEnum());
                     enums.add(flowEnum);
                 }
                 else {
-                    throw new IllegalStateException("Not implement ModelImpl object without enum. Example: " + typeName);
+
+                    System.err.println("Not implement ModelImpl object without enum. Example: " + typeNameJsWorld.getOriginal());
+
+                    //throw new IllegalStateException("Not implement ModelImpl object without enum. Example: " + typeName);
                 }
 
             }
@@ -284,8 +292,7 @@ public class JsFlowGenerator {
         for (Map.Entry<String, Property> stringPropertyEntry : modelEntry.getValue().getProperties().entrySet()) {
             FlowTypeParam flowTypeParam = new FlowTypeParam();
 
-            String paramName = removeIncorrectFlowSymbols(stringPropertyEntry.getKey());
-            flowTypeParam.setName(paramName);
+            flowTypeParam.setName(JsWord.from(stringPropertyEntry.getKey()));
 
             Property property = stringPropertyEntry.getValue();
 
@@ -315,7 +322,22 @@ public class JsFlowGenerator {
             else {
 
                 if (property.getType().equals("array")) {
-                    flowTypeParam.setType("Array<" + ((RefProperty) ((ArrayProperty) property).getItems()).getSimpleRef() + ">");
+
+                    if (property instanceof ArrayProperty) {
+
+                        ArrayProperty arrayProperty = ((ArrayProperty) property);
+
+
+                        if (arrayProperty.getItems() instanceof StringProperty)
+                            flowTypeParam.setType("Array<" + ((StringProperty) arrayProperty.getItems()).getDefault() + ">");
+
+                    }
+                    else {
+//                        if (property instanceof StringProperty) // TODO
+//                            flowTypeParam.setType("STRING_PROP<" + (((StringProperty) property)).getDefault() + ">");
+                        throw new IllegalStateException("Unsupported this. " + stringPropertyEntry.getKey());
+                    }
+
                 } else {
                     if (property.getType().equals("ref")) {
                         flowTypeParam.setType(((RefProperty) property).getSimpleRef());
@@ -337,7 +359,7 @@ public class JsFlowGenerator {
             flowTypeParams.add(flowTypeParam);
         }
 
-        models.add(new FlowObjectType(typeName, flowTypeParams));
+        models.add(new FlowObjectType(typeNameJsWorld, flowTypeParams));
 
     }
 

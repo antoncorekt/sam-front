@@ -1,144 +1,306 @@
 
-// actions for GET /system/version
-export const GetSystemVersionSuccess = "GetSystemVersionSuccess";
-export const GetSystemVersionRequest = "GetSystemVersionRequest";
-export const GetSystemVersionFail = "GetSystemVersionFail"
+// actions for GET /hello-world
+export const GetHelloWorldSuccess = "GetHelloWorldSuccess";
+export const GetHelloWorldRequest = "GetHelloWorldRequest";
+export const GetHelloWorldFail = "GetHelloWorldFail"
 ;
 
-// actions for GET /system/status
-export const GetSystemStatusSuccess = "GetSystemStatusSuccess";
-export const GetSystemStatusRequest = "GetSystemStatusRequest";
-export const GetSystemStatusFail = "GetSystemStatusFail"
+// actions for POST /login
+export const PostLoginSuccess = "PostLoginSuccess";
+export const PostLoginRequest = "PostLoginRequest";
+export const PostLoginFail = "PostLoginFail"
 ;
 
-// actions for POST /user/login
-export const PostUserLoginSuccess = "PostUserLoginSuccess";
-export const PostUserLoginRequest = "PostUserLoginRequest";
-export const PostUserLoginFail = "PostUserLoginFail"
+// actions for POST /logout
+export const PostLogoutSuccess = "PostLogoutSuccess";
+export const PostLogoutRequest = "PostLogoutRequest";
+export const PostLogoutFail = "PostLogoutFail"
 ;
 
-// actions for POST /user/logoff
-export const PostUserLogoffSuccess = "PostUserLogoffSuccess";
-export const PostUserLogoffRequest = "PostUserLogoffRequest";
-export const PostUserLogoffFail = "PostUserLogoffFail"
+// actions for GET /me
+export const GetMeSuccess = "GetMeSuccess";
+export const GetMeRequest = "GetMeRequest";
+export const GetMeFail = "GetMeFail"
 ;
 
-// actions for POST /account
-export const PostAccountSuccess = "PostAccountSuccess";
-export const PostAccountRequest = "PostAccountRequest";
-export const PostAccountFail = "PostAccountFail"
+// actions for PUT /me
+export const PutMeSuccess = "PutMeSuccess";
+export const PutMeRequest = "PutMeRequest";
+export const PutMeFail = "PutMeFail"
 ;
 
-// actions for DELETE /account
-export const DeleteAccountSuccess = "DeleteAccountSuccess";
-export const DeleteAccountRequest = "DeleteAccountRequest";
-export const DeleteAccountFail = "DeleteAccountFail"
+// actions for GET /missions
+export const GetMissionsSuccess = "GetMissionsSuccess";
+export const GetMissionsRequest = "GetMissionsRequest";
+export const GetMissionsFail = "GetMissionsFail"
 ;
 
-// actions for GET /account/{status}/{release}
-export const GetAccountByStatusByReleaseSuccess = "GetAccountByStatusByReleaseSuccess";
-export const GetAccountByStatusByReleaseRequest = "GetAccountByStatusByReleaseRequest";
-export const GetAccountByStatusByReleaseFail = "GetAccountByStatusByReleaseFail"
+// actions for POST /missions
+export const PostMissionsSuccess = "PostMissionsSuccess";
+export const PostMissionsRequest = "PostMissionsRequest";
+export const PostMissionsFail = "PostMissionsFail"
 ;
 
-// actions for PUT /account/{status}/{release}/{bscsAccount}
-export const PutAccountByStatusByReleaseByBscsAccountSuccess = "PutAccountByStatusByReleaseByBscsAccountSuccess";
-export const PutAccountByStatusByReleaseByBscsAccountRequest = "PutAccountByStatusByReleaseByBscsAccountRequest";
-export const PutAccountByStatusByReleaseByBscsAccountFail = "PutAccountByStatusByReleaseByBscsAccountFail"
+// actions for GET /missions/{id}
+export const GetMissionsByIdSuccess = "GetMissionsByIdSuccess";
+export const GetMissionsByIdRequest = "GetMissionsByIdRequest";
+export const GetMissionsByIdFail = "GetMissionsByIdFail"
 ;
 
-// actions for DELETE /account/{status}/{release}/{bscsAccount}
-export const DeleteAccountByStatusByReleaseByBscsAccountSuccess = "DeleteAccountByStatusByReleaseByBscsAccountSuccess";
-export const DeleteAccountByStatusByReleaseByBscsAccountRequest = "DeleteAccountByStatusByReleaseByBscsAccountRequest";
-export const DeleteAccountByStatusByReleaseByBscsAccountFail = "DeleteAccountByStatusByReleaseByBscsAccountFail"
+// actions for DELETE /missions/{id}
+export const DeleteMissionsByIdSuccess = "DeleteMissionsByIdSuccess";
+export const DeleteMissionsByIdRequest = "DeleteMissionsByIdRequest";
+export const DeleteMissionsByIdFail = "DeleteMissionsByIdFail"
 ;
 
-// actions for POST /account/release
-export const PostAccountReleaseSuccess = "PostAccountReleaseSuccess";
-export const PostAccountReleaseRequest = "PostAccountReleaseRequest";
-export const PostAccountReleaseFail = "PostAccountReleaseFail"
+// actions for GET /missions/{missionName}/find-records
+export const GetMissionsByMissionNameFindRecordsSuccess = "GetMissionsByMissionNameFindRecordsSuccess";
+export const GetMissionsByMissionNameFindRecordsRequest = "GetMissionsByMissionNameFindRecordsRequest";
+export const GetMissionsByMissionNameFindRecordsFail = "GetMissionsByMissionNameFindRecordsFail"
 ;
 
-// actions for POST /order
-export const PostOrderSuccess = "PostOrderSuccess";
-export const PostOrderRequest = "PostOrderRequest";
-export const PostOrderFail = "PostOrderFail"
+// actions for PUT /missions/{missionName}/find-records
+export const PutMissionsByMissionNameFindRecordsSuccess = "PutMissionsByMissionNameFindRecordsSuccess";
+export const PutMissionsByMissionNameFindRecordsRequest = "PutMissionsByMissionNameFindRecordsRequest";
+export const PutMissionsByMissionNameFindRecordsFail = "PutMissionsByMissionNameFindRecordsFail"
 ;
 
-// actions for DELETE /order
-export const DeleteOrderSuccess = "DeleteOrderSuccess";
-export const DeleteOrderRequest = "DeleteOrderRequest";
-export const DeleteOrderFail = "DeleteOrderFail"
+// actions for POST /missions/{missionName}/find-records
+export const PostMissionsByMissionNameFindRecordsSuccess = "PostMissionsByMissionNameFindRecordsSuccess";
+export const PostMissionsByMissionNameFindRecordsRequest = "PostMissionsByMissionNameFindRecordsRequest";
+export const PostMissionsByMissionNameFindRecordsFail = "PostMissionsByMissionNameFindRecordsFail"
 ;
 
-// actions for GET /order/{status}/{release}
-export const GetOrderByStatusByReleaseSuccess = "GetOrderByStatusByReleaseSuccess";
-export const GetOrderByStatusByReleaseRequest = "GetOrderByStatusByReleaseRequest";
-export const GetOrderByStatusByReleaseFail = "GetOrderByStatusByReleaseFail"
+// actions for GET /missions/{missionName}/find-records/{uuid}
+export const GetMissionsByMissionNameFindRecordsByUuidSuccess = "GetMissionsByMissionNameFindRecordsByUuidSuccess";
+export const GetMissionsByMissionNameFindRecordsByUuidRequest = "GetMissionsByMissionNameFindRecordsByUuidRequest";
+export const GetMissionsByMissionNameFindRecordsByUuidFail = "GetMissionsByMissionNameFindRecordsByUuidFail"
 ;
 
-// actions for PUT /order/{status}/{release}/{bscsAccount}/{segment}
-export const PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess = "PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess";
-export const PutOrderByStatusByReleaseByBscsAccountBySegmentRequest = "PutOrderByStatusByReleaseByBscsAccountBySegmentRequest";
-export const PutOrderByStatusByReleaseByBscsAccountBySegmentFail = "PutOrderByStatusByReleaseByBscsAccountBySegmentFail"
+// actions for DELETE /missions/{missionName}/find-records/{uuid}
+export const DeleteMissionsByMissionNameFindRecordsByUuidSuccess = "DeleteMissionsByMissionNameFindRecordsByUuidSuccess";
+export const DeleteMissionsByMissionNameFindRecordsByUuidRequest = "DeleteMissionsByMissionNameFindRecordsByUuidRequest";
+export const DeleteMissionsByMissionNameFindRecordsByUuidFail = "DeleteMissionsByMissionNameFindRecordsByUuidFail"
 ;
 
-// actions for DELETE /order/{status}/{release}/{bscsAccount}/{segment}
-export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess = "DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess";
-export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest = "DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest";
-export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail = "DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail"
+// actions for POST /missions/{missionName}/find-records/{uuid}/photos
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosSuccess = "PostMissionsByMissionNameFindRecordsByUuidPhotosSuccess";
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosRequest = "PostMissionsByMissionNameFindRecordsByUuidPhotosRequest";
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosFail = "PostMissionsByMissionNameFindRecordsByUuidPhotosFail"
 ;
 
-// actions for GET /dictionary/account/bscs
-export const GetDictionaryAccountBscsSuccess = "GetDictionaryAccountBscsSuccess";
-export const GetDictionaryAccountBscsRequest = "GetDictionaryAccountBscsRequest";
-export const GetDictionaryAccountBscsFail = "GetDictionaryAccountBscsFail"
+// actions for POST /missions/{missionName}/find-records/{uuid}/photos/original/{photo-name}
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameSuccess = "PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameSuccess";
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameRequest = "PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameRequest";
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameFail = "PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameFail"
 ;
 
-// actions for POST /dictionary/account/bscs
-export const PostDictionaryAccountBscsSuccess = "PostDictionaryAccountBscsSuccess";
-export const PostDictionaryAccountBscsRequest = "PostDictionaryAccountBscsRequest";
-export const PostDictionaryAccountBscsFail = "PostDictionaryAccountBscsFail"
+// actions for POST /missions/{missionName}/find-records/{uuid}/photos/scaled/{photo-name}
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameSuccess = "PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameSuccess";
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameRequest = "PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameRequest";
+export const PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameFail = "PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameFail"
 ;
 
-// actions for DELETE /dictionary/account/bscs
-export const DeleteDictionaryAccountBscsSuccess = "DeleteDictionaryAccountBscsSuccess";
-export const DeleteDictionaryAccountBscsRequest = "DeleteDictionaryAccountBscsRequest";
-export const DeleteDictionaryAccountBscsFail = "DeleteDictionaryAccountBscsFail"
+// actions for DELETE /missions/{missionName}/find-records/{uuid}/photos/{photo-name}
+export const DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameSuccess = "DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameSuccess";
+export const DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameRequest = "DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameRequest";
+export const DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameFail = "DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameFail"
 ;
 
-// actions for GET /dictionary/account/sap
-export const GetDictionaryAccountSapSuccess = "GetDictionaryAccountSapSuccess";
-export const GetDictionaryAccountSapRequest = "GetDictionaryAccountSapRequest";
-export const GetDictionaryAccountSapFail = "GetDictionaryAccountSapFail"
+// actions for GET /missions/{missionName}/sample-records
+export const GetMissionsByMissionNameSampleRecordsSuccess = "GetMissionsByMissionNameSampleRecordsSuccess";
+export const GetMissionsByMissionNameSampleRecordsRequest = "GetMissionsByMissionNameSampleRecordsRequest";
+export const GetMissionsByMissionNameSampleRecordsFail = "GetMissionsByMissionNameSampleRecordsFail"
 ;
 
-// actions for POST /dictionary/account/sap
-export const PostDictionaryAccountSapSuccess = "PostDictionaryAccountSapSuccess";
-export const PostDictionaryAccountSapRequest = "PostDictionaryAccountSapRequest";
-export const PostDictionaryAccountSapFail = "PostDictionaryAccountSapFail"
+// actions for PUT /missions/{missionName}/sample-records
+export const PutMissionsByMissionNameSampleRecordsSuccess = "PutMissionsByMissionNameSampleRecordsSuccess";
+export const PutMissionsByMissionNameSampleRecordsRequest = "PutMissionsByMissionNameSampleRecordsRequest";
+export const PutMissionsByMissionNameSampleRecordsFail = "PutMissionsByMissionNameSampleRecordsFail"
 ;
 
-// actions for DELETE /dictionary/account/sap
-export const DeleteDictionaryAccountSapSuccess = "DeleteDictionaryAccountSapSuccess";
-export const DeleteDictionaryAccountSapRequest = "DeleteDictionaryAccountSapRequest";
-export const DeleteDictionaryAccountSapFail = "DeleteDictionaryAccountSapFail"
+// actions for POST /missions/{missionName}/sample-records
+export const PostMissionsByMissionNameSampleRecordsSuccess = "PostMissionsByMissionNameSampleRecordsSuccess";
+export const PostMissionsByMissionNameSampleRecordsRequest = "PostMissionsByMissionNameSampleRecordsRequest";
+export const PostMissionsByMissionNameSampleRecordsFail = "PostMissionsByMissionNameSampleRecordsFail"
 ;
 
-// actions for GET /dictionary/segment
-export const GetDictionarySegmentSuccess = "GetDictionarySegmentSuccess";
-export const GetDictionarySegmentRequest = "GetDictionarySegmentRequest";
-export const GetDictionarySegmentFail = "GetDictionarySegmentFail"
+// actions for GET /missions/{missionName}/sample-records/{uuid}
+export const GetMissionsByMissionNameSampleRecordsByUuidSuccess = "GetMissionsByMissionNameSampleRecordsByUuidSuccess";
+export const GetMissionsByMissionNameSampleRecordsByUuidRequest = "GetMissionsByMissionNameSampleRecordsByUuidRequest";
+export const GetMissionsByMissionNameSampleRecordsByUuidFail = "GetMissionsByMissionNameSampleRecordsByUuidFail"
 ;
 
-// actions for POST /dictionary/segment
-export const PostDictionarySegmentSuccess = "PostDictionarySegmentSuccess";
-export const PostDictionarySegmentRequest = "PostDictionarySegmentRequest";
-export const PostDictionarySegmentFail = "PostDictionarySegmentFail"
+// actions for DELETE /missions/{missionName}/sample-records/{uuid}
+export const DeleteMissionsByMissionNameSampleRecordsByUuidSuccess = "DeleteMissionsByMissionNameSampleRecordsByUuidSuccess";
+export const DeleteMissionsByMissionNameSampleRecordsByUuidRequest = "DeleteMissionsByMissionNameSampleRecordsByUuidRequest";
+export const DeleteMissionsByMissionNameSampleRecordsByUuidFail = "DeleteMissionsByMissionNameSampleRecordsByUuidFail"
 ;
 
-// actions for DELETE /dictionary/segment
-export const DeleteDictionarySegmentSuccess = "DeleteDictionarySegmentSuccess";
-export const DeleteDictionarySegmentRequest = "DeleteDictionarySegmentRequest";
-export const DeleteDictionarySegmentFail = "DeleteDictionarySegmentFail"
+// actions for POST /missions/{missionName}/sample-records/{uuid}/photos
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosSuccess = "PostMissionsByMissionNameSampleRecordsByUuidPhotosSuccess";
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosRequest = "PostMissionsByMissionNameSampleRecordsByUuidPhotosRequest";
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosFail = "PostMissionsByMissionNameSampleRecordsByUuidPhotosFail"
+;
+
+// actions for POST /missions/{missionName}/sample-records/{uuid}/photos/original/{photo-name}
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameSuccess = "PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameSuccess";
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameRequest = "PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameRequest";
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameFail = "PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameFail"
+;
+
+// actions for POST /missions/{missionName}/sample-records/{uuid}/photos/scaled/{photo-name}
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameSuccess = "PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameSuccess";
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameRequest = "PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameRequest";
+export const PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameFail = "PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameFail"
+;
+
+// actions for DELETE /missions/{missionName}/sample-records/{uuid}/photos/{photo-name}
+export const DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameSuccess = "DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameSuccess";
+export const DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameRequest = "DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameRequest";
+export const DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameFail = "DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameFail"
+;
+
+// actions for GET /missions/{missionName}/search/find-records
+export const GetMissionsByMissionNameSearchFindRecordsSuccess = "GetMissionsByMissionNameSearchFindRecordsSuccess";
+export const GetMissionsByMissionNameSearchFindRecordsRequest = "GetMissionsByMissionNameSearchFindRecordsRequest";
+export const GetMissionsByMissionNameSearchFindRecordsFail = "GetMissionsByMissionNameSearchFindRecordsFail"
+;
+
+// actions for GET /missions/{missionName}/search/sample-records
+export const GetMissionsByMissionNameSearchSampleRecordsSuccess = "GetMissionsByMissionNameSearchSampleRecordsSuccess";
+export const GetMissionsByMissionNameSearchSampleRecordsRequest = "GetMissionsByMissionNameSearchSampleRecordsRequest";
+export const GetMissionsByMissionNameSearchSampleRecordsFail = "GetMissionsByMissionNameSearchSampleRecordsFail"
+;
+
+// actions for GET /set-backup-downscaler
+export const GetSetBackupDownscalerSuccess = "GetSetBackupDownscalerSuccess";
+export const GetSetBackupDownscalerRequest = "GetSetBackupDownscalerRequest";
+export const GetSetBackupDownscalerFail = "GetSetBackupDownscalerFail"
+;
+
+// actions for GET /sync/external-id
+export const GetSyncExternalIdSuccess = "GetSyncExternalIdSuccess";
+export const GetSyncExternalIdRequest = "GetSyncExternalIdRequest";
+export const GetSyncExternalIdFail = "GetSyncExternalIdFail"
+;
+
+// actions for GET /sync/file-root
+export const GetSyncFileRootSuccess = "GetSyncFileRootSuccess";
+export const GetSyncFileRootRequest = "GetSyncFileRootRequest";
+export const GetSyncFileRootFail = "GetSyncFileRootFail"
+;
+
+// actions for GET /sync/initial-load
+export const GetSyncInitialLoadSuccess = "GetSyncInitialLoadSuccess";
+export const GetSyncInitialLoadRequest = "GetSyncInitialLoadRequest";
+export const GetSyncInitialLoadFail = "GetSyncInitialLoadFail"
+;
+
+// actions for GET /sync/node-type
+export const GetSyncNodeTypeSuccess = "GetSyncNodeTypeSuccess";
+export const GetSyncNodeTypeRequest = "GetSyncNodeTypeRequest";
+export const GetSyncNodeTypeFail = "GetSyncNodeTypeFail"
+;
+
+// actions for GET /sync/open-registration
+export const GetSyncOpenRegistrationSuccess = "GetSyncOpenRegistrationSuccess";
+export const GetSyncOpenRegistrationRequest = "GetSyncOpenRegistrationRequest";
+export const GetSyncOpenRegistrationFail = "GetSyncOpenRegistrationFail"
+;
+
+// actions for GET /sync/pull
+export const GetSyncPullSuccess = "GetSyncPullSuccess";
+export const GetSyncPullRequest = "GetSyncPullRequest";
+export const GetSyncPullFail = "GetSyncPullFail"
+;
+
+// actions for GET /sync/push
+export const GetSyncPushSuccess = "GetSyncPushSuccess";
+export const GetSyncPushRequest = "GetSyncPushRequest";
+export const GetSyncPushFail = "GetSyncPushFail"
+;
+
+// actions for GET /sync/register
+export const GetSyncRegisterSuccess = "GetSyncRegisterSuccess";
+export const GetSyncRegisterRequest = "GetSyncRegisterRequest";
+export const GetSyncRegisterFail = "GetSyncRegisterFail"
+;
+
+// actions for GET /sync/remove-node
+export const GetSyncRemoveNodeSuccess = "GetSyncRemoveNodeSuccess";
+export const GetSyncRemoveNodeRequest = "GetSyncRemoveNodeRequest";
+export const GetSyncRemoveNodeFail = "GetSyncRemoveNodeFail"
+;
+
+// actions for GET /sync/set-auto-sync
+export const GetSyncSetAutoSyncSuccess = "GetSyncSetAutoSyncSuccess";
+export const GetSyncSetAutoSyncRequest = "GetSyncSetAutoSyncRequest";
+export const GetSyncSetAutoSyncFail = "GetSyncSetAutoSyncFail"
+;
+
+// actions for GET /sync/status
+export const GetSyncStatusSuccess = "GetSyncStatusSuccess";
+export const GetSyncStatusRequest = "GetSyncStatusRequest";
+export const GetSyncStatusFail = "GetSyncStatusFail"
+;
+
+// actions for GET /sync/sync-url
+export const GetSyncSyncUrlSuccess = "GetSyncSyncUrlSuccess";
+export const GetSyncSyncUrlRequest = "GetSyncSyncUrlRequest";
+export const GetSyncSyncUrlFail = "GetSyncSyncUrlFail"
+;
+
+// actions for GET /sync/synchronise
+export const GetSyncSynchroniseSuccess = "GetSyncSynchroniseSuccess";
+export const GetSyncSynchroniseRequest = "GetSyncSynchroniseRequest";
+export const GetSyncSynchroniseFail = "GetSyncSynchroniseFail"
+;
+
+// actions for GET /sync/{missionName}/pull-files
+export const GetSyncByMissionNamePullFilesSuccess = "GetSyncByMissionNamePullFilesSuccess";
+export const GetSyncByMissionNamePullFilesRequest = "GetSyncByMissionNamePullFilesRequest";
+export const GetSyncByMissionNamePullFilesFail = "GetSyncByMissionNamePullFilesFail"
+;
+
+// actions for GET /sync/{missionName}/push-files
+export const GetSyncByMissionNamePushFilesSuccess = "GetSyncByMissionNamePushFilesSuccess";
+export const GetSyncByMissionNamePushFilesRequest = "GetSyncByMissionNamePushFilesRequest";
+export const GetSyncByMissionNamePushFilesFail = "GetSyncByMissionNamePushFilesFail"
+;
+
+// actions for GET /sync/{missionName}/synchronise-files
+export const GetSyncByMissionNameSynchroniseFilesSuccess = "GetSyncByMissionNameSynchroniseFilesSuccess";
+export const GetSyncByMissionNameSynchroniseFilesRequest = "GetSyncByMissionNameSynchroniseFilesRequest";
+export const GetSyncByMissionNameSynchroniseFilesFail = "GetSyncByMissionNameSynchroniseFilesFail"
+;
+
+// actions for GET /user
+export const GetUserSuccess = "GetUserSuccess";
+export const GetUserRequest = "GetUserRequest";
+export const GetUserFail = "GetUserFail"
+;
+
+// actions for PUT /user
+export const PutUserSuccess = "PutUserSuccess";
+export const PutUserRequest = "PutUserRequest";
+export const PutUserFail = "PutUserFail"
+;
+
+// actions for POST /user
+export const PostUserSuccess = "PostUserSuccess";
+export const PostUserRequest = "PostUserRequest";
+export const PostUserFail = "PostUserFail"
+;
+
+// actions for DELETE /user
+export const DeleteUserSuccess = "DeleteUserSuccess";
+export const DeleteUserRequest = "DeleteUserRequest";
+export const DeleteUserFail = "DeleteUserFail"
+;
+
+// actions for GET /users
+export const GetUsersSuccess = "GetUsersSuccess";
+export const GetUsersRequest = "GetUsersRequest";
+export const GetUsersFail = "GetUsersFail"
 ;

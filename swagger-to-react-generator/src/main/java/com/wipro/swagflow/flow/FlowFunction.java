@@ -21,7 +21,7 @@ public class FlowFunction extends FlowType {
     private FlowTypeParam returnParam;
     private List<List<FlowTypeParam>> funcAdditionalParam = new ArrayList<>();
 
-    public FlowFunction(String name) {
+    public FlowFunction(JsWord name) {
         super(name);
     }
 
@@ -43,7 +43,7 @@ public class FlowFunction extends FlowType {
 
 //        return "const " + name + " = (" + params.stream().map(FlowTypeParam::toCode).collect(Collectors.joining(","))
 //                + ")" + (returnParam == null ? "" : ":"+returnParam.toCode()) + " => " + funcParam + " {\n" + body + " \n}\n";
-        return "const " + name + " = " + funcParam + " => {\n" + body + " \n};\n";
+        return "export const " + name.getJsLexicalWithUpperCase() + " = " + funcParam + " => {\n" + body + " \n};\n";
     }
 
 
@@ -62,7 +62,7 @@ public class FlowFunction extends FlowType {
             String group3 = matcher.group(3);
 
 
-            FlowFunction res = new FlowFunction(group.substring(6, group.indexOf("=")).replace(" ", ""));
+            FlowFunction res = new FlowFunction(JsWord.from(group.substring(6, group.indexOf("=")).replace(" ", "")));
 
             String[] funcParams = group2.split("=>");
 
@@ -74,7 +74,7 @@ public class FlowFunction extends FlowType {
                     FlowTypeParam flowTypeParam = new FlowTypeParam();
                     if (StringUtils.isEmpty(param)) continue;
                     if (param.contains(":")) {
-                        flowTypeParam.setName(param.substring(0, param.indexOf(":")));
+                        flowTypeParam.setName(JsWord.from(param.substring(0, param.indexOf(":"))));
                         if (param.equals("integer") || param.equals("float") || param.equals("double")){
                             flowTypeParam.setType("number");
                         }
@@ -82,7 +82,7 @@ public class FlowFunction extends FlowType {
                             flowTypeParam.setType(param.substring(param.indexOf(":") + 1));
                         }
                     } else {
-                        flowTypeParam.setName(param);
+                        flowTypeParam.setName(JsWord.from(param));
                     }
                     flowTypeParams.add(flowTypeParam);
                 }
