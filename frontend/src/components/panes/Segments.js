@@ -4,9 +4,9 @@ import { Button, Pagination } from 'antd';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
 import {connect} from "react-redux";
-import {getDictionarySegment, postUserLogin} from "../../api/api-func";
-import {RequestSetUserLogin, ResultSetSegments, Segment, UserLogin} from "../../api/api-models";
+import {RequestSetSegment, RequestSetUserLogin, ResultSetSegments, Segment, UserLogin} from "../../api/api-models";
 import {ActionRequestData, ActionResponseData} from "../../api/common-middleware";
+import {GetDictionaryAccountSap, GetDictionarySegment, PostDictionarySegment} from "../../api/api-func";
 
 const data = [
     {
@@ -75,19 +75,12 @@ class Segments extends Component<{
 
     render() {
 
-        const data = this.props.segments.response !== undefined
-            ? this.props.segments.response.data.map(
-                segment => new Segment.Builder()
-                    .withCsTradeRef(segment.csTradeRef)
-                    .withCsType(segment.csType + 10)
-                    .build()
-            )
-            : [];
+        const data = [];
 
         return (
             <div className="segments">
                 <div className="flex-end-row">
-                    <Button type="primary" icon="plus-circle" onClick={null}>
+                    <Button type="primary" icon="plus-circle" onClick={()=>{this.props.insertSegments()}}>
                         Dodaj segment
                     </Button>
                     <Button type="primary" icon="plus-circle" onClick={()=>{this.props.getAllSegments()}}>
@@ -139,7 +132,20 @@ export default connect(
         getAllSegments: () => {
 
             dispatch(
-                getDictionarySegment()
+                GetDictionarySegment()
+            )
+        },
+
+        insertSegments: () => {
+            dispatch(
+                PostDictionarySegment(new RequestSetSegment.Builder()
+                    .withData(new Segment.Builder()
+                        .withCsType(99)
+                        .withCsTradefer("tradeRef")
+                        .build()
+                    )
+                    .build()
+                )
             )
         }
     })

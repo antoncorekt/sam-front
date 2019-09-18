@@ -21,25 +21,42 @@ public class FlowObjectInternalBuilder implements FlowElement {
         if ( param.getMaxLen() != null && param.getMaxLen()>0){
             lenChecker = "if (" + param.getName().getJsLexical()+ " !== null && " + param.getName().getJsLexical() + ".length>" + param.getMaxLen() + ") throw new Error(`Data param error. Parameter " + param.getName() + " < " +param.getMaxLen() +".`);";
         }
+//
+//        return "\t\t\twith"+param.getName().getJsLexicalWithUpperCase() + "(" + param.toCode() + "): " + "Builder" + " { \n" +
+//               "\t\t\t\tthis._model."+param.getName().getJsLexical()+"="+param.getName().getJsLexical() + ";\n " +
+//                (lenChecker == null ? "" : "\t\t\t\t"+lenChecker+"\n") +
+//                "\t\t\t\treturn this;\n" +
+//                "\t\t\t}\n"
+//                ;
 
-        return "\t\t\twith"+param.getName().getJsLexicalWithUpperCase() + "(" + param.toCode() + "): " + "Builder" + " { \n" +
-               "\t\t\t\tthis._model."+param.getName().getJsLexical()+"="+param.getName().getJsLexical() + ";\n " +
-                (lenChecker == null ? "" : "\t\t\t\t"+lenChecker+"\n") +
-                "\t\t\t\treturn this;\n" +
-                "\t\t\t}\n"
+        return "with"+param.getName().getJsLexicalWithUpperCase() + "(" + param.toCode() + "): " + "Builder" + " { " +
+                "this._model."+param.getName().getJsLexical()+"="+param.getName().getJsLexical() + "; " +
+                (lenChecker == null ? "" : ""+lenChecker+"") +
+                "return this;" +
+                "}"
                 ;
     }
 
     @Override
     public String toCode() {
-        return "\tstatic get Builder() {\n" +
-                "\t\tclass Builder {\n" +
-                "\t\t\t _model: " + flowObjectType.getName().getJsLexicalWithUpperCase() + " = new " + flowObjectType.getName().getJsLexicalWithUpperCase() + "();\n" +
-                flowObjectType.getFlowClassParams().stream().filter(Objects::nonNull).map(this::generateBuildMethod).collect(Collectors.joining("\n")) +
-                "\t\t\t" + "build(){\n" +
-                "\t\t\t\t" + "return this._model;\n" +
-                "\t\t\t" + "}\n\t\t}\n" +
-                "\t\treturn Builder;\n" +
-                "\t}";
+//        return "\tstatic get Builder() {\n" +
+//                "\t\tclass Builder {\n" +
+//                "\t\t\t _model: " + flowObjectType.getName().getJsLexicalWithUpperCase() + " = new " + flowObjectType.getName().getJsLexicalWithUpperCase() + "();\n" +
+//                flowObjectType.getFlowClassParams().stream().filter(Objects::nonNull).map(this::generateBuildMethod).collect(Collectors.joining("\n")) +
+//                "\t\t\t" + "build(){\n" +
+//                "\t\t\t\t" + "return this._model;\n" +
+//                "\t\t\t" + "}\n\t\t}\n" +
+//                "\t\treturn Builder;\n" +
+//                "\t}";
+
+        return "\tstatic get Builder() {" +
+                "class Builder {" +
+                " _model: " + flowObjectType.getName().getJsLexicalWithUpperCase() + " = new " + flowObjectType.getName().getJsLexicalWithUpperCase() + "();" +
+                flowObjectType.getFlowClassParams().stream().filter(Objects::nonNull).map(this::generateBuildMethod).collect(Collectors.joining("")) +
+                "" + "build(){" +
+                "" + "return this._model;" +
+                "" + "}}" +
+                "return Builder;" +
+                "}";
     }
 }

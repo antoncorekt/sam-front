@@ -89,24 +89,6 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest = "Delete
 export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail = "DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail"
 ;
 
-// actions for GET /dictionary/account/bscs
-export const GetDictionaryAccountBscsSuccess = "GetDictionaryAccountBscsSuccess";
-export const GetDictionaryAccountBscsRequest = "GetDictionaryAccountBscsRequest";
-export const GetDictionaryAccountBscsFail = "GetDictionaryAccountBscsFail"
-;
-
-// actions for POST /dictionary/account/bscs
-export const PostDictionaryAccountBscsSuccess = "PostDictionaryAccountBscsSuccess";
-export const PostDictionaryAccountBscsRequest = "PostDictionaryAccountBscsRequest";
-export const PostDictionaryAccountBscsFail = "PostDictionaryAccountBscsFail"
-;
-
-// actions for DELETE /dictionary/account/bscs
-export const DeleteDictionaryAccountBscsSuccess = "DeleteDictionaryAccountBscsSuccess";
-export const DeleteDictionaryAccountBscsRequest = "DeleteDictionaryAccountBscsRequest";
-export const DeleteDictionaryAccountBscsFail = "DeleteDictionaryAccountBscsFail"
-;
-
 // actions for GET /dictionary/account/sap
 export const GetDictionaryAccountSapSuccess = "GetDictionaryAccountSapSuccess";
 export const GetDictionaryAccountSapRequest = "GetDictionaryAccountSapRequest";
@@ -123,6 +105,24 @@ export const PostDictionaryAccountSapFail = "PostDictionaryAccountSapFail"
 export const DeleteDictionaryAccountSapSuccess = "DeleteDictionaryAccountSapSuccess";
 export const DeleteDictionaryAccountSapRequest = "DeleteDictionaryAccountSapRequest";
 export const DeleteDictionaryAccountSapFail = "DeleteDictionaryAccountSapFail"
+;
+
+// actions for GET /dictionary/account/bscs
+export const GetDictionaryAccountBscsSuccess = "GetDictionaryAccountBscsSuccess";
+export const GetDictionaryAccountBscsRequest = "GetDictionaryAccountBscsRequest";
+export const GetDictionaryAccountBscsFail = "GetDictionaryAccountBscsFail"
+;
+
+// actions for POST /dictionary/account/bscs
+export const PostDictionaryAccountBscsSuccess = "PostDictionaryAccountBscsSuccess";
+export const PostDictionaryAccountBscsRequest = "PostDictionaryAccountBscsRequest";
+export const PostDictionaryAccountBscsFail = "PostDictionaryAccountBscsFail"
+;
+
+// actions for DELETE /dictionary/account/bscs
+export const DeleteDictionaryAccountBscsSuccess = "DeleteDictionaryAccountBscsSuccess";
+export const DeleteDictionaryAccountBscsRequest = "DeleteDictionaryAccountBscsRequest";
+export const DeleteDictionaryAccountBscsFail = "DeleteDictionaryAccountBscsFail"
 ;
 
 // actions for GET /dictionary/segment

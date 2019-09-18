@@ -1,714 +1,377 @@
-export const GetHelloWorldHandler = () => {
-	const expm = ACT.GetHelloWorldRequest;
-	 return {
-		 'GetHelloWorldRequest':(state:any, action:ActionRequestData<null, GetHelloWorldQueryParams>)=>{
-			 return state;
+import { 
+ResultSetOk,
+ResultSetError,
+ResultSetCount,
+Segment,
+RequestSetSegment,
+ResultSetSegment,
+ResultSetSegments,
+Account,
+RequestSetAccount,
+ResultSetAccounts,
+ResultSetAccount,
+Order,
+RequestSetOrder,
+ResultSetOrder,
+ResultSetOrders,
+RequestSetUserLogin,
+ResultSetUserLogin,
+UserLogin,
+UserLoginInfo,
+RequestSetUserLogoff,
+UserLogoff,
+AccountDictSap,
+RequestSetAccountDictSap,
+ResultSetAccountDictSap,
+ResultSetAccountDictSaps,
+AccountDictBscs,
+RequestSetAccountDictBscs,
+ResultSetAccountDictBscs,
+ResultSetAccountDictBscss,
+ResultSetVersion,
+ResultSetStatus,
+GetAccountByStatusByReleaseQueryParams,
+PutAccountByStatusByReleaseByBscsAccountQueryParams,
+DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+GetOrderByStatusByReleaseQueryParams,
+PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
+DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
+import {ActionRequestData, ActionResponseData} from "./src/main/resources/common-reducers";
+import * as ACT from './api-actions-defs';
+
+export const GetSystemVersionHandler = () => {
+	const expm = ACT.GetSystemVersionRequest;
+	return {
+		 'GetSystemVersionRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetHelloWorldSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, GetHelloWorldQueryParams>>)=>{
-			 return state;
+		 'GetSystemVersionSuccess':(state:any, action:ActionResponseData<ResultSetVersion,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetHelloWorldFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetHelloWorldQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const PostLoginHandler = () => {
-	const expm = ACT.PostLoginRequest;
-	 return {
-		 'PostLoginRequest':(state:any, action:ActionRequestData<null, PostLoginQueryParams>)=>{
-			 return state;
-		},
-		 'PostLoginSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, PostLoginQueryParams>>)=>{
-			 return state;
-		},
-		 'PostLoginFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, PostLoginQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const PostLogoutHandler = () => {
-	const expm = ACT.PostLogoutRequest;
-	 return {
-		 'PostLogoutRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
-		},
-		 'PostLogoutSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-		 'PostLogoutFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetMeHandler = () => {
-	const expm = ACT.GetMeRequest;
-	 return {
-		 'GetMeRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
-		},
-		 'GetMeSuccess':(state:any, action:ActionResponseData<UserDTO,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-		 'GetMeFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-	}
-}
-export const PutMeHandler = () => {
-	const expm = ACT.PutMeRequest;
-	 return {
-		 'PutMeRequest':(state:any, action:ActionRequestData<string, null>)=>{
-			 return state;
-		},
-		 'PutMeSuccess':(state:any, action:ActionResponseData<UserDTO,ActionRequestData<string, null>>)=>{
-			 return state;
-		},
-		 'PutMeFail':(state:any, action:ActionResponseData<any,ActionRequestData<string, null>>)=>{
-			 return state;
+		 'GetSystemVersionFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetMissionsHandler = () => {
-	const expm = ACT.GetMissionsRequest;
-	 return {
-		 'GetMissionsRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
+};
+export const GetSystemStatusHandler = () => {
+	const expm = ACT.GetSystemStatusRequest;
+	return {
+		 'GetSystemStatusRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsSuccess':(state:any, action:ActionResponseData<Array<MissionDTO>,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'GetSystemStatusSuccess':(state:any, action:ActionResponseData<ResultSetStatus,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-	}
-}
-export const PostMissionsHandler = () => {
-	const expm = ACT.PostMissionsRequest;
-	 return {
-		 'PostMissionsRequest':(state:any, action:ActionRequestData<MissionDTO, null>)=>{
-			 return state;
-		},
-		 'PostMissionsSuccess':(state:any, action:ActionResponseData<MissionDTO,ActionRequestData<MissionDTO, null>>)=>{
-			 return state;
-		},
-		 'PostMissionsFail':(state:any, action:ActionResponseData<any,ActionRequestData<MissionDTO, null>>)=>{
-			 return state;
+		 'GetSystemStatusFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetMissionsByIdHandler = () => {
-	const expm = ACT.GetMissionsByIdRequest;
-	 return {
-		 'GetMissionsByIdRequest':(state:any, action:ActionRequestData<null, GetMissionsByIdQueryParams>)=>{
-			 return state;
+};
+export const PostUserLoginHandler = () => {
+	const expm = ACT.PostUserLoginRequest;
+	return {
+		 'PostUserLoginRequest':(state:any, action:ActionRequestData<RequestSetUserLogin, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsByIdSuccess':(state:any, action:ActionResponseData<MissionDTO,ActionRequestData<null, GetMissionsByIdQueryParams>>)=>{
-			 return state;
+		 'PostUserLoginSuccess':(state:any, action:ActionResponseData<ResultSetUserLogin,ActionRequestData<RequestSetUserLogin, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsByIdFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetMissionsByIdQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const DeleteMissionsByIdHandler = () => {
-	const expm = ACT.DeleteMissionsByIdRequest;
-	 return {
-		 'DeleteMissionsByIdRequest':(state:any, action:ActionRequestData<null, DeleteMissionsByIdQueryParams>)=>{
-			 return state;
-		},
-		 'DeleteMissionsByIdSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, DeleteMissionsByIdQueryParams>>)=>{
-			 return state;
-		},
-		 'DeleteMissionsByIdFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, DeleteMissionsByIdQueryParams>>)=>{
-			 return state;
+		 'PostUserLoginFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogin, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetMissionsByMissionNameFindRecordsHandler = () => {
-	const expm = ACT.GetMissionsByMissionNameFindRecordsRequest;
-	 return {
-		 'GetMissionsByMissionNameFindRecordsRequest':(state:any, action:ActionRequestData<null, GetMissionsByMissionNameFindRecordsQueryParams>)=>{
-			 return state;
+};
+export const PostUserLogoffHandler = () => {
+	const expm = ACT.PostUserLogoffRequest;
+	return {
+		 'PostUserLogoffRequest':(state:any, action:ActionRequestData<RequestSetUserLogoff, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsByMissionNameFindRecordsSuccess':(state:any, action:ActionResponseData<FindRecordDTO,ActionRequestData<null, GetMissionsByMissionNameFindRecordsQueryParams>>)=>{
-			 return state;
+		 'PostUserLogoffSuccess':(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<RequestSetUserLogoff, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsByMissionNameFindRecordsFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetMissionsByMissionNameFindRecordsQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const PutMissionsByMissionNameFindRecordsHandler = () => {
-	const expm = ACT.PutMissionsByMissionNameFindRecordsRequest;
-	 return {
-		 'PutMissionsByMissionNameFindRecordsRequest':(state:any, action:ActionRequestData<FindRecordDTO, PutMissionsByMissionNameFindRecordsQueryParams>)=>{
-			 return state;
-		},
-		 'PutMissionsByMissionNameFindRecordsSuccess':(state:any, action:ActionResponseData<FindRecordDTO,ActionRequestData<FindRecordDTO, PutMissionsByMissionNameFindRecordsQueryParams>>)=>{
-			 return state;
-		},
-		 'PutMissionsByMissionNameFindRecordsFail':(state:any, action:ActionResponseData<any,ActionRequestData<FindRecordDTO, PutMissionsByMissionNameFindRecordsQueryParams>>)=>{
-			 return state;
+		 'PostUserLogoffFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogoff, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const PostMissionsByMissionNameFindRecordsHandler = () => {
-	const expm = ACT.PostMissionsByMissionNameFindRecordsRequest;
-	 return {
-		 'PostMissionsByMissionNameFindRecordsRequest':(state:any, action:ActionRequestData<FindRecordDTO, PostMissionsByMissionNameFindRecordsQueryParams>)=>{
-			 return state;
+};
+export const PostAccountHandler = () => {
+	const expm = ACT.PostAccountRequest;
+	return {
+		 'PostAccountRequest':(state:any, action:ActionRequestData<RequestSetAccount, null>)=>{
+			 return {...state, ...action};
 		},
-		 'PostMissionsByMissionNameFindRecordsSuccess':(state:any, action:ActionResponseData<FindRecordDTO,ActionRequestData<FindRecordDTO, PostMissionsByMissionNameFindRecordsQueryParams>>)=>{
-			 return state;
+		 'PostAccountSuccess':(state:any, action:ActionResponseData<ResultSetAccount,ActionRequestData<RequestSetAccount, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'PostMissionsByMissionNameFindRecordsFail':(state:any, action:ActionResponseData<any,ActionRequestData<FindRecordDTO, PostMissionsByMissionNameFindRecordsQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetMissionsByMissionNameFindRecordsByUuidHandler = () => {
-	const expm = ACT.GetMissionsByMissionNameFindRecordsByUuidRequest;
-	 return {
-		 'GetMissionsByMissionNameFindRecordsByUuidRequest':(state:any, action:ActionRequestData<null, GetMissionsByMissionNameFindRecordsByUuidQueryParams>)=>{
-			 return state;
-		},
-		 'GetMissionsByMissionNameFindRecordsByUuidSuccess':(state:any, action:ActionResponseData<FindRecordDTO,ActionRequestData<null, GetMissionsByMissionNameFindRecordsByUuidQueryParams>>)=>{
-			 return state;
-		},
-		 'GetMissionsByMissionNameFindRecordsByUuidFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetMissionsByMissionNameFindRecordsByUuidQueryParams>>)=>{
-			 return state;
+		 'PostAccountFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccount, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const DeleteMissionsByMissionNameFindRecordsByUuidHandler = () => {
-	const expm = ACT.DeleteMissionsByMissionNameFindRecordsByUuidRequest;
-	 return {
-		 'DeleteMissionsByMissionNameFindRecordsByUuidRequest':(state:any, action:ActionRequestData<null, DeleteMissionsByMissionNameFindRecordsByUuidQueryParams>)=>{
-			 return state;
+};
+export const DeleteAccountHandler = () => {
+	const expm = ACT.DeleteAccountRequest;
+	return {
+		 'DeleteAccountRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'DeleteMissionsByMissionNameFindRecordsByUuidSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, DeleteMissionsByMissionNameFindRecordsByUuidQueryParams>>)=>{
-			 return state;
+		 'DeleteAccountSuccess':(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'DeleteMissionsByMissionNameFindRecordsByUuidFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, DeleteMissionsByMissionNameFindRecordsByUuidQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const PostMissionsByMissionNameFindRecordsByUuidPhotosHandler = () => {
-	const expm = ACT.PostMissionsByMissionNameFindRecordsByUuidPhotosRequest;
-	 return {
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosRequest':(state:any, action:ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosQueryParams>)=>{
-			 return state;
-		},
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosQueryParams>>)=>{
-			 return state;
-		},
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosQueryParams>>)=>{
-			 return state;
+		 'DeleteAccountFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameHandler = () => {
-	const expm = ACT.PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameRequest;
-	 return {
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameRequest':(state:any, action:ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameQueryParams>)=>{
-			 return state;
+};
+export const GetAccountByStatusByReleaseHandler = () => {
+	const expm = ACT.GetAccountByStatusByReleaseRequest;
+	return {
+		 'GetAccountByStatusByReleaseRequest':(state:any, action:ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>)=>{
+			 return {...state, ...action};
 		},
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameSuccess':(state:any, action:ActionResponseData<Resource,ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameQueryParams>>)=>{
-			 return state;
+		 'GetAccountByStatusByReleaseSuccess':(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
+			 return {...state, ...action};
 		},
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosOriginalByPhotoNameQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameHandler = () => {
-	const expm = ACT.PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameRequest;
-	 return {
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameRequest':(state:any, action:ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameQueryParams>)=>{
-			 return state;
-		},
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameSuccess':(state:any, action:ActionResponseData<Resource,ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameQueryParams>>)=>{
-			 return state;
-		},
-		 'PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, PostMissionsByMissionNameFindRecordsByUuidPhotosScaledByPhotoNameQueryParams>>)=>{
-			 return state;
+		 'GetAccountByStatusByReleaseFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameHandler = () => {
-	const expm = ACT.DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameRequest;
-	 return {
-		 'DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameRequest':(state:any, action:ActionRequestData<null, DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameQueryParams>)=>{
-			 return state;
+};
+export const PutAccountByStatusByReleaseByBscsAccountHandler = () => {
+	const expm = ACT.PutAccountByStatusByReleaseByBscsAccountRequest;
+	return {
+		 'PutAccountByStatusByReleaseByBscsAccountRequest':(state:any, action:ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
+			 return {...state, ...action};
 		},
-		 'DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameQueryParams>>)=>{
-			 return state;
+		 'PutAccountByStatusByReleaseByBscsAccountSuccess':(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+			 return {...state, ...action};
 		},
-		 'DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, DeleteMissionsByMissionNameFindRecordsByUuidPhotosByPhotoNameQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetMissionsByMissionNameSampleRecordsHandler = () => {
-	const expm = ACT.GetMissionsByMissionNameSampleRecordsRequest;
-	 return {
-		 'GetMissionsByMissionNameSampleRecordsRequest':(state:any, action:ActionRequestData<null, GetMissionsByMissionNameSampleRecordsQueryParams>)=>{
-			 return state;
-		},
-		 'GetMissionsByMissionNameSampleRecordsSuccess':(state:any, action:ActionResponseData<FindRecordDTO,ActionRequestData<null, GetMissionsByMissionNameSampleRecordsQueryParams>>)=>{
-			 return state;
-		},
-		 'GetMissionsByMissionNameSampleRecordsFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetMissionsByMissionNameSampleRecordsQueryParams>>)=>{
-			 return state;
+		 'PutAccountByStatusByReleaseByBscsAccountFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const PutMissionsByMissionNameSampleRecordsHandler = () => {
-	const expm = ACT.PutMissionsByMissionNameSampleRecordsRequest;
-	 return {
-		 'PutMissionsByMissionNameSampleRecordsRequest':(state:any, action:ActionRequestData<FindRecordDTO, PutMissionsByMissionNameSampleRecordsQueryParams>)=>{
-			 return state;
+};
+export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
+	const expm = ACT.DeleteAccountByStatusByReleaseByBscsAccountRequest;
+	return {
+		 'DeleteAccountByStatusByReleaseByBscsAccountRequest':(state:any, action:ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
+			 return {...state, ...action};
 		},
-		 'PutMissionsByMissionNameSampleRecordsSuccess':(state:any, action:ActionResponseData<FindRecordDTO,ActionRequestData<FindRecordDTO, PutMissionsByMissionNameSampleRecordsQueryParams>>)=>{
-			 return state;
+		 'DeleteAccountByStatusByReleaseByBscsAccountSuccess':(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+			 return {...state, ...action};
 		},
-		 'PutMissionsByMissionNameSampleRecordsFail':(state:any, action:ActionResponseData<any,ActionRequestData<FindRecordDTO, PutMissionsByMissionNameSampleRecordsQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const PostMissionsByMissionNameSampleRecordsHandler = () => {
-	const expm = ACT.PostMissionsByMissionNameSampleRecordsRequest;
-	 return {
-		 'PostMissionsByMissionNameSampleRecordsRequest':(state:any, action:ActionRequestData<FindRecordDTO, PostMissionsByMissionNameSampleRecordsQueryParams>)=>{
-			 return state;
-		},
-		 'PostMissionsByMissionNameSampleRecordsSuccess':(state:any, action:ActionResponseData<FindRecordDTO,ActionRequestData<FindRecordDTO, PostMissionsByMissionNameSampleRecordsQueryParams>>)=>{
-			 return state;
-		},
-		 'PostMissionsByMissionNameSampleRecordsFail':(state:any, action:ActionResponseData<any,ActionRequestData<FindRecordDTO, PostMissionsByMissionNameSampleRecordsQueryParams>>)=>{
-			 return state;
+		 'DeleteAccountByStatusByReleaseByBscsAccountFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetMissionsByMissionNameSampleRecordsByUuidHandler = () => {
-	const expm = ACT.GetMissionsByMissionNameSampleRecordsByUuidRequest;
-	 return {
-		 'GetMissionsByMissionNameSampleRecordsByUuidRequest':(state:any, action:ActionRequestData<null, GetMissionsByMissionNameSampleRecordsByUuidQueryParams>)=>{
-			 return state;
+};
+export const PostAccountReleaseHandler = () => {
+	const expm = ACT.PostAccountReleaseRequest;
+	return {
+		 'PostAccountReleaseRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsByMissionNameSampleRecordsByUuidSuccess':(state:any, action:ActionResponseData<FindRecordDTO,ActionRequestData<null, GetMissionsByMissionNameSampleRecordsByUuidQueryParams>>)=>{
-			 return state;
+		 'PostAccountReleaseSuccess':(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsByMissionNameSampleRecordsByUuidFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetMissionsByMissionNameSampleRecordsByUuidQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const DeleteMissionsByMissionNameSampleRecordsByUuidHandler = () => {
-	const expm = ACT.DeleteMissionsByMissionNameSampleRecordsByUuidRequest;
-	 return {
-		 'DeleteMissionsByMissionNameSampleRecordsByUuidRequest':(state:any, action:ActionRequestData<null, DeleteMissionsByMissionNameSampleRecordsByUuidQueryParams>)=>{
-			 return state;
-		},
-		 'DeleteMissionsByMissionNameSampleRecordsByUuidSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, DeleteMissionsByMissionNameSampleRecordsByUuidQueryParams>>)=>{
-			 return state;
-		},
-		 'DeleteMissionsByMissionNameSampleRecordsByUuidFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, DeleteMissionsByMissionNameSampleRecordsByUuidQueryParams>>)=>{
-			 return state;
+		 'PostAccountReleaseFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const PostMissionsByMissionNameSampleRecordsByUuidPhotosHandler = () => {
-	const expm = ACT.PostMissionsByMissionNameSampleRecordsByUuidPhotosRequest;
-	 return {
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosRequest':(state:any, action:ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosQueryParams>)=>{
-			 return state;
+};
+export const PostOrderHandler = () => {
+	const expm = ACT.PostOrderRequest;
+	return {
+		 'PostOrderRequest':(state:any, action:ActionRequestData<RequestSetOrder, null>)=>{
+			 return {...state, ...action};
 		},
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosQueryParams>>)=>{
-			 return state;
+		 'PostOrderSuccess':(state:any, action:ActionResponseData<ResultSetOrder,ActionRequestData<RequestSetOrder, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameHandler = () => {
-	const expm = ACT.PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameRequest;
-	 return {
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameRequest':(state:any, action:ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameQueryParams>)=>{
-			 return state;
-		},
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameSuccess':(state:any, action:ActionResponseData<Resource,ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameQueryParams>>)=>{
-			 return state;
-		},
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosOriginalByPhotoNameQueryParams>>)=>{
-			 return state;
+		 'PostOrderFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetOrder, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameHandler = () => {
-	const expm = ACT.PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameRequest;
-	 return {
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameRequest':(state:any, action:ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameQueryParams>)=>{
-			 return state;
+};
+export const DeleteOrderHandler = () => {
+	const expm = ACT.DeleteOrderRequest;
+	return {
+		 'DeleteOrderRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameSuccess':(state:any, action:ActionResponseData<Resource,ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameQueryParams>>)=>{
-			 return state;
+		 'DeleteOrderSuccess':(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, PostMissionsByMissionNameSampleRecordsByUuidPhotosScaledByPhotoNameQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameHandler = () => {
-	const expm = ACT.DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameRequest;
-	 return {
-		 'DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameRequest':(state:any, action:ActionRequestData<null, DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameQueryParams>)=>{
-			 return state;
-		},
-		 'DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameQueryParams>>)=>{
-			 return state;
-		},
-		 'DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, DeleteMissionsByMissionNameSampleRecordsByUuidPhotosByPhotoNameQueryParams>>)=>{
-			 return state;
+		 'DeleteOrderFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetMissionsByMissionNameSearchFindRecordsHandler = () => {
-	const expm = ACT.GetMissionsByMissionNameSearchFindRecordsRequest;
-	 return {
-		 'GetMissionsByMissionNameSearchFindRecordsRequest':(state:any, action:ActionRequestData<null, GetMissionsByMissionNameSearchFindRecordsQueryParams>)=>{
-			 return state;
+};
+export const GetOrderByStatusByReleaseHandler = () => {
+	const expm = ACT.GetOrderByStatusByReleaseRequest;
+	return {
+		 'GetOrderByStatusByReleaseRequest':(state:any, action:ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsByMissionNameSearchFindRecordsSuccess':(state:any, action:ActionResponseData<Array<FindRecordDTO>,ActionRequestData<null, GetMissionsByMissionNameSearchFindRecordsQueryParams>>)=>{
-			 return state;
+		 'GetOrderByStatusByReleaseSuccess':(state:any, action:ActionResponseData<ResultSetOrders,ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetMissionsByMissionNameSearchFindRecordsFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetMissionsByMissionNameSearchFindRecordsQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetMissionsByMissionNameSearchSampleRecordsHandler = () => {
-	const expm = ACT.GetMissionsByMissionNameSearchSampleRecordsRequest;
-	 return {
-		 'GetMissionsByMissionNameSearchSampleRecordsRequest':(state:any, action:ActionRequestData<null, GetMissionsByMissionNameSearchSampleRecordsQueryParams>)=>{
-			 return state;
-		},
-		 'GetMissionsByMissionNameSearchSampleRecordsSuccess':(state:any, action:ActionResponseData<Array<FindRecordDTO>,ActionRequestData<null, GetMissionsByMissionNameSearchSampleRecordsQueryParams>>)=>{
-			 return state;
-		},
-		 'GetMissionsByMissionNameSearchSampleRecordsFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetMissionsByMissionNameSearchSampleRecordsQueryParams>>)=>{
-			 return state;
+		 'GetOrderByStatusByReleaseFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSetBackupDownscalerHandler = () => {
-	const expm = ACT.GetSetBackupDownscalerRequest;
-	 return {
-		 'GetSetBackupDownscalerRequest':(state:any, action:ActionRequestData<null, GetSetBackupDownscalerQueryParams>)=>{
-			 return state;
+};
+export const PutOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
+	const expm = ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentRequest;
+	return {
+		 'PutOrderByStatusByReleaseByBscsAccountBySegmentRequest':(state:any, action:ActionRequestData<null, PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSetBackupDownscalerSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, GetSetBackupDownscalerQueryParams>>)=>{
-			 return state;
+		 'PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess':(state:any, action:ActionResponseData<ResultSetOrders,ActionRequestData<null, PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSetBackupDownscalerFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetSetBackupDownscalerQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetSyncExternalIdHandler = () => {
-	const expm = ACT.GetSyncExternalIdRequest;
-	 return {
-		 'GetSyncExternalIdRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
-		},
-		 'GetSyncExternalIdSuccess':(state:any, action:ActionResponseData<IdDTO,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-		 'GetSyncExternalIdFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'PutOrderByStatusByReleaseByBscsAccountBySegmentFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSyncFileRootHandler = () => {
-	const expm = ACT.GetSyncFileRootRequest;
-	 return {
-		 'GetSyncFileRootRequest':(state:any, action:ActionRequestData<null, GetSyncFileRootQueryParams>)=>{
-			 return state;
+};
+export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
+	const expm = ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest;
+	return {
+		 'DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest':(state:any, action:ActionRequestData<null, DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncFileRootSuccess':(state:any, action:ActionResponseData<IdDTO,ActionRequestData<null, GetSyncFileRootQueryParams>>)=>{
-			 return state;
+		 'DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess':(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncFileRootFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetSyncFileRootQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetSyncInitialLoadHandler = () => {
-	const expm = ACT.GetSyncInitialLoadRequest;
-	 return {
-		 'GetSyncInitialLoadRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
-		},
-		 'GetSyncInitialLoadSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-		 'GetSyncInitialLoadFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSyncNodeTypeHandler = () => {
-	const expm = ACT.GetSyncNodeTypeRequest;
-	 return {
-		 'GetSyncNodeTypeRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
+};
+export const GetDictionaryAccountSapHandler = () => {
+	const expm = ACT.GetDictionaryAccountSapRequest;
+	return {
+		 'GetDictionaryAccountSapRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncNodeTypeSuccess':(state:any, action:ActionResponseData<IdDTO,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'GetDictionaryAccountSapSuccess':(state:any, action:ActionResponseData<ResultSetAccountDictSaps,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncNodeTypeFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetSyncOpenRegistrationHandler = () => {
-	const expm = ACT.GetSyncOpenRegistrationRequest;
-	 return {
-		 'GetSyncOpenRegistrationRequest':(state:any, action:ActionRequestData<null, GetSyncOpenRegistrationQueryParams>)=>{
-			 return state;
-		},
-		 'GetSyncOpenRegistrationSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, GetSyncOpenRegistrationQueryParams>>)=>{
-			 return state;
-		},
-		 'GetSyncOpenRegistrationFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetSyncOpenRegistrationQueryParams>>)=>{
-			 return state;
+		 'GetDictionaryAccountSapFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSyncPullHandler = () => {
-	const expm = ACT.GetSyncPullRequest;
-	 return {
-		 'GetSyncPullRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
+};
+export const PostDictionaryAccountSapHandler = () => {
+	const expm = ACT.PostDictionaryAccountSapRequest;
+	return {
+		 'PostDictionaryAccountSapRequest':(state:any, action:ActionRequestData<RequestSetAccountDictSap, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncPullSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'PostDictionaryAccountSapSuccess':(state:any, action:ActionResponseData<ResultSetAccountDictSap,ActionRequestData<RequestSetAccountDictSap, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncPullFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetSyncPushHandler = () => {
-	const expm = ACT.GetSyncPushRequest;
-	 return {
-		 'GetSyncPushRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
-		},
-		 'GetSyncPushSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-		 'GetSyncPushFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'PostDictionaryAccountSapFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccountDictSap, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSyncRegisterHandler = () => {
-	const expm = ACT.GetSyncRegisterRequest;
-	 return {
-		 'GetSyncRegisterRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
+};
+export const DeleteDictionaryAccountSapHandler = () => {
+	const expm = ACT.DeleteDictionaryAccountSapRequest;
+	return {
+		 'DeleteDictionaryAccountSapRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncRegisterSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'DeleteDictionaryAccountSapSuccess':(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncRegisterFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetSyncRemoveNodeHandler = () => {
-	const expm = ACT.GetSyncRemoveNodeRequest;
-	 return {
-		 'GetSyncRemoveNodeRequest':(state:any, action:ActionRequestData<null, GetSyncRemoveNodeQueryParams>)=>{
-			 return state;
-		},
-		 'GetSyncRemoveNodeSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, GetSyncRemoveNodeQueryParams>>)=>{
-			 return state;
-		},
-		 'GetSyncRemoveNodeFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetSyncRemoveNodeQueryParams>>)=>{
-			 return state;
+		 'DeleteDictionaryAccountSapFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSyncSetAutoSyncHandler = () => {
-	const expm = ACT.GetSyncSetAutoSyncRequest;
-	 return {
-		 'GetSyncSetAutoSyncRequest':(state:any, action:ActionRequestData<null, GetSyncSetAutoSyncQueryParams>)=>{
-			 return state;
+};
+export const GetDictionaryAccountBscsHandler = () => {
+	const expm = ACT.GetDictionaryAccountBscsRequest;
+	return {
+		 'GetDictionaryAccountBscsRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncSetAutoSyncSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, GetSyncSetAutoSyncQueryParams>>)=>{
-			 return state;
+		 'GetDictionaryAccountBscsSuccess':(state:any, action:ActionResponseData<ResultSetAccountDictBscss,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncSetAutoSyncFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetSyncSetAutoSyncQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetSyncStatusHandler = () => {
-	const expm = ACT.GetSyncStatusRequest;
-	 return {
-		 'GetSyncStatusRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
-		},
-		 'GetSyncStatusSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-		 'GetSyncStatusFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'GetDictionaryAccountBscsFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSyncSyncUrlHandler = () => {
-	const expm = ACT.GetSyncSyncUrlRequest;
-	 return {
-		 'GetSyncSyncUrlRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
+};
+export const PostDictionaryAccountBscsHandler = () => {
+	const expm = ACT.PostDictionaryAccountBscsRequest;
+	return {
+		 'PostDictionaryAccountBscsRequest':(state:any, action:ActionRequestData<RequestSetAccountDictBscs, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncSyncUrlSuccess':(state:any, action:ActionResponseData<IdDTO,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'PostDictionaryAccountBscsSuccess':(state:any, action:ActionResponseData<ResultSetAccountDictBscs,ActionRequestData<RequestSetAccountDictBscs, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncSyncUrlFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetSyncSynchroniseHandler = () => {
-	const expm = ACT.GetSyncSynchroniseRequest;
-	 return {
-		 'GetSyncSynchroniseRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
-		},
-		 'GetSyncSynchroniseSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-		 'GetSyncSynchroniseFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'PostDictionaryAccountBscsFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccountDictBscs, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSyncByMissionNamePullFilesHandler = () => {
-	const expm = ACT.GetSyncByMissionNamePullFilesRequest;
-	 return {
-		 'GetSyncByMissionNamePullFilesRequest':(state:any, action:ActionRequestData<null, GetSyncByMissionNamePullFilesQueryParams>)=>{
-			 return state;
+};
+export const DeleteDictionaryAccountBscsHandler = () => {
+	const expm = ACT.DeleteDictionaryAccountBscsRequest;
+	return {
+		 'DeleteDictionaryAccountBscsRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncByMissionNamePullFilesSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, GetSyncByMissionNamePullFilesQueryParams>>)=>{
-			 return state;
+		 'DeleteDictionaryAccountBscsSuccess':(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncByMissionNamePullFilesFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetSyncByMissionNamePullFilesQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetSyncByMissionNamePushFilesHandler = () => {
-	const expm = ACT.GetSyncByMissionNamePushFilesRequest;
-	 return {
-		 'GetSyncByMissionNamePushFilesRequest':(state:any, action:ActionRequestData<null, GetSyncByMissionNamePushFilesQueryParams>)=>{
-			 return state;
-		},
-		 'GetSyncByMissionNamePushFilesSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, GetSyncByMissionNamePushFilesQueryParams>>)=>{
-			 return state;
-		},
-		 'GetSyncByMissionNamePushFilesFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetSyncByMissionNamePushFilesQueryParams>>)=>{
-			 return state;
+		 'DeleteDictionaryAccountBscsFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const GetSyncByMissionNameSynchroniseFilesHandler = () => {
-	const expm = ACT.GetSyncByMissionNameSynchroniseFilesRequest;
-	 return {
-		 'GetSyncByMissionNameSynchroniseFilesRequest':(state:any, action:ActionRequestData<null, GetSyncByMissionNameSynchroniseFilesQueryParams>)=>{
-			 return state;
+};
+export const GetDictionarySegmentHandler = () => {
+	const expm = ACT.GetDictionarySegmentRequest;
+	return {
+		 'GetDictionarySegmentRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncByMissionNameSynchroniseFilesSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, GetSyncByMissionNameSynchroniseFilesQueryParams>>)=>{
-			 return state;
+		 'GetDictionarySegmentSuccess':(state:any, action:ActionResponseData<ResultSetSegments,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'GetSyncByMissionNameSynchroniseFilesFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetSyncByMissionNameSynchroniseFilesQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetUserHandler = () => {
-	const expm = ACT.GetUserRequest;
-	 return {
-		 'GetUserRequest':(state:any, action:ActionRequestData<null, GetUserQueryParams>)=>{
-			 return state;
-		},
-		 'GetUserSuccess':(state:any, action:ActionResponseData<UserDTO,ActionRequestData<null, GetUserQueryParams>>)=>{
-			 return state;
-		},
-		 'GetUserFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, GetUserQueryParams>>)=>{
-			 return state;
+		 'GetDictionarySegmentFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const PutUserHandler = () => {
-	const expm = ACT.PutUserRequest;
-	 return {
-		 'PutUserRequest':(state:any, action:ActionRequestData<UserDTO, null>)=>{
-			 return state;
+};
+export const PostDictionarySegmentHandler = () => {
+	const expm = ACT.PostDictionarySegmentRequest;
+	return {
+		 'PostDictionarySegmentRequest':(state:any, action:ActionRequestData<RequestSetSegment, null>)=>{
+			 return {...state, ...action};
 		},
-		 'PutUserSuccess':(state:any, action:ActionResponseData<UserDTO,ActionRequestData<UserDTO, null>>)=>{
-			 return state;
+		 'PostDictionarySegmentSuccess':(state:any, action:ActionResponseData<ResultSetSegment,ActionRequestData<RequestSetSegment, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'PutUserFail':(state:any, action:ActionResponseData<any,ActionRequestData<UserDTO, null>>)=>{
-			 return state;
-		},
-	}
-}
-export const PostUserHandler = () => {
-	const expm = ACT.PostUserRequest;
-	 return {
-		 'PostUserRequest':(state:any, action:ActionRequestData<UserDTO, null>)=>{
-			 return state;
-		},
-		 'PostUserSuccess':(state:any, action:ActionResponseData<UserDTO,ActionRequestData<UserDTO, null>>)=>{
-			 return state;
-		},
-		 'PostUserFail':(state:any, action:ActionResponseData<any,ActionRequestData<UserDTO, null>>)=>{
-			 return state;
+		 'PostDictionarySegmentFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetSegment, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
-export const DeleteUserHandler = () => {
-	const expm = ACT.DeleteUserRequest;
-	 return {
-		 'DeleteUserRequest':(state:any, action:ActionRequestData<null, DeleteUserQueryParams>)=>{
-			 return state;
+};
+export const DeleteDictionarySegmentHandler = () => {
+	const expm = ACT.DeleteDictionarySegmentRequest;
+	return {
+		 'DeleteDictionarySegmentRequest':(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
 		},
-		 'DeleteUserSuccess':(state:any, action:ActionResponseData<null,ActionRequestData<null, DeleteUserQueryParams>>)=>{
-			 return state;
+		 'DeleteDictionarySegmentSuccess':(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
-		 'DeleteUserFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, DeleteUserQueryParams>>)=>{
-			 return state;
-		},
-	}
-}
-export const GetUsersHandler = () => {
-	const expm = ACT.GetUsersRequest;
-	 return {
-		 'GetUsersRequest':(state:any, action:ActionRequestData<null, null>)=>{
-			 return state;
-		},
-		 'GetUsersSuccess':(state:any, action:ActionResponseData<Array<UserDTO>,ActionRequestData<null, null>>)=>{
-			 return state;
-		},
-		 'GetUsersFail':(state:any, action:ActionResponseData<any,ActionRequestData<null, null>>)=>{
-			 return state;
+		 'DeleteDictionarySegmentFail':(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
 		},
 	}
-}
+};

@@ -142,21 +142,40 @@ public class ApiCallFunctionData {
                 }
         );
 
+        Optional<Map.Entry<String, Response>> firstErrorReturnValue = responses.entrySet().stream()
+                .filter(x -> Integer.parseInt(x.getKey())>=400)
+                .findAny();
+
+        AtomicReference<String> errorType= new AtomicReference<>("any");
+
+        firstErrorReturnValue.ifPresent(
+                x -> {
+                    Response response = x.getValue();
+                    Model model = response.getResponseSchema();
+
+                    if (model instanceof RefModel){
+
+                        errorType.set(((RefModel) model).getSimpleRef());
+                    }
+
+                }
+        );
+
         String finalQuery = query;
         reducerHandler = () -> "export const " + getActionBaseName() + "Handler = () => {\n"+
                 "\tconst expm = ACT." + getActionRequestName() + ";\n" +
-                "\t return {\n" +
+                "\treturn {\n" +
                 "\t\t '" + getActionRequestName() + "':(state:any, action:ActionRequestData<" +body+ ", "+finalQuery +">)=>{\n" +
-                "\t\t\t return state;\n"+
+                "\t\t\t return {...state, ...action};\n"+
                 "\t\t},\n" +
                 "\t\t '" + getActionSuccessName() + "':(state:any, action:ActionResponseData<" +successType+ ",ActionRequestData<" +body+ ", "+finalQuery +">>)=>{\n" +
-                "\t\t\t return state;\n"+
+                "\t\t\t return {...state, ...action};\n"+
                 "\t\t},\n" +
-                "\t\t '" + getActionFailName() + "':(state:any, action:ActionResponseData<any,ActionRequestData<" +body+ ", "+finalQuery +">>)=>{\n" +
-                "\t\t\t return state;\n"+
+                "\t\t '" + getActionFailName() + "':(state:any, action:ActionResponseData<" + errorType.get() + ",ActionRequestData<" +body+ ", "+finalQuery +">>)=>{\n" +
+                "\t\t\t return {...state, ...action};\n"+
                 "\t\t},\n" +
                 "\t}\n" +
-                "}"
+                "};"
         ;
 
     }

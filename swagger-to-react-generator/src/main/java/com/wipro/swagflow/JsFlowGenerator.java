@@ -36,7 +36,7 @@ public class JsFlowGenerator {
     private final JsCodeFile apiFuncFile;
     private final JsCodeFile handlers;
 
-    private List<FlowEnum> enums = new ArrayList<>();
+    private Set<FlowEnum> enums = new HashSet<>();
     private List<FlowType> models = new ArrayList<>();
 
     private ApiCallGeneralFunctions apiCallGeneralFunctions = new ApiCallGeneralFunctions();
@@ -47,6 +47,8 @@ public class JsFlowGenerator {
     private FlowElement exporter;
     private FlowElement importer = () -> "import {BACKEND_URL} from './conf';";
 
+    private FlowElement modelsImporter;
+
     public JsFlowGenerator() throws IOException, URISyntaxException {
         actionsFile = new JsCodeFile("api-actions-defs.js", "generated/");
         modelsFile = new JsCodeFile("api-models.js", "generated/");
@@ -54,7 +56,7 @@ public class JsFlowGenerator {
         handlers = new JsCodeFile("api-handlers.js", "generated/");
     }
 
-    private void addToStringBuilder(List<? extends FlowElement> elements, StringBuilder builder, String firstLine){
+    private void addToStringBuilder(Collection<? extends FlowElement> elements, StringBuilder builder, String firstLine){
         if (!elements.isEmpty()){
             builder.append(firstLine);
             elements.stream()
@@ -79,14 +81,28 @@ public class JsFlowGenerator {
         modelsFile.addElement(models);
 
         apiCallFunctionData.sort(comparing(ApiCallFunctionData::getMethod));
+
+
         for (ApiCallFunctionData apiCallFunctionDatum : apiCallFunctionData) {
             apiFuncFile.addElement(apiCallFunctionDatum.getApiCallFunction());
         }
+
+        apiFuncFile.addElementToTop(getModelsImports());
+        handlers.addElementToTop(getModelsImports());
 
         modelsFile.writeToFile();
         actionsFile.writeToFile();
         apiFuncFile.writeToFile();
         handlers.writeToFile();
+    }
+
+    public FlowElement getModelsImports(){
+        return () -> "import { " + "\n" +
+                models.stream()
+                .map(mod -> mod.getName().getJsLexicalWithUpperCase())
+                        .distinct()
+                .collect(Collectors.joining(",\n")) +
+                "} from './api-models.js'";
     }
 
     public String generate() {
@@ -256,7 +272,7 @@ public class JsFlowGenerator {
 
         JsWord typeNameJsWorld = new JsWord( modelEntry.getKey()) ;
 
-        if (typeNameJsWorld.getOriginal().equals("Role")){
+        if (typeNameJsWorld.getOriginal().equals("ResultSetSegments")){
             System.out.println("bla");
         }
 
@@ -274,6 +290,7 @@ public class JsFlowGenerator {
                     FlowEnum flowEnum = new FlowEnum();
                     flowEnum.setName(typeNameJsWorld.getJsLexicalWithUpperCase() + "Enum");
                     flowEnum.setParam(modelImpl.getEnum());
+
                     enums.add(flowEnum);
                 }
                 else {
@@ -340,7 +357,23 @@ public class JsFlowGenerator {
 
                 } else {
                     if (property.getType().equals("ref")) {
-                        flowTypeParam.setType(((RefProperty) property).getSimpleRef());
+
+                        String refType = ((RefProperty) property).getSimpleRef();
+
+                        Optional<FlowArrayType> isThisModelArray = models.stream()
+                                .filter(model -> model instanceof FlowArrayType)
+                                .map(model -> (FlowArrayType) model)
+                                .filter(arrModel -> arrModel.getArrayName().equals(refType))
+                                .findAny();
+
+                        if (isThisModelArray.isPresent()) {
+                            flowTypeParam.setType("Array<" + isThisModelArray.get().getName() + ">");
+                        }
+                        else {
+                            flowTypeParam.setType(refType);
+                        }
+
+
                     }
                     else {
 

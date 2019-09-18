@@ -69,7 +69,7 @@ public class JsFlowGeneratorTest {
     @Test
     public void test23() throws IOException, URISyntaxException {
 
-        Swagger swagger = new SwaggerParser().read("fr.yaml");
+        Swagger swagger = new SwaggerParser().read("sam-apiv2.yaml");
 
         JsFlowGenerator jsFlowGenerator = new JsFlowGenerator();
 

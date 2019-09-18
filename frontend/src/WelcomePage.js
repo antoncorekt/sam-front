@@ -3,7 +3,6 @@ import './WelcomePage.css';
 import {connect} from "react-redux";
 import {Button} from "antd";
 import {ActionResponseData} from "./api/common-middleware";
-import { postUserLogin} from "./api/api-func";
 import type {ActionRequestData} from "./api/common-middleware";
 import { RequestSetUserLogin, ResultSetUserLogin, UserLogin} from "./api/api-models";
 
@@ -39,13 +38,7 @@ export default connect(
         testRedux: (param) => {
 
           dispatch(
-              postUserLogin(new RequestSetUserLogin.Builder()
-                  .withData(new UserLogin.Builder()
-                      .withPassword("pass")
-                      .withRole("role")
-                      .withUser("user")
-                      .build())
-                  .build())
+
           )
         }
     })

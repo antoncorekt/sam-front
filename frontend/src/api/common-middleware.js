@@ -113,7 +113,8 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
         method: props.httpMethod,
         mode: 'cors',
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTA5LTE3VDEzOjE2OjA3LjQ3NDk5NTU3M1oiLCJpYXQiOjE1Njg3MjI1NjcsInJvbGUiOiJCb29rZXIiLCJ1c2VyIjoiYmxhYmxhIn0.Kdz7-Y8neS6ndGI5vpv4vanV2o4Box8nmllTTmWOMUMfV4R269IHFhaMGBpTCgqz5FQu3P89nY4_fS1tDIC-AvUrG7WAFMXpqZV2XOiMsxu2u_TMeMTyNP2GYW3lOWWriJd4esphCtCfmNin4mE_wztBPYU5LI5FzYMe0kIHFN31fEWL6I14xTUEoyqHcq5E5vd32C-_DX8_hkE_bwRPYJJ5KKAcTNrF_fYHA9aupRcqwFO5SfmqtoUnpgB-EDuDk7sQngse5cis9_wd31G018PW4PSyxcArSkT5QQ2CifCDhoJFif2zuVn2IxzUqRWpheWmYYMRi-g22kYaxK5iWA"
         },
         body: props.body
     };
@@ -137,7 +138,34 @@ const typeResolveFunctionBody = (response:any) => {
 
     console.log("typeResolveFunctionBody response", response);
 
-    return response.json();
+
+    let contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+        console.log("response is json =) try to response.json() ");
+        return response.json();
+    }
+    else {
+        console.warn("response.headers", response.headers);
+    }
+
+
+    response.text().then(text => {
+
+        console.error("error TExt", text)
+
+
+
+
+    }).catch(er => console.log("BLOB Error", er));
+
+
+    return {
+        status: {
+            code: "NOT_JSON_ERROR",
+            message: "Not json"
+        }
+    };
 
 };
 
@@ -152,6 +180,8 @@ const handlerFunctionError = (props:ApiProperties, requestAction: any, dispatch 
 };
 
 const handlerFunctionSuccess = (props:ApiProperties, requestAction: any, dispatch ) => <T>(response:T) => {
+
+    console.log("handlerFunctionSuccess", response);
 
     // magic with redux
     dispatch(

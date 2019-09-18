@@ -3,7 +3,9 @@ package com.wipro.swagflow.files;
 import com.wipro.swagflow.flow.FlowElement;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -22,11 +24,15 @@ public class JsCodeFile extends AbstractJsFile {
         flowElements.add(flowElement);
     }
 
+    public void addElementToTop(FlowElement flowElement){
+        flowElements.add(0, flowElement);
+    }
+
     public void addElement(String flowElement){
         flowElements.add(()->flowElement);
     }
 
-    public void addElement(List<? extends FlowElement> flowElement){
+    public void addElement(Collection<? extends FlowElement> flowElement){
         flowElements.addAll(flowElement);
     }
 
