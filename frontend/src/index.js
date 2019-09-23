@@ -20,24 +20,19 @@ import MainScreen from './components/main-screen/MainScreen';
 import { tabsState } from './reducers/tabReducer';
 import "react-table/react-table.css";
 import {GetDictionarySegmentHandler} from "./api/api-handlers";
+import {mainReducer} from "./reducers";
+import LoginPage from "./components/login-screen/LoginPage";
 
-
-export function f(state = [], action) {
-    return state;
-}
-
-export const reducer = combineReducers(
-    // add reducers
-    {
-        accountOfi: createReducer({}, []),
-        segments: createReducer({}, [GetDictionarySegmentHandler()]),
-        tabsState
-    }
-);
 
 const middleware = [thunk];
 
-export const store = createStore(reducer, composeWithDevTools(applyMiddleware(...middleware)));
+export const store = createStore(mainReducer, composeWithDevTools(applyMiddleware(...middleware)));
+
+const LoginWrapper = () => (
+    <LoginPage>
+        <MainScreen/>
+    </LoginPage>
+);
 
 ReactDOM.render(
     <Provider store={store}>
@@ -46,7 +41,7 @@ ReactDOM.render(
                 <LocaleProvider locale={plPL}>
                     <BrowserRouter basename={process.env.REACT_APP_ROUTER_BASE || ''}>
                         <Switch>
-                            <Route exact path="*" component={MainScreen} />
+                            <Route exact path="*" component={LoginWrapper} />
                         </Switch>
                     </BrowserRouter>
                 </LocaleProvider>

@@ -2,17 +2,23 @@
 
 import {Dispatch} from "redux";
 import {BACKEND_URL} from "./conf";
+import {UNAUTHORIZED_ACTION} from "../reducers/auth-reducer";
 
-export class ActionRequestData<T, P> {
+export interface BackendAction {
+    get fetching(): boolean;
+}
+
+export class ActionRequestData<T, P> implements BackendAction{
     body: T;
-    parameners: P;
+    parameters: P;
     date: Date;
     url: string;
     type: string;
     method: string;
+    fetching: true;
 }
 
-export class ActionResponseData<T, R>  {
+export class ActionResponseData<T, R> implements BackendAction {
     requestAction: R;
     response: T;
     date: Date;
@@ -21,6 +27,7 @@ export class ActionResponseData<T, R>  {
     msg: string;
     code: string;
     errorType: string;
+    fetching: false;
 }
 
 // general components for function
@@ -39,6 +46,7 @@ const additionalFunctions = ( ) => {
             body: props.body,
             date: new Date(),
             url: props.url,
+            fetching: true,
             method: props.httpMethod,
             type: props.requestType
         }
@@ -50,6 +58,7 @@ const additionalFunctions = ( ) => {
             requestAction: requestAction,
             date: date,
             response: response,
+            fetching: false,
             type: type,
             msg: msg,
             code: code,
@@ -72,6 +81,7 @@ const additionalFunctions = ( ) => {
             type: type,
             requestAction: requestAction,
             date: date,
+            fetching: false,
             msg: msg + " reason[" + reason + "]",
             code: code,
             timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
@@ -102,10 +112,21 @@ type ApiProperties = {
     requestType: string;
     headers?: HeadersInit;
 }
+
+type CallApiContextType = {
+    id: number,
+    responseStatus?: number,
+    responseText?: string
+}
+
+class GlobalLoginContext {
+    bearerToken: string
+}
+
+export const globalLoginContext = new GlobalLoginContext();
+
 // function for fetches
 export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A>) => {
-
-
     const idRequest = _.idMaker.next().value;
 
     // setting for fetch function
@@ -114,77 +135,88 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
         mode: 'cors',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTA5LTE3VDEzOjE2OjA3LjQ3NDk5NTU3M1oiLCJpYXQiOjE1Njg3MjI1NjcsInJvbGUiOiJCb29rZXIiLCJ1c2VyIjoiYmxhYmxhIn0.Kdz7-Y8neS6ndGI5vpv4vanV2o4Box8nmllTTmWOMUMfV4R269IHFhaMGBpTCgqz5FQu3P89nY4_fS1tDIC-AvUrG7WAFMXpqZV2XOiMsxu2u_TMeMTyNP2GYW3lOWWriJd4esphCtCfmNin4mE_wztBPYU5LI5FzYMe0kIHFN31fEWL6I14xTUEoyqHcq5E5vd32C-_DX8_hkE_bwRPYJJ5KKAcTNrF_fYHA9aupRcqwFO5SfmqtoUnpgB-EDuDk7sQngse5cis9_wd31G018PW4PSyxcArSkT5QQ2CifCDhoJFif2zuVn2IxzUqRWpheWmYYMRi-g22kYaxK5iWA"
+            "Authorization": `Bearer ${globalLoginContext.bearerToken}`
         },
         body: props.body
     };
     const url = BACKEND_URL + props.url;
 
-    const requestAction =  _.requestActionCreator(props);
 
+    let callApiContext : CallApiContextType = {
+        id: idRequest
+    };
+
+    const requestAction =  _.requestActionCreator(props);
     dispatch(
         requestAction
     );
 
     return fetch(url, settings)
-        .then(typeResolveFunctionBody)
-        .then(handlerFunctionSuccess(props, requestAction, dispatch))
-        .catch(handlerFunctionError(props, requestAction, dispatch));
-};
+        .then((response:Response) => {
+            console.log("typeResolveFunctionBody response", response);
 
-const typeResolveFunctionBody = (response:any) => {
+            let contentType = response.headers.get("content-type");
 
-    // typeResolveFunctionBody
+            callApiContext.responseStatus = response.status;
+            callApiContext.responseText = response.statusText;
 
-    console.log("typeResolveFunctionBody response", response);
-
-
-    let contentType = response.headers.get("content-type");
-
-    if (contentType && contentType.includes("application/json")) {
-        console.log("response is json =) try to response.json() ");
-        return response.json();
-    }
-    else {
-        console.warn("response.headers", response.headers);
-    }
+            if (contentType && contentType.includes("application/json")) {
+                console.log("response is json =) try to response.json() ");
+                return response.json();
+            }
+            else {
+                console.warn("response.headers", response.headers);
+            }
 
 
-    response.text().then(text => {
+            response.text().then(text => {
+                console.error("error TExt", text)
 
-        console.error("error TExt", text)
-
-
-
-
-    }).catch(er => console.log("BLOB Error", er));
+            }).catch(er => console.error("BLOB Error", er));
 
 
-    return {
-        status: {
-            code: "NOT_JSON_ERROR",
-            message: "Not json"
-        }
-    };
+            // todo return error json if json parse error
+            return {
+                status: {
+                    code: "NOT_JSON_ERROR",
+                    message: "Not json"
+                }
+            }
+        })
+        .then(<T>(response:T) => {
 
-};
+            console.log("handlerFunctionSuccess", response);
 
-const handlerFunctionError = (props:ApiProperties, requestAction: any, dispatch )=>( error:any) => {
+            if (callApiContext.responseStatus >= 300){
+
+                if (callApiContext.responseStatus === 401){
+                    // todo call unauthorized
+                    dispatch(
+                        {
+                            type: UNAUTHORIZED_ACTION
+                        }
+                    )
+                }
+                else {
+                    dispatch(
+                        _.failActionCreatorBackendError(response, requestAction, callApiContext.responseText, callApiContext.responseStatus)
+                    )
+                }
+
+            }
+            else {
+                dispatch(
+                    _.successActionCreator(props.successType, response, requestAction, callApiContext.responseText, callApiContext.responseStatus)
+                )
+            }
+        })
+        .catch(( error:any) => {
 
 
-    console.error("handlerFunctionError", error);
-    dispatch(
-        _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
-    );
+        console.error("handlerFunctionError", error);
+        dispatch(
+            _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
+        );
 
-};
-
-const handlerFunctionSuccess = (props:ApiProperties, requestAction: any, dispatch ) => <T>(response:T) => {
-
-    console.log("handlerFunctionSuccess", response);
-
-    // magic with redux
-    dispatch(
-        _.successActionCreator(props.successType, response, requestAction, "OK", "200")
-    )
+    });
 };

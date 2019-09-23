@@ -163,15 +163,15 @@ public class ApiCallFunctionData {
 
         String finalQuery = query;
         reducerHandler = () -> "export const " + getActionBaseName() + "Handler = () => {\n"+
-                "\tconst expm = ACT." + getActionRequestName() + ";\n" +
+//                "\tconst expm = ACT." + getActionRequestName() + ";\n" +
                 "\treturn {\n" +
-                "\t\t '" + getActionRequestName() + "':(state:any, action:ActionRequestData<" +body+ ", "+finalQuery +">)=>{\n" +
+                "\t\t" + getActionRequestName() + ":(state:any, action:ActionRequestData<" +body+ ", "+finalQuery +">)=>{\n" +
                 "\t\t\t return {...state, ...action};\n"+
                 "\t\t},\n" +
-                "\t\t '" + getActionSuccessName() + "':(state:any, action:ActionResponseData<" +successType+ ",ActionRequestData<" +body+ ", "+finalQuery +">>)=>{\n" +
+                "\t\t" + getActionSuccessName() + ":(state:any, action:ActionResponseData<" +successType+ ",ActionRequestData<" +body+ ", "+finalQuery +">>)=>{\n" +
                 "\t\t\t return {...state, ...action};\n"+
                 "\t\t},\n" +
-                "\t\t '" + getActionFailName() + "':(state:any, action:ActionResponseData<" + errorType.get() + ",ActionRequestData<" +body+ ", "+finalQuery +">>)=>{\n" +
+                "\t\t" + getActionFailName() + ":(state:any, action:ActionResponseData<" + errorType.get() + ",ActionRequestData<" +body+ ", "+finalQuery +">>)=>{\n" +
                 "\t\t\t return {...state, ...action};\n"+
                 "\t\t},\n" +
                 "\t}\n" +

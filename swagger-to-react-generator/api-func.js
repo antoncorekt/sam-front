@@ -36,9 +36,6 @@ DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
 GetOrderByStatusByReleaseQueryParams,
 PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
 DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
-
-import * as ACT from './api-actions-defs';
-
 // call Logs an user into the system and produces a JWT token
 export const PostUserLogin = (body:RequestSetUserLogin) => {
 	const settings = {		// set settings data
