@@ -1,1119 +1,823 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: >
-    API for management of the mapping of BSCS GL accounts to SAP. The methods
-    provided give access to the following entietis of data model:
-
-    - Account (mapping BSCS GL number to SAP OFI numbers)
-
-    - Order (Number for BSCS GL account per customer segment)
-
-    - Segment (dictionary)
-
-    - Account BSCS numbers (dictionary)
-
-    - Account SAP numbers (dictionary)
-
-
-    The versioned enties like Account or Order may be processed only in status W
-    like Working. They may be confimed and moved to status C like Confirmed.
-    After that they can be release to status P like Production. Movement from
-    status C to P is a final one in the lifecycle of the account/order mapping.
-    The set of accounts and order released to production can not be modified. It
-    can be only read.
-
-
-    Contrary to that, operations on the dictionary tables are bulk ones. I is
-    possible to clean the whole configuarion and reload it bu not to manipulate
-    on single entries. Bulk delete is to be granted to the Admin role only. The
-    Account and Order entities may be modifid in record by record mode using
-    primary key access but only for status W like Work and release 0.
-
-
-    The release attribute is 0 for the entities in status W like Work and is
-    bigger than 0 for released ones. The api provides key word last for reading
-    the latest release so that it can be processed being stored in status W like
-    Work.
-
-
-    The release entries are to be validated agains existing versions. For
-    example valid data must be:
-
-    - in the future from the release date
-
-    - rounded to 1st day of the month (in the future)
-
-    - can not everlap with valid date of any prevously released version
-
-
-    The access rights to API methods, entities and their propertis is besed on
-    the users role being:
-
-    - Booker (may create Acconts and fill up most of the values)
-
-    - Control (may create Order linked to existing Account and update the
-    attribute orderNumber, may do relese, may do promotion of status from W like
-    Working to C like Controlled)
-
-    - Admin (may do everything, especially purge dictionaries and load them)
-
-
-    The API currently provides 21 business methods and 2 system methods.
-  version: 1.0.0
+  version: '1.0.0'
   title: Swagger gosamapi
-  termsOfService: 'http://swagger.io/terms/'
+  description: "API for management of the mapping of BSCS GL accounts to SAP. The methods provided give access to the following entietis of data model:\n- Account (mapping BSCS GL number to SAP OFI numbers)\n- Order (Number for BSCS GL account per customer segment)\n- Segment (dictionary)\n- Account BSCS numbers (dictionary)\n- Account SAP numbers (dictionary)\n\nThe versioned enties like Account or Order may be processed only in status W like Working. They may be confimed and moved to status C like Confirmed. After that they can be release to status P like Production. Movement from status C to P is a final one in the lifecycle of the account/order mapping. The set of accounts and order released to production can not be modified. It can be only read. \n\nContrary to that, operations on the dictionary tables are bulk ones. I is possible to clean the whole configuarion and reload it bu not to manipulate on single entries. Bulk delete is to be granted to the Admin role only. The Account and Order entities may be modifid in record by record mode using primary key access but only for status W like Work and release 0.\n\nThe release attribute is 0 for the entities in status W like Work and is bigger than 0 for released ones. The api provides key word last for reading the latest release so that it can be processed being stored in status W like Work.\n\nThe release entries are to be validated agains existing versions. For example valid data must be:\n- in the future from the release date\n- rounded to 1st day of the month (in the future)\n- can not everlap with valid date of any prevously released version\n\nThe access rights to API methods, entities and their propertis is besed on the users role being:\n- Booker (may create Acconts and fill up most of the values)\n- Control (may create Order linked to existing Account and update the attribute orderNumber, may do relese, may do promotion of status from W like Working to C like Controlled)\n- Admin (may do everything, especially purge dictionaries and load them)\n\nThe API currently provides 18 business methods and 2 system methods.\n"
   contact:
     email: norbert.bondarczuk@wipro.com
-  license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: localhost:8000
 basePath: /api
-host: 'localhost:8000'
-tags:
-  - name: system
-    description: Operation returning general info about system
-  - name: user
-    description: Operations on the user session
-  - name: account
-    description: Operations on the account mappings from BSCS to SAP
-  - name: order
-    description: Operations on order numbers per BSCS account
-  - name: dictionary-account-bscs
-    description: >-
-      Operations on the dictionary of BSSC GL account numbers available for
-      mapping
-  - name: dictionary-account-sap
-    description: >-
-      Operations on the dictionary of SAP OFI account numbers available for
-      mapping
-  - name: dictionary-segment
-    description: Operations on the dictionary of customer segments
+securityDefinitions: {}
 schemes:
   - http
-
-securityDefinitions:
-  BearerAuth:
-    type: basic
-
+consumes:
+  - application/json
+produces:
+  - application/json
 paths:
   /system/version:
     get:
+      description: Enables health check of the service. Makes system observable. Serves like a ping request showing that system is alive.
+      summary: systemVersion
       tags:
         - system
-      summary: Provides basic system version info
-      description: >-
-        Enables health check of the service. Makes system observable. Serves like a ping request showing that system is alive.
-      operationId: systemVersion
+      operationId: SystemVersionGet
+      deprecated: false
       produces:
         - application/json
+      parameters: []
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetVersion'
-        '500':
+          headers: {}
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
-  /system/status:
+  /system/stat:
     get:
+      description: Enables stat check of the service. Makes debugging and operations easy.
+      summary: systemStatus
       tags:
         - system
-      summary: Provides process statistics
-      description: >-
-        Enables health check of the service. Makes debugging and operations easy.
-      operationId: systemStatus
+      operationId: SystemStatGet
+      deprecated: false
       produces:
         - application/json
+      parameters: []
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
-            $ref: '#/definitions/ResultSetStatus'
-        '500':
+            $ref: '#/definitions/ResultSetStat'
+          headers: {}
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
-
+  /system/health:
+    get:
+      description: Enables health check of the service. Makes system observable. Serves like a ping request showing that system is alive.
+      summary: systemHealth
+      tags:
+        - system
+      operationId: SystemHealthGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        200:
+          description: Successful operation
+          headers: {}
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
   /user/login:
     post:
+      description: Creates user session and produces authorization token. It validates LDAP profile. Requires user id, role id and domain passowrd. This profile is to be validated with domain service. It will be encoded in thee claims of the JWT token produced by the service. The token has to be used in each subsequent method invocation in header Authorization item with authorization type Bearer.
+      summary: loginUser
       tags:
         - user
-      summary: Logs an user into the system and produces a JWT token
-      description: >-
-        Creates user session and produces authorization token. It validates LDAP
-        profile. Requires user id, role id and domain passowrd. This profile is
-        to be validated with domain service. It will be encoded in thee claims
-        of the JWT token produced by the service. The token has to be used in
-        each subsequent method invocation in header Authorization item with
-        authorization type Bearer.
-      operationId: loginUser
+      operationId: UserLoginPost
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
-        - in: body
-          name: body
-          description: User login payload
+          description: ''
+        - name: body
+          in: body
           required: true
+          description: User login payload
           schema:
             $ref: '#/definitions/RequestSetUserLogin'
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetUserLogin'
           headers:
             X-Expires-After:
               type: string
-              format: date-time
-              description: date in UTC when token expires
-        '400':
+        400:
           description: Invalid username/password supplied
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+  /user/relogin:
+    post:
+      description: Creates user session and produces authorization token using the provided one on the header.
+      summary: reloginUser
+      tags:
+        - user
+      operationId: UserReloginPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetUserLogin'
+          headers:
+            X-Expires-After:
+              type: string
+        400:
+          description: Invalid username/role in token supplied
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
   /user/logoff:
     post:
+      description: Logs off current logged in user session. The invalidation of the token is based on the explicit storing of the invalid tokens in REDIS backend cache.
+      summary: logoffUser
       tags:
         - user
-      summary: Logs an user off
-      description: >-
-        Logs off current logged in user session. The invalidation of the token
-        is based on the explicit storing of the invalid tokens in REDIS backend
-        cache.
-      operationId: logoffUser
+      operationId: UserLogoffPost
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
-        - in: body
-          name: body
-          description: User logoff payload
+          description: ''
+        - name: body
+          in: body
           required: true
+          description: User logoff payload
           schema:
             $ref: '#/definitions/RequestSetUserLogoff'
-      security:
-        - BearerAuth: []
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetOk'
-        '400':
+          headers: {}
+        400:
           description: Invalid username supplied
           schema:
             $ref: '#/definitions/ResultSetError'
-        '401':
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
   /account:
     post:
+      description: "A new mapping is created in W like Working status. Attempts to create item in any other status will be errored out. \n\nRequires:\n- Booker role."
+      summary: createAccount
       tags:
         - account
-      summary: Creates an account
-      description: >-
-        A new mapping is created in W like Working status. Attempts to create
-        item in any other status will be errored out.
-
-
-        Requires:
-
-        - Booker role.
-      operationId: createAccount
-      consumes:
-        - application/json
+      operationId: AccountPost
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
-        - in: body
-          name: body
-          description: Creation of object Account
+          description: ''
+        - name: body
+          in: body
           required: true
+          description: Creation of object Account
           schema:
             $ref: '#/definitions/RequestSetAccount'
       responses:
-        '200':
+        201:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetAccount'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
-    delete:
-      tags:
-        - account
-      summary: Deletes all accounts
-      description: >-
-        Unselective purge of the table. Used before bulk load.
-
-
-        Requires:
-
-        - Admin role.
-      operationId: deleteAccountsAll
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
-          type: string
-          format: uuid
-          required: false
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/ResultSetCount'
-        '401':
-          description: Not authenticated
-          schema:
-            $ref: '#/definitions/ResultSetError'
-        '500':
-          description: Server error
-          schema:
-            $ref: '#/definitions/ResultSetError'
-  '/account/{status}/{release}':
+  /account/{status}/{release}:
     get:
+      description: A set of accouts is read and returned. The criteria is per status and version. The varsion must be known a priori. For work version release is always 0.
+      summary: readAccountByStatusRelease
       tags:
         - account
-      summary: Reads some accounts
-      description: >-
-        A set of accouts is read and returned. The criteria is per status and
-        version. The varsion must be known a priori. For work version release is
-        always 0.
-      operationId: readAccountByStatusRelease
-      consumes:
-        - application/json
+      operationId: AccountByStatusAndReleaseGet
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
         - name: status
           in: path
-          description: 'status of the package, W for workm P for production'
           required: true
-          type: string
           enum:
             - W
             - C
             - P
+          type: string
+          description: status of the package, W for workm P for production
         - name: release
           in: path
-          description: 'release sequential number, 0 for work, else production'
           required: true
-          type: string
           enum:
             - 0
             - last
+          type: string
+          description: release sequential number, 0 for work, else production
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetAccounts'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
-  '/account/{status}/{release}/{bscsAccount}':
+  /account/{status}/{release}/{bscsAccount}:
     put:
+      description: "Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Promotion from status value W like Working to C like Controlled may be done only with Controll role.\n\nRequires:\n  \n- Booker role while in W like Work,\n  \n- Control role while in C like Control state and in transition from W like Work to C like Control."
+      summary: updateAccount
       tags:
         - account
-      summary: Updates an account
-      description: >-
-        Most selective access to single row. The primary key is used. One record
-        is returnd. The status and release must be given a priori. Promotion
-        from status value W like Working to C like Controlled may be done only
-        with Controll role.
-
-
-        Requires:
-
-        - Booker role while in W like Work,
-
-        - Control role while in C like Control state and in transition from W like Work to C like Control.
-      operationId: updateAccount
+      operationId: AccountBscsAccountByStatusAndReleasePut
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
         - name: status
           in: path
-          description: 'status of the package, W for workm P for production'
           required: true
-          type: string
           enum:
             - W
             - C
             - P
+          type: string
+          description: status of the package, W for workm P for production
         - name: release
           in: path
-          description: >-
-            release sequential number, 0 for work, else production or last for
-            latst version
           required: true
-          type: string
           enum:
             - 0
             - last
+          type: string
+          description: release sequential number, 0 for work, else production or last for latst version
         - name: bscsAccount
           in: path
-          description: BSCS account code
           required: true
           type: string
+          description: BSCS account code
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetAccounts'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
     delete:
+      description: "Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Only records in W like Working status may be manipulatd this way. Only records in W like Working status may be manipulatd this way. \n\nRequires:\n- Booker role."
+      summary: deleteAccount
       tags:
         - account
-      summary: Deletes an account
-      description: >-
-        Most selective access to single row. The primary key is used. One record
-        is returnd. The status and release must be given a priori. Only records
-        in W like Working status may be manipulatd this way. Only records in W
-        like Working status may be manipulatd this way.
-
-
-        Requires:
-
-        - Booker role.
-      operationId: deleteAccount
+      operationId: AccountBscsAccountByStatusAndReleaseDelete
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
         - name: status
           in: path
-          description: 'status of the package, W for work P for production'
           required: true
-          type: string
           enum:
             - W
             - C
             - P
+          type: string
+          description: status of the package, W for work P for production
         - name: release
           in: path
-          description: 'release sequential number, 0 for work, else production or last'
           required: true
-          type: string
           enum:
             - 0
             - last
+          type: string
+          description: release sequential number, 0 for work, else production or last
         - name: bscsAccount
           in: path
-          description: BSCS account number
           required: true
           type: string
+          description: BSCS account number
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetCount'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
-          description: Server error
-          schema:
-            $ref: '#/definitions/ResultSetError'
-  /account/release:
-    post:
-      tags:
-        - account
-      summary: Releases account, orders changing the status
-      description: >-
-        Does a release of version in state C like Controlled to P like Production. The
-        impact is on Account and Order entries. Existence of not controled
-        entries with status W like Working causes failure. Other validation rules
-        are applied as well, for example valid date check: it must be rounded
-        down and in the future and no clash with entries in status P like
-        Production found in Account or Order backednd tables.
-
-
-        Requires:
-
-        - Control role.
-      operationId: doRelease
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
-          type: string
-          format: uuid
-          required: false
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/ResultSetOk'
-        '401':
-          description: Not authenticated
-          schema:
-            $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
   /order:
     post:
-      tags:
-        - order
-      summary: Creates an order
       description: >-
-        A new mapping is created in working status, unconfirmed. The entries
-        segment value must be validated with values from dictionary Segment.
+        A new mapping is created in working status, unconfirmed. The entries segment value must be validated with values from dictionary Segment.
 
 
         Requires:
 
         - Control role.
-      operationId: createOrder
-      consumes:
-        - application/json
+      summary: createOrder
+      tags:
+        - order
+      operationId: OrderPost
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
-        - in: body
-          name: body
-          description: Creation of object Order
+          description: ''
+        - name: body
+          in: body
           required: true
+          description: Creation of object Order
           schema:
             $ref: '#/definitions/RequestSetOrder'
       responses:
-        '200':
+        201:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetOrder'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
-    delete:
-      tags:
-        - order
-      summary: Deletes all orders
-      description: >-
-        Unselective purge of the table. Used in bulk load.
-
-
-        Requires:
-
-        - Admin role.
-      operationId: deleteOrdersAll
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
-          type: string
-          format: uuid
-          required: false
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/ResultSetCount'
-        '401':
-          description: Not authenticated
-          schema:
-            $ref: '#/definitions/ResultSetError'
-        '500':
-          description: Server error
-          schema:
-            $ref: '#/definitions/ResultSetError'
-  '/order/{status}/{release}':
+  /order/{status}/{release}:
     get:
+      description: Set of orders is read and returned. The criteria is per status and version. The varsion must be known a priori. For work version release is always 0.
+      summary: readOrderByStatusRelease
       tags:
         - order
-      summary: Reads some orders
-      description: >-
-        Set of orders is read and returned. The criteria is per status and
-        version. The varsion must be known a priori. For work version release is
-        always 0.
-      operationId: readOrderByStatusRelease
-      consumes:
-        - application/json
+      operationId: OrderByStatusAndReleaseGet
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
         - name: status
           in: path
-          description: 'status of the package, W for workm P for production'
           required: true
-          type: string
           enum:
             - W
             - C
             - P
+          type: string
+          description: status of the package, W for workm P for production
         - name: release
           in: path
-          description: 'release sequential number, 0 for work, else production'
           required: true
-          type: string
           enum:
             - 0
             - last
+          type: string
+          description: release sequential number, 0 for work, else production
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetOrders'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
-  '/order/{status}/{release}/{bscsAccount}/{segment}':
+  /order/{status}/{release}/{bscsAccount}/{segment}:
     put:
+      description: Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Only records in W like Working status may be manipulatd this way.
+      summary: updateOrder
       tags:
         - order
-      summary: Updates an order
-      description: >-
-        Most selective access to single row. The primary key is used. One record
-        is returnd. The status and release must be given a priori. Only records
-        in W like Working status may be manipulatd this way.
-      operationId: updateOrder
+      operationId: OrderBscsAccountSegmentByStatusAndReleasePut
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
         - name: status
           in: path
-          description: 'status of the package, W for workm P for production'
           required: true
-          type: string
           enum:
             - W
             - C
             - P
+          type: string
+          description: status of the package, W for workm P for production
         - name: release
           in: path
-          description: 'release sequential number, 0 for work, else production'
           required: true
-          type: string
           enum:
             - 0
             - last
+          type: string
+          description: release sequential number, 0 for work, else production
         - name: bscsAccount
           in: path
-          description: 'release sequential number, 0 for work, else production'
           required: true
           type: string
+          description: release sequential number, 0 for work, else production
         - name: segment
           in: path
-          description: customer segment code
           required: true
           type: string
+          description: customer segment code
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetOrders'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
     delete:
+      description: "Most selective access to single row. The primary key is used. One record is deleted. Only records in W like Working status may be manipulatd this way. \n\nRequires:\n- Control role."
+      summary: deleteOrder
       tags:
         - order
-      summary: Deletes an order
-      description: >-
-        Most selective access to single row. The primary key is used. One record
-        is deleted. Only records in W like Working status may be manipulatd this
-        way.
-
-
-        Requires:
-
-        - Control role.
-      operationId: deleteOrder
+      operationId: OrderBscsAccountSegmentByStatusAndReleaseDelete
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
         - name: status
           in: path
-          description: 'status of the package, W for workm P for production'
           required: true
-          type: string
           enum:
             - W
             - C
             - P
+          type: string
+          description: status of the package, W for workm P for production
         - name: release
           in: path
-          description: 'release sequential number, 0 for work, else production'
           required: true
-          type: string
           enum:
             - 0
             - last
+          type: string
+          description: release sequential number, 0 for work, else production
         - name: bscsAccount
           in: path
-          description: 'release sequential number, 0 for work, else production'
           required: true
           type: string
+          description: release sequential number, 0 for work, else production
         - name: segment
           in: path
-          description: customer segment code
           required: true
           type: string
+          description: customer segment code
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetCount'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+  /release:
+    post:
+      description: "Does a release of version in state C like Controlled to P like Production. The impact is on Account and Order entries. Existence of not controled entries with status W like Working causes failure. Other validation rules are applied as well, for example valid date check: it must be rounded down and in the future and no clash with entries in status P like Production found in Account or Order backednd tables. \n\nRequires:\n- Control role."
+      summary: doRelease
+      tags:
+        - release
+      operationId: ReleasePost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetOk'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+  /dictionary/account/bscs:
+    get:
+      description: The whole configuration is read from the backend. The resource is inmutable as it is part of BSCS baseline setup. In fact the read is to be done from a view adding some of the GL account numbers which are not confgured but they are used in the existing mappings.
+      summary: readAccountDictBscs
+      tags:
+        - dictionary-account-bscs
+      operationId: DictionaryAccountBscsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetAccountDictBscss'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
   /dictionary/account/sap:
     post:
+      description: "Only one description is created in the configuration. \n\nRequires:\n- Admin role."
+      summary: createAccountDictSap
       tags:
         - dictionary-account-sap
-      summary: Creates an account description
-      description: >-
-        Only one description is created in the configuration.
-
-
-        Requires:
-
-        - Admin role.
-      operationId: createAccountDictSap
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
-          type: string
-          format: uuid
-          required: false
-        - in: body
-          name: body
-          description: >-
-            Structure of the objects to be create with all fields to be
-            populated
-          required: true
-          schema:
-            $ref: '#/definitions/RequestSetAccountDictSap'
-      consumes:
-        - application/json
+      operationId: DictionaryAccountSapPost
+      deprecated: false
       produces:
         - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: body
+          in: body
+          required: true
+          description: Structure of the objects to be create with all fields to be populated
+          schema:
+            $ref: '#/definitions/RequestSetAccountDictSap'
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetAccountDictSap'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
     get:
+      description: The whole configuration is read from the backend.
+      summary: readAccountDictSap
       tags:
         - dictionary-account-sap
-      summary: Reads all account descriptions
-      description: The whole configuration is read from the backend.
-      operationId: readAccountDictSap
-      consumes:
-        - application/json
+      operationId: DictionaryAccountSapGet
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetAccountDictSaps'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
     delete:
+      description: >-
+        Unselective cleanup of the configuration. Used in bulk load.
+
+
+        Requires:
+
+        - Admin role.
+      summary: deleteAccountDictSap
       tags:
         - dictionary-account-sap
-      summary: Deletes all account descriptions
-      description: >-
-        Unselective cleanup of the configuration. Used in bulk load.
-
-
-        Requires:
-
-        - Admin role.
-      operationId: deleteAccountDictSap
+      operationId: DictionaryAccountSapDelete
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetCount'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
-          description: Server error
-          schema:
-            $ref: '#/definitions/ResultSetError'
-  /dictionary/account/bscs:
-    post:
-      tags:
-        - dictionary-account-bscs
-      summary: Creates an account description
-      description: >-
-        Only one description is created in the configuration. Requires Admin
-        role.
-      operationId: createAccountDictBscs
-      parameters:
-        - in: body
-          name: body
-          description: >-
-            Structure of the objects to be create with all fields to be
-            populated
-          required: true
-          schema:
-            $ref: '#/definitions/RequestSetAccountDictBscs'
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/ResultSetAccountDictBscs'
-        '401':
-          description: Not authenticated
-          schema:
-            $ref: '#/definitions/ResultSetError'
-        '500':
-          description: Server error
-          schema:
-            $ref: '#/definitions/ResultSetError'
-    get:
-      tags:
-        - dictionary-account-bscs
-      summary: Reads all account descriptions
-      description: The whole configuration is read from the backend.
-      operationId: readAccountDictBscs
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
-          type: string
-          format: uuid
-          required: false
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/ResultSetAccountDictBscss'
-        '401':
-          description: Not authenticated
-          schema:
-            $ref: '#/definitions/ResultSetError'
-        '500':
-          description: Server error
-          schema:
-            $ref: '#/definitions/ResultSetError'
-    delete:
-      tags:
-        - dictionary-account-bscs
-      summary: Deletes all account descriptions
-      description: >-
-        Unselective cleanup of the configuration. Used in bulk load.
-
-
-        Requires:
-
-        - Admin role.
-      operationId: deleteAccountDictBscs
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          format: uuid
-          required: true
-        - in: header
-          name: X-Request-ID
-          type: string
-          format: uuid
-          required: false
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/ResultSetCount'
-        '401':
-          description: Not authenticated
-          schema:
-            $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
   /dictionary/segment:
     post:
+      description: "Only one segment is created in the configuration. \n\nRequires:\n- Admin role"
+      summary: createSegment
       tags:
         - dictionary-segment
-      summary: Creates new segment
-      description: >-
-        Only one segment is created in the configuration.
-
-
-        Requires:
-
-        - Admin role
-      operationId: createSegment
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
-          type: string
-          format: uuid
-          required: false
-        - in: body
-          name: body
-          description: >-
-            Structure of the objects to be create with all fields to be
-            populated.
-          required: true
-          schema:
-            $ref: '#/definitions/RequestSetSegment'
-      consumes:
-        - application/json
+      operationId: DictionarySegmentPost
+      deprecated: false
       produces:
         - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: body
+          in: body
+          required: true
+          description: Structure of the objects to be create with all fields to be populated.
+          schema:
+            $ref: '#/definitions/RequestSetSegment'
       responses:
-        '200':
+        201:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetSegment'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
     get:
+      description: The whole configuration is read from the backend.
+      summary: readSegment
       tags:
         - dictionary-segment
-      summary: Reads all segments
-      description: The whole configuration is read from the backend.
-      operationId: readSegment
-      consumes:
-        - application/json
+      operationId: DictionarySegmentGet
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetSegments'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
     delete:
-      tags:
-        - dictionary-segment
-      summary: Deletes all segments
       description: >-
         Unselective cleanup of the configuration.
 
@@ -1121,152 +825,89 @@ paths:
         Requires:
 
         - Admin role.
-      operationId: deleteSegment
+      summary: deleteSegment
+      tags:
+        - dictionary-segment
+      operationId: DictionarySegmentDelete
+      deprecated: false
       produces:
         - application/json
       parameters:
-        - in: header
-          name: Authorization
-          type: string
-          required: true
-        - in: header
-          name: X-Request-ID
+        - name: X-Request-ID
+          in: header
+          required: false
           type: string
           format: uuid
-          required: false
+          description: ''
       responses:
-        '200':
+        200:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetCount'
-        '401':
+          headers: {}
+        401:
           description: Not authenticated
           schema:
             $ref: '#/definitions/ResultSetError'
-        '500':
+        500:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
 definitions:
-  ResultSetOk:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-  ResultSetError:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Error
-      message:
-        type: string
-  ResultSetCount:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      count:
-        type: integer
-  Segment:
-    type: object
-    properties:
-      csTradefer:
-        type: string
-      csType:
-        type: integer
-  Segments:
-    type: array
-    items:
-      $ref: '#/definitions/Segment'
   RequestSetSegment:
+    title: RequestSetSegment
     type: object
     properties:
       data:
         $ref: '#/definitions/Segment'
-  ResultSetSegment:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      data:
-        $ref: '#/definitions/Segment'
-  ResultSetSegments:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      count:
-        type: integer
-      data:
-        $ref: '#/definitions/Segments'
   Account:
+    title: Account
+    example:
+      status: W
+      releaseId: 0
+      bscsAccount: BSCSACCOUNT
+      ofiSapAccount: OFISAPACCOUNT
+      validFromDate: 2017-07-21T17:32:28Z
+      vatCodeInd: VATCODEIND
+      ofiSapWbsCode: OFISAPWBSCODE
+      citMarkerVatFlag: 0
     type: object
     properties:
+      status:
+        type: string
       releaseId:
         type: integer
-      status:
-        type: string
+        format: int32
       bscsAccount:
         type: string
       ofiSapAccount:
         type: string
       validFromDate:
         type: string
-        format: date
+        format: date-time
       vatCodeInd:
-        type: string
-      sapSegmText:
         type: string
       ofiSapWbsCode:
         type: string
       citMarkerVatFlag:
         type: integer
-  Accounts:
-    type: array
-    items:
-      $ref: '#/definitions/Account'
-  RequestSetAccount:
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/Account'
-  ResultSetAccounts:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      count:
-        type: integer
-      data:
-        $ref: '#/definitions/Accounts'
-  ResultSetAccount:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      data:
-        $ref: '#/definitions/Account'
+        format: int32
   Order:
+    title: Order
+    example:
+      status: W
+      releaseId: 0
+      bscsAccount: BSCSACCOUNT
+      segmentCode: XXX
+      orderNumber: 123
+      validFromDate: 2017-07-21T17:32:28Z
     type: object
     properties:
+      status:
+        type: string
       releaseId:
         type: integer
-      status:
-        type: string
+        format: int32
       bscsAccount:
         type: string
       segmentCode:
@@ -1275,83 +916,200 @@ definitions:
         type: string
       validFromDate:
         type: string
-        format: date
-  Orders:
-    type: array
-    items:
-      $ref: '#/definitions/Order'
-  RequestSetOrder:
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/Order'
-  ResultSetOrder:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      data:
-        $ref: '#/definitions/Order'
-  ResultSetOrders:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      count:
-        type: integer
-      data:
-        $ref: '#/definitions/Orders'
-  RequestSetUserLogin:
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/UserLogin'
+        format: date-time
   ResultSetUserLogin:
+    title: ResultSetUserLogin
     type: object
     properties:
       data:
         $ref: '#/definitions/UserLoginInfo'
-  UserLogin:
-    type: object
-    properties:
-      user:
-        type: string
-      role:
-        type: string
-        enum:
-          - Booker
-          - Control
-          - Admin
-      password:
-        type: string
-  UserLoginInfo:
-    type: object
-    properties:
-      user:
-        type: string
-      role:
-        type: string
-        enum:
-          - Booker
-          - Control
-          - Admin
-      token:
-        type: string
-  RequestSetUserLogoff:
+  RequestSetAccountDictBscs:
+    title: RequestSetAccountDictBscs
     type: object
     properties:
       data:
-        $ref: '#/definitions/UserLogoff'
+        $ref: '#/definitions/AccountDictBscs'
+  RequestSetAccount:
+    title: RequestSetAccount
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/Account'
+  ResultSetAccount:
+    title: ResultSetAccount
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Account'
   UserLogoff:
+    title: UserLogoff
     type: object
     properties:
       user:
         type: string
+  ResultSetOrder:
+    title: ResultSetOrder
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Order'
+  Segment:
+    title: Segment
+    example:
+      csTradeRef: XXX
+      segmCategory: PRIV
+    type: object
+    properties:
+      csTradeRef:
+        type: string
+      segmCategory:
+        type: string
+  ResultSetCount:
+    title: ResultSetCount
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+  RequestSetAccountDictSap:
+    title: RequestSetAccountDictSap
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/AccountDictSap'
+  Stat:
+    title: Stat
+    type: object
+    properties:
+      alloc:
+        type: integer
+        format: int32
+      totalalloc:
+        type: integer
+        format: int32
+      sys:
+        type: integer
+        format: int32
+      numgc:
+        type: integer
+        format: int32
+  ResultSetStat:
+    title: ResultSetStat
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Stat'
+  ResultSetAccountDictSap:
+    title: ResultSetAccountDictSap
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/AccountDictSap'
+  Version:
+    title: Version
+    type: object
+    properties:
+      version:
+        type: string
+  ResultSetVersion:
+    title: ResultSetVersion
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Version'
+  ResultSetOk:
+    title: ResultSetOk
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+  ResultSetSegment:
+    title: ResultSetSegment
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Segment'
+  ResultSetAccountDictBscs:
+    title: ResultSetAccountDictBscs
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/AccountDictBscs'
+  UserLogin:
+    title: UserLogin
+    example:
+      user: NOBODY
+      role: Admin
+      password: NOBODY
+    type: object
+    properties:
+      user:
+        type: string
+      role:
+        $ref: '#/definitions/Role'
+      password:
+        type: string
+  ResultSetOrders:
+    title: ResultSetOrders
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Order'
+  ResultSetAccountDictSaps:
+    title: ResultSetAccountDictSaps
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/AccountDictSap'
+  ResultSetAccounts:
+    title: ResultSetAccounts
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Account'
   AccountDictSap:
+    title: AccountDictSap
+    example:
+      sapOfiAccount: SAPOFIACCOUNT
+      name: NAME
+      status: Ok
     type: object
     properties:
       sapOfiAccount:
@@ -1360,36 +1118,13 @@ definitions:
         type: string
       status:
         type: string
-  AccountDictSaps:
-    type: array
-    items:
-      $ref: '#/definitions/AccountDictSap'
-  RequestSetAccountDictSap:
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/AccountDictSap'
-  ResultSetAccountDictSap:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      data:
-        $ref: '#/definitions/AccountDictSap'
-  ResultSetAccountDictSaps:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
-      count:
-        type: integer
-      data:
-        $ref: '#/definitions/AccountDictSaps'
   AccountDictBscs:
+    title: AccountDictBscs
+    example:
+      glCode: GLCODE
+      glDes: GLDES
+      glType: GLTYPE
+      glActive: Y
     type: object
     properties:
       glCode:
@@ -1400,73 +1135,120 @@ definitions:
         type: string
       glActive:
         type: string
-  AccountDictBscss:
-    type: array
-    items:
-      $ref: '#/definitions/AccountDictBscs'
-  RequestSetAccountDictBscs:
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/AccountDictBscs'
-  ResultSetAccountDictBscs:
+  ResultSetSegments:
+    title: ResultSetSegments
     type: object
     properties:
       status:
-        type: string
-        enum:
-          - Ok
-      data:
-        $ref: '#/definitions/AccountDictBscs'
-  ResultSetAccountDictBscss:
-    type: object
-    properties:
-      status:
-        type: string
-        enum:
-          - Ok
+        $ref: '#/definitions/Status'
       count:
         type: integer
+        format: int32
       data:
-        $ref: '#/definitions/AccountDictBscss'
-  ResultSetVersion:
+        type: array
+        items:
+          $ref: '#/definitions/Segment'
+  RequestSetUserLogoff:
+    title: RequestSetUserLogoff
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/UserLogoff'
+  RequestSetUserLogin:
+    title: RequestSetUserLogin
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/UserLogin'
+  RequestSetOrder:
+    title: RequestSetOrder
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/Order'
+  ResultSetAccountDictBscss:
+    title: ResultSetAccountDictBscss
     type: object
     properties:
       status:
-        type: string
-        enum:
-          - Ok
-      version:
-        type: string
-  ResultSetStatus:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/AccountDictBscs'
+  ResultSetError:
+    title: ResultSetError
     type: object
     properties:
       status:
+        $ref: '#/definitions/Status14'
+      message:
         type: string
-        enum:
-          - Ok
-      memoryAlloc:
-        type: integer
-      memoryTotalAlloc:
-        type: integer
-      memorySys:
-        type: integer
-      memoryNMalloc:
-        type: integer
-      memoryNFree:
-        type: integer
-      processedRequests:
-        type: integer
-      processedRequestsErrors:
-        type: integer
-      processedRequestsOk:
-        type: integer
-      processingTimeTotalSec:
-        type: number
-        format: double
-      runningSince:
+  UserLoginInfo:
+    title: UserLoginInfo
+    type: object
+    properties:
+      user:
         type: string
-        format: data-time
+      role:
+        $ref: '#/definitions/Role'
+      token:
+        type: string
+  release:
+    title: release
+    example: 0
+    type: string
+    enum:
+      - 0
+      - last
+  Role:
+    title: Role
+    example: Booker
+    type: string
+    enum:
+      - Booker
+      - Control
+      - Admin
+  Status:
+    title: Status
+    example: Ok
+    type: string
+    enum:
+      - Ok
+  Status14:
+    title: Status14
+    example: Error
+    type: string
+    enum:
+      - Error
+  status15:
+    title: status15
+    example: W
+    type: string
+    enum:
+      - W
+      - C
+      - P
+tags:
+  - name: system
+    description: Operation returning general info about system
+  - name: user
+    description: Operations on the user session
+  - name: account
+    description: Operations on the account mappings from BSCS to SAP
+  - name: order
+    description: Operations on order numbers per BSCS account
+  - name: release
+    description: Releases a version to production of account and order
+  - name: dictionary-account-bscs
+    description: Operations on the dictionary of BSSC GL account numbers available for mapping
+  - name: dictionary-account-sap
+    description: Operations on the dictionary of SAP OFI account numbers available for mapping
+  - name: dictionary-segment
+    description: Operations on the dictionary of customer segments
 externalDocs:
+  url: http://swagger.io
   description: Find out more about Swagger
-  url: 'http://swagger.io'

@@ -1,41 +1,4 @@
-import { 
-ResultSetOk,
-ResultSetError,
-ResultSetCount,
-Segment,
-RequestSetSegment,
-ResultSetSegment,
-ResultSetSegments,
-Account,
-RequestSetAccount,
-ResultSetAccounts,
-ResultSetAccount,
-Order,
-RequestSetOrder,
-ResultSetOrder,
-ResultSetOrders,
-RequestSetUserLogin,
-ResultSetUserLogin,
-UserLogin,
-UserLoginInfo,
-RequestSetUserLogoff,
-UserLogoff,
-AccountDictSap,
-RequestSetAccountDictSap,
-ResultSetAccountDictSap,
-ResultSetAccountDictSaps,
-AccountDictBscs,
-RequestSetAccountDictBscs,
-ResultSetAccountDictBscs,
-ResultSetAccountDictBscss,
-ResultSetVersion,
-ResultSetStatus,
-GetAccountByStatusByReleaseQueryParams,
-PutAccountByStatusByReleaseByBscsAccountQueryParams,
-DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
-GetOrderByStatusByReleaseQueryParams,
-PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
-DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
+
 export const GetSystemVersionHandler = () => {
 	return {
 		GetSystemVersionRequest:(state:any, action:ActionRequestData<null, null>)=>{
@@ -49,15 +12,28 @@ export const GetSystemVersionHandler = () => {
 		},
 	}
 };
-export const GetSystemStatusHandler = () => {
+export const GetSystemStatHandler = () => {
 	return {
-		GetSystemStatusRequest:(state:any, action:ActionRequestData<null, null>)=>{
+		GetSystemStatRequest:(state:any, action:ActionRequestData<null, null>)=>{
 			 return {...state, ...action};
 		},
-		GetSystemStatusSuccess:(state:any, action:ActionResponseData<ResultSetStatus,ActionRequestData<null, null>>)=>{
+		GetSystemStatSuccess:(state:any, action:ActionResponseData<ResultSetStat,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
-		GetSystemStatusFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+		GetSystemStatFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const GetSystemHealthHandler = () => {
+	return {
+		GetSystemHealthRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		GetSystemHealthSuccess:(state:any, action:ActionResponseData<null,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		GetSystemHealthFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}
@@ -65,12 +41,32 @@ export const GetSystemStatusHandler = () => {
 export const PostUserLoginHandler = () => {
 	return {
 		PostUserLoginRequest:(state:any, action:ActionRequestData<RequestSetUserLogin, null>)=>{
-			 return {...state, ...action};
+			return {...state, ...action};
 		},
 		PostUserLoginSuccess:(state:any, action:ActionResponseData<ResultSetUserLogin,ActionRequestData<RequestSetUserLogin, null>>)=>{
-			 return {...state, ...action};
+
+			globalLoginContext.bearerToken = action.response.data.token;
+
+			return {...state,
+				...action.response.data,
+				...action,
+				response: undefined
+			};
 		},
 		PostUserLoginFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogin, null>>)=>{
+			return {...state, ...action};
+		},
+	}
+};
+export const PostUserReloginHandler = () => {
+	return {
+		PostUserReloginRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		PostUserReloginSuccess:(state:any, action:ActionResponseData<ResultSetUserLogin,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		PostUserReloginFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}
@@ -97,19 +93,6 @@ export const PostAccountHandler = () => {
 			 return {...state, ...action};
 		},
 		PostAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccount, null>>)=>{
-			 return {...state, ...action};
-		},
-	}
-};
-export const DeleteAccountHandler = () => {
-	return {
-		DeleteAccountRequest:(state:any, action:ActionRequestData<null, null>)=>{
-			 return {...state, ...action};
-		},
-		DeleteAccountSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-		DeleteAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}
@@ -153,19 +136,6 @@ export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
 		},
 	}
 };
-export const PostAccountReleaseHandler = () => {
-	return {
-		PostAccountReleaseRequest:(state:any, action:ActionRequestData<null, null>)=>{
-			 return {...state, ...action};
-		},
-		PostAccountReleaseSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-		PostAccountReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-	}
-};
 export const PostOrderHandler = () => {
 	return {
 		PostOrderRequest:(state:any, action:ActionRequestData<RequestSetOrder, null>)=>{
@@ -175,19 +145,6 @@ export const PostOrderHandler = () => {
 			 return {...state, ...action};
 		},
 		PostOrderFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetOrder, null>>)=>{
-			 return {...state, ...action};
-		},
-	}
-};
-export const DeleteOrderHandler = () => {
-	return {
-		DeleteOrderRequest:(state:any, action:ActionRequestData<null, null>)=>{
-			 return {...state, ...action};
-		},
-		DeleteOrderSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-		DeleteOrderFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}
@@ -231,6 +188,32 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
 		},
 	}
 };
+export const PostReleaseHandler = () => {
+	return {
+		PostReleaseRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		PostReleaseSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		PostReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const GetDictionaryAccountBscsHandler = () => {
+	return {
+		GetDictionaryAccountBscsRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		GetDictionaryAccountBscsSuccess:(state:any, action:ActionResponseData<ResultSetAccountDictBscss,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		GetDictionaryAccountBscsFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
 export const GetDictionaryAccountSapHandler = () => {
 	return {
 		GetDictionaryAccountSapRequest:(state:any, action:ActionRequestData<null, null>)=>{
@@ -266,45 +249,6 @@ export const DeleteDictionaryAccountSapHandler = () => {
 			 return {...state, ...action};
 		},
 		DeleteDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-	}
-};
-export const GetDictionaryAccountBscsHandler = () => {
-	return {
-		GetDictionaryAccountBscsRequest:(state:any, action:ActionRequestData<null, null>)=>{
-			 return {...state, ...action};
-		},
-		GetDictionaryAccountBscsSuccess:(state:any, action:ActionResponseData<ResultSetAccountDictBscss,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-		GetDictionaryAccountBscsFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-	}
-};
-export const PostDictionaryAccountBscsHandler = () => {
-	return {
-		PostDictionaryAccountBscsRequest:(state:any, action:ActionRequestData<RequestSetAccountDictBscs, null>)=>{
-			 return {...state, ...action};
-		},
-		PostDictionaryAccountBscsSuccess:(state:any, action:ActionResponseData<ResultSetAccountDictBscs,ActionRequestData<RequestSetAccountDictBscs, null>>)=>{
-			 return {...state, ...action};
-		},
-		PostDictionaryAccountBscsFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccountDictBscs, null>>)=>{
-			 return {...state, ...action};
-		},
-	}
-};
-export const DeleteDictionaryAccountBscsHandler = () => {
-	return {
-		DeleteDictionaryAccountBscsRequest:(state:any, action:ActionRequestData<null, null>)=>{
-			 return {...state, ...action};
-		},
-		DeleteDictionaryAccountBscsSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-		DeleteDictionaryAccountBscsFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}

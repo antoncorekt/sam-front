@@ -6,6 +6,9 @@ import {UNAUTHORIZED_ACTION} from "../reducers/auth-reducer";
 
 export interface BackendAction {
     get fetching(): boolean;
+    get fail(): boolean;
+    get msg(): string;
+    get errorType(): string;
 }
 
 export class ActionRequestData<T, P> implements BackendAction{

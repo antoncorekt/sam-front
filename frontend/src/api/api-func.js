@@ -1,46 +1,47 @@
-import { 
-ResultSetOk,
-ResultSetError,
-ResultSetCount,
-Segment,
-RequestSetSegment,
-ResultSetSegment,
-ResultSetSegments,
-Account,
-RequestSetAccount,
-ResultSetAccounts,
-ResultSetAccount,
-Order,
-RequestSetOrder,
-ResultSetOrder,
-ResultSetOrders,
-RequestSetUserLogin,
-ResultSetUserLogin,
-UserLogin,
-UserLoginInfo,
-RequestSetUserLogoff,
-UserLogoff,
-AccountDictSap,
-RequestSetAccountDictSap,
-ResultSetAccountDictSap,
-ResultSetAccountDictSaps,
-AccountDictBscs,
-RequestSetAccountDictBscs,
-ResultSetAccountDictBscs,
-ResultSetAccountDictBscss,
-ResultSetVersion,
-ResultSetStatus,
-GetAccountByStatusByReleaseQueryParams,
-PutAccountByStatusByReleaseByBscsAccountQueryParams,
-DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
-GetOrderByStatusByReleaseQueryParams,
-PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
-DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
-
-import * as ACT from './api-actions-defs';
+import {
+	RequestSetSegment,
+	Account,
+	Order,
+	ResultSetUserLogin,
+	RequestSetAccountDictBscs,
+	RequestSetAccount,
+	ResultSetAccount,
+	UserLogoff,
+	ResultSetOrder,
+	Segment,
+	ResultSetCount,
+	RequestSetAccountDictSap,
+	Stat,
+	ResultSetStat,
+	ResultSetAccountDictSap,
+	Version,
+	ResultSetVersion,
+	ResultSetOk,
+	ResultSetSegment,
+	ResultSetAccountDictBscs,
+	UserLogin,
+	ResultSetOrders,
+	ResultSetAccountDictSaps,
+	ResultSetAccounts,
+	AccountDictSap,
+	AccountDictBscs,
+	ResultSetSegments,
+	RequestSetUserLogoff,
+	RequestSetUserLogin,
+	RequestSetOrder,
+	ResultSetAccountDictBscss,
+	ResultSetError,
+	UserLoginInfo,
+	GetAccountByStatusByReleaseQueryParams,
+	PutAccountByStatusByReleaseByBscsAccountQueryParams,
+	DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+	GetOrderByStatusByReleaseQueryParams,
+	PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
+	DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
 import {commonCallApi} from "./common-middleware";
+import * as ACT from "./api-actions-defs";
 
-// call Logs an user into the system and produces a JWT token
+// call loginUser
 export const PostUserLogin = (body:RequestSetUserLogin) => {
 	const settings = {		// set settings data
 		url:`/user/login`,
@@ -50,11 +51,25 @@ export const PostUserLogin = (body:RequestSetUserLogin) => {
 		successType: ACT.PostUserLoginSuccess,
 		failType: ACT.PostUserLoginFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Logs an user off
+// call reloginUser
+export const PostUserRelogin = () => {
+	const settings = {		// set settings data
+		url:`/user/relogin`,
+		httpMethod: 'POST',
+		body:undefined,
+		requestType: ACT.PostUserReloginRequest,
+		successType: ACT.PostUserReloginSuccess,
+		failType: ACT.PostUserReloginFail
+	};
+	return commonCallApi(settings);
+};
+
+
+// call logoffUser
 export const PostUserLogoff = (body:RequestSetUserLogoff) => {
 	const settings = {		// set settings data
 		url:`/user/logoff`,
@@ -64,11 +79,11 @@ export const PostUserLogoff = (body:RequestSetUserLogoff) => {
 		successType: ACT.PostUserLogoffSuccess,
 		failType: ACT.PostUserLogoffFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Creates an account
+// call createAccount
 export const PostAccount = (body:RequestSetAccount) => {
 	const settings = {		// set settings data
 		url:`/account`,
@@ -78,25 +93,11 @@ export const PostAccount = (body:RequestSetAccount) => {
 		successType: ACT.PostAccountSuccess,
 		failType: ACT.PostAccountFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Releases account, orders changing the status
-export const PostAccountRelease = () => {
-	const settings = {		// set settings data
-		url:`/account/release`,
-		httpMethod: 'POST',
-		body:undefined,
-		requestType: ACT.PostAccountReleaseRequest,
-		successType: ACT.PostAccountReleaseSuccess,
-		failType: ACT.PostAccountReleaseFail
-	};
-	return commonCallApi(settings); 
-};
-
-
-// call Creates an order
+// call createOrder
 export const PostOrder = (body:RequestSetOrder) => {
 	const settings = {		// set settings data
 		url:`/order`,
@@ -106,11 +107,25 @@ export const PostOrder = (body:RequestSetOrder) => {
 		successType: ACT.PostOrderSuccess,
 		failType: ACT.PostOrderFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Creates an account description
+// call doRelease
+export const PostRelease = () => {
+	const settings = {		// set settings data
+		url:`/release`,
+		httpMethod: 'POST',
+		body:undefined,
+		requestType: ACT.PostReleaseRequest,
+		successType: ACT.PostReleaseSuccess,
+		failType: ACT.PostReleaseFail
+	};
+	return commonCallApi(settings);
+};
+
+
+// call createAccountDictSap
 export const PostDictionaryAccountSap = (body:RequestSetAccountDictSap) => {
 	const settings = {		// set settings data
 		url:`/dictionary/account/sap`,
@@ -120,25 +135,11 @@ export const PostDictionaryAccountSap = (body:RequestSetAccountDictSap) => {
 		successType: ACT.PostDictionaryAccountSapSuccess,
 		failType: ACT.PostDictionaryAccountSapFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Creates an account description
-export const PostDictionaryAccountBscs = (body:RequestSetAccountDictBscs) => {
-	const settings = {		// set settings data
-		url:`/dictionary/account/bscs`,
-		httpMethod: 'POST',
-		body:JSON.stringify(body),
-		requestType: ACT.PostDictionaryAccountBscsRequest,
-		successType: ACT.PostDictionaryAccountBscsSuccess,
-		failType: ACT.PostDictionaryAccountBscsFail
-	};
-	return commonCallApi(settings); 
-};
-
-
-// call Creates new segment
+// call createSegment
 export const PostDictionarySegment = (body:RequestSetSegment) => {
 	const settings = {		// set settings data
 		url:`/dictionary/segment`,
@@ -148,11 +149,11 @@ export const PostDictionarySegment = (body:RequestSetSegment) => {
 		successType: ACT.PostDictionarySegmentSuccess,
 		failType: ACT.PostDictionarySegmentFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Provides basic system version info
+// call systemVersion
 export const GetSystemVersion = () => {
 	const settings = {		// set settings data
 		url:`/system/version`,
@@ -162,26 +163,40 @@ export const GetSystemVersion = () => {
 		successType: ACT.GetSystemVersionSuccess,
 		failType: ACT.GetSystemVersionFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Provides process statistics
-export const GetSystemStatus = () => {
+// call systemStatus
+export const GetSystemStat = () => {
 	const settings = {		// set settings data
-		url:`/system/status`,
+		url:`/system/stat`,
 		httpMethod: 'GET',
 		body:undefined,
-		requestType: ACT.GetSystemStatusRequest,
-		successType: ACT.GetSystemStatusSuccess,
-		failType: ACT.GetSystemStatusFail
+		requestType: ACT.GetSystemStatRequest,
+		successType: ACT.GetSystemStatSuccess,
+		failType: ACT.GetSystemStatFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Reads some accounts
-export const GetAccountByStatusByRelease = (status:string,release:string) => {
+// call systemHealth
+export const GetSystemHealth = () => {
+	const settings = {		// set settings data
+		url:`/system/health`,
+		httpMethod: 'GET',
+		body:undefined,
+		requestType: ACT.GetSystemHealthRequest,
+		successType: ACT.GetSystemHealthSuccess,
+		failType: ACT.GetSystemHealthFail
+	};
+	return commonCallApi(settings);
+};
+
+
+// call readAccountByStatusRelease
+export const GetAccountByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}`,
 		httpMethod: 'GET',
@@ -190,12 +205,12 @@ export const GetAccountByStatusByRelease = (status:string,release:string) => {
 		successType: ACT.GetAccountByStatusByReleaseSuccess,
 		failType: ACT.GetAccountByStatusByReleaseFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Reads some orders
-export const GetOrderByStatusByRelease = (status:string,release:string) => {
+// call readOrderByStatusRelease
+export const GetOrderByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}`,
 		httpMethod: 'GET',
@@ -204,25 +219,11 @@ export const GetOrderByStatusByRelease = (status:string,release:string) => {
 		successType: ACT.GetOrderByStatusByReleaseSuccess,
 		failType: ACT.GetOrderByStatusByReleaseFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Reads all account descriptions
-export const GetDictionaryAccountSap = () => {
-	const settings = {		// set settings data
-		url:`/dictionary/account/sap`,
-		httpMethod: 'GET',
-		body:undefined,
-		requestType: ACT.GetDictionaryAccountSapRequest,
-		successType: ACT.GetDictionaryAccountSapSuccess,
-		failType: ACT.GetDictionaryAccountSapFail
-	};
-	return commonCallApi(settings); 
-};
-
-
-// call Reads all account descriptions
+// call readAccountDictBscs
 export const GetDictionaryAccountBscs = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/account/bscs`,
@@ -232,11 +233,25 @@ export const GetDictionaryAccountBscs = () => {
 		successType: ACT.GetDictionaryAccountBscsSuccess,
 		failType: ACT.GetDictionaryAccountBscsFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Reads all segments
+// call readAccountDictSap
+export const GetDictionaryAccountSap = () => {
+	const settings = {		// set settings data
+		url:`/dictionary/account/sap`,
+		httpMethod: 'GET',
+		body:undefined,
+		requestType: ACT.GetDictionaryAccountSapRequest,
+		successType: ACT.GetDictionaryAccountSapSuccess,
+		failType: ACT.GetDictionaryAccountSapFail
+	};
+	return commonCallApi(settings);
+};
+
+
+// call readSegment
 export const GetDictionarySegment = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/segment`,
@@ -246,12 +261,12 @@ export const GetDictionarySegment = () => {
 		successType: ACT.GetDictionarySegmentSuccess,
 		failType: ACT.GetDictionarySegmentFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Updates an account
-export const PutAccountByStatusByReleaseByBscsAccount = (status:string,release:string,bscsAccount:string) => {
+// call updateAccount
+export const PutAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}/${bscsAccount}`,
 		httpMethod: 'PUT',
@@ -260,12 +275,12 @@ export const PutAccountByStatusByReleaseByBscsAccount = (status:string,release:s
 		successType: ACT.PutAccountByStatusByReleaseByBscsAccountSuccess,
 		failType: ACT.PutAccountByStatusByReleaseByBscsAccountFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Updates an order
-export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:string,release:string,bscsAccount:string,segment:string) => {
+// call updateOrder
+export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
 		httpMethod: 'PUT',
@@ -274,26 +289,12 @@ export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:string,re
 		successType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
 		failType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Deletes all accounts
-export const DeleteAccount = () => {
-	const settings = {		// set settings data
-		url:`/account`,
-		httpMethod: 'DELETE',
-		body:undefined,
-		requestType: ACT.DeleteAccountRequest,
-		successType: ACT.DeleteAccountSuccess,
-		failType: ACT.DeleteAccountFail
-	};
-	return commonCallApi(settings); 
-};
-
-
-// call Deletes an account
-export const DeleteAccountByStatusByReleaseByBscsAccount = (status:string,release:string,bscsAccount:string) => {
+// call deleteAccount
+export const DeleteAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}/${bscsAccount}`,
 		httpMethod: 'DELETE',
@@ -302,26 +303,12 @@ export const DeleteAccountByStatusByReleaseByBscsAccount = (status:string,releas
 		successType: ACT.DeleteAccountByStatusByReleaseByBscsAccountSuccess,
 		failType: ACT.DeleteAccountByStatusByReleaseByBscsAccountFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Deletes all orders
-export const DeleteOrder = () => {
-	const settings = {		// set settings data
-		url:`/order`,
-		httpMethod: 'DELETE',
-		body:undefined,
-		requestType: ACT.DeleteOrderRequest,
-		successType: ACT.DeleteOrderSuccess,
-		failType: ACT.DeleteOrderFail
-	};
-	return commonCallApi(settings); 
-};
-
-
-// call Deletes an order
-export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:string,release:string,bscsAccount:string,segment:string) => {
+// call deleteOrder
+export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
 		httpMethod: 'DELETE',
@@ -330,11 +317,11 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:string
 		successType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
 		failType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Deletes all account descriptions
+// call deleteAccountDictSap
 export const DeleteDictionaryAccountSap = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/account/sap`,
@@ -344,25 +331,11 @@ export const DeleteDictionaryAccountSap = () => {
 		successType: ACT.DeleteDictionaryAccountSapSuccess,
 		failType: ACT.DeleteDictionaryAccountSapFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
 
-// call Deletes all account descriptions
-export const DeleteDictionaryAccountBscs = () => {
-	const settings = {		// set settings data
-		url:`/dictionary/account/bscs`,
-		httpMethod: 'DELETE',
-		body:undefined,
-		requestType: ACT.DeleteDictionaryAccountBscsRequest,
-		successType: ACT.DeleteDictionaryAccountBscsSuccess,
-		failType: ACT.DeleteDictionaryAccountBscsFail
-	};
-	return commonCallApi(settings); 
-};
-
-
-// call Deletes all segments
+// call deleteSegment
 export const DeleteDictionarySegment = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/segment`,
@@ -372,6 +345,6 @@ export const DeleteDictionarySegment = () => {
 		successType: ACT.DeleteDictionarySegmentSuccess,
 		failType: ACT.DeleteDictionarySegmentFail
 	};
-	return commonCallApi(settings); 
+	return commonCallApi(settings);
 };
 
