@@ -1,44 +1,47 @@
 import { 
-RequestSetSegment,
-Account,
-Order,
+RequestSetUserLogin,
+UserLogin,
 ResultSetUserLogin,
-RequestSetAccountDictBscs,
+UserLoginConf,
+ResultSetUserInfo,
+UserLoginInfo,
+User,
+RequestSetUserLogoff,
+UserLogoffConf,
 RequestSetAccount,
 ResultSetAccount,
-UserLogoff,
-ResultSetOrder,
-Segment,
-ResultSetCount,
-RequestSetAccountDictSap,
-Stat,
-ResultSetStat,
-ResultSetAccountDictSap,
-Version,
-ResultSetVersion,
-ResultSetOk,
-ResultSetSegment,
-ResultSetAccountDictBscs,
-UserLogin,
-ResultSetOrders,
-ResultSetAccountDictSaps,
+Account,
 ResultSetAccounts,
-AccountDictSap,
-AccountDictBscs,
-ResultSetSegments,
-RequestSetUserLogoff,
-RequestSetUserLogin,
 RequestSetOrder,
+ResultSetOrder,
+Order,
+ResultSetOrders,
+RequestSetAccountDictSap,
+AccountDictSap,
+ResultSetAccountDictSap,
+ResultSetAccountDictSaps,
+RequestSetAccountDictBscs,
+ResultSetAccountDictBscs,
+AccountDictBscs,
 ResultSetAccountDictBscss,
+RequestSetSegment,
+Segment,
+ResultSetSegment,
+ResultSetSegments,
+ResultSetStat,
+Stat,
+ResultSetVersion,
+Version,
 ResultSetError,
-UserLoginInfo,
+ResultSetOk,
+ResultSetCount,
 GetAccountByStatusByReleaseQueryParams,
 PutAccountByStatusByReleaseByBscsAccountQueryParams,
 DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
 GetOrderByStatusByReleaseQueryParams,
 PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
 DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
-// call loginUser
+// call UserLogin
 export const PostUserLogin = (body:RequestSetUserLogin) => {
 	const settings = {		// set settings data
 		url:`/user/login`,
@@ -52,7 +55,7 @@ export const PostUserLogin = (body:RequestSetUserLogin) => {
 };
 
 
-// call reloginUser
+// call UserRelogin
 export const PostUserRelogin = () => {
 	const settings = {		// set settings data
 		url:`/user/relogin`,
@@ -66,7 +69,7 @@ export const PostUserRelogin = () => {
 };
 
 
-// call logoffUser
+// call UserLogoff
 export const PostUserLogoff = (body:RequestSetUserLogoff) => {
 	const settings = {		// set settings data
 		url:`/user/logoff`,
@@ -80,7 +83,21 @@ export const PostUserLogoff = (body:RequestSetUserLogoff) => {
 };
 
 
-// call createAccount
+// call UserInfo
+export const PostUserInfo = () => {
+	const settings = {		// set settings data
+		url:`/user/info`,
+		httpMethod: 'POST',
+		body:undefined,
+		requestType: ACT.PostUserInfoRequest,
+		successType: ACT.PostUserInfoSuccess,
+		failType: ACT.PostUserInfoFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call AccountCreateOne
 export const PostAccount = (body:RequestSetAccount) => {
 	const settings = {		// set settings data
 		url:`/account`,
@@ -94,7 +111,7 @@ export const PostAccount = (body:RequestSetAccount) => {
 };
 
 
-// call createOrder
+// call OrderCreateOne
 export const PostOrder = (body:RequestSetOrder) => {
 	const settings = {		// set settings data
 		url:`/order`,
@@ -108,7 +125,7 @@ export const PostOrder = (body:RequestSetOrder) => {
 };
 
 
-// call doRelease
+// call Release
 export const PostRelease = () => {
 	const settings = {		// set settings data
 		url:`/release`,
@@ -122,7 +139,7 @@ export const PostRelease = () => {
 };
 
 
-// call createAccountDictSap
+// call DictionaryAccountSapCreate
 export const PostDictionaryAccountSap = (body:RequestSetAccountDictSap) => {
 	const settings = {		// set settings data
 		url:`/dictionary/account/sap`,
@@ -136,7 +153,7 @@ export const PostDictionaryAccountSap = (body:RequestSetAccountDictSap) => {
 };
 
 
-// call createSegment
+// call DictionarySegmentCreate
 export const PostDictionarySegment = (body:RequestSetSegment) => {
 	const settings = {		// set settings data
 		url:`/dictionary/segment`,
@@ -150,7 +167,7 @@ export const PostDictionarySegment = (body:RequestSetSegment) => {
 };
 
 
-// call systemVersion
+// call SystemVersion
 export const GetSystemVersion = () => {
 	const settings = {		// set settings data
 		url:`/system/version`,
@@ -164,7 +181,7 @@ export const GetSystemVersion = () => {
 };
 
 
-// call systemStatus
+// call SystemStatus
 export const GetSystemStat = () => {
 	const settings = {		// set settings data
 		url:`/system/stat`,
@@ -178,7 +195,7 @@ export const GetSystemStat = () => {
 };
 
 
-// call systemHealth
+// call SystemHealth
 export const GetSystemHealth = () => {
 	const settings = {		// set settings data
 		url:`/system/health`,
@@ -192,7 +209,7 @@ export const GetSystemHealth = () => {
 };
 
 
-// call readAccountByStatusRelease
+// call AccountReadAll
 export const GetAccountByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}`,
@@ -206,7 +223,7 @@ export const GetAccountByStatusByRelease = (status:Status15Enum,release:ReleaseE
 };
 
 
-// call readOrderByStatusRelease
+// call OrderReadSome
 export const GetOrderByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}`,
@@ -220,7 +237,7 @@ export const GetOrderByStatusByRelease = (status:Status15Enum,release:ReleaseEnu
 };
 
 
-// call readAccountDictBscs
+// call DictionaryAccountBscsReadAll
 export const GetDictionaryAccountBscs = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/account/bscs`,
@@ -234,7 +251,7 @@ export const GetDictionaryAccountBscs = () => {
 };
 
 
-// call readAccountDictSap
+// call DictionaryAccountSapReadAll
 export const GetDictionaryAccountSap = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/account/sap`,
@@ -248,7 +265,7 @@ export const GetDictionaryAccountSap = () => {
 };
 
 
-// call readSegment
+// call DictionarySegmentReadAll
 export const GetDictionarySegment = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/segment`,
@@ -262,7 +279,7 @@ export const GetDictionarySegment = () => {
 };
 
 
-// call updateAccount
+// call AccountReadSome
 export const PutAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}/${bscsAccount}`,
@@ -276,7 +293,7 @@ export const PutAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,rel
 };
 
 
-// call updateOrder
+// call OrderUpdateOne
 export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
@@ -290,7 +307,7 @@ export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15E
 };
 
 
-// call deleteAccount
+// call AccountDeleteOne
 export const DeleteAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}/${bscsAccount}`,
@@ -304,7 +321,7 @@ export const DeleteAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,
 };
 
 
-// call deleteOrder
+// call OrderDeleteOne
 export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
@@ -318,7 +335,7 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status
 };
 
 
-// call deleteAccountDictSap
+// call DictionaryAccountSapDeleteAll
 export const DeleteDictionaryAccountSap = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/account/sap`,
@@ -332,7 +349,7 @@ export const DeleteDictionaryAccountSap = () => {
 };
 
 
-// call deleteSegment
+// call DictionarySegmentDeleteAll
 export const DeleteDictionarySegment = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/segment`,

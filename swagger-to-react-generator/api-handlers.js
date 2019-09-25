@@ -1,14 +1,56 @@
-
+import { 
+RequestSetUserLogin,
+UserLogin,
+ResultSetUserLogin,
+UserLoginConf,
+ResultSetUserInfo,
+UserLoginInfo,
+User,
+RequestSetUserLogoff,
+UserLogoffConf,
+RequestSetAccount,
+ResultSetAccount,
+Account,
+ResultSetAccounts,
+RequestSetOrder,
+ResultSetOrder,
+Order,
+ResultSetOrders,
+RequestSetAccountDictSap,
+AccountDictSap,
+ResultSetAccountDictSap,
+ResultSetAccountDictSaps,
+RequestSetAccountDictBscs,
+ResultSetAccountDictBscs,
+AccountDictBscs,
+ResultSetAccountDictBscss,
+RequestSetSegment,
+Segment,
+ResultSetSegment,
+ResultSetSegments,
+ResultSetStat,
+Stat,
+ResultSetVersion,
+Version,
+ResultSetError,
+ResultSetOk,
+ResultSetCount,
+GetAccountByStatusByReleaseQueryParams,
+PutAccountByStatusByReleaseByBscsAccountQueryParams,
+DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+GetOrderByStatusByReleaseQueryParams,
+PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
+DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
 export const GetSystemVersionHandler = () => {
 	return {
 		GetSystemVersionRequest:(state:any, action:ActionRequestData<null, null>)=>{
-			 return {...state, ...action};
+			return {...state, ...action};
 		},
 		GetSystemVersionSuccess:(state:any, action:ActionResponseData<ResultSetVersion,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
+			return {...state, ...action, version: action.response.data.version};
 		},
 		GetSystemVersionFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
+			return {...state, ...action};
 		},
 	}
 };
@@ -80,6 +122,19 @@ export const PostUserLogoffHandler = () => {
 			 return {...state, ...action};
 		},
 		PostUserLogoffFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogoff, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const PostUserInfoHandler = () => {
+	return {
+		PostUserInfoRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		PostUserInfoSuccess:(state:any, action:ActionResponseData<ResultSetUserInfo,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		PostUserInfoFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}

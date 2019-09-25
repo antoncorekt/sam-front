@@ -123,7 +123,21 @@ type CallApiContextType = {
 }
 
 class GlobalLoginContext {
-    bearerToken: string
+
+    constructor(){
+        this.bearerToken = window.localStorage.getItem("bearerToken") | null;
+    }
+
+    _bearerToken: string;
+
+    set bearerToken(str: string){
+        this._bearerToken = str;
+        window.localStorage.setItem("bearerToken", this._bearerToken);
+    }
+
+    get bearerToken(){
+        return this._bearerToken
+    }
 }
 
 export const globalLoginContext = new GlobalLoginContext();
@@ -192,7 +206,7 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
 
             if (callApiContext.responseStatus >= 300){
 
-                if (callApiContext.responseStatus === 401){
+                if (callApiContext.responseStatus === 403){
                     // todo call unauthorized
                     dispatch(
                         {

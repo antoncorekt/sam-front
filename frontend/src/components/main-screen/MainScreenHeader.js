@@ -8,7 +8,13 @@ import './style.css';
 import {connect} from "react-redux";
 import type {MainStateType} from "../../reducers";
 import {GetSystemVersion, PostUserLogoff} from "../../api/api-func";
-import {ResultSetVersion, UserLoginInfo, Version} from "../../api/api-models";
+import {
+    RequestSetUserLogoff,
+    ResultSetVersion,
+    UserLoginInfo,
+    UserLogoffConf,
+    Version
+} from "../../api/api-models";
 
 class MainScreenHeader extends Component<{
     auth: UserLoginInfo,
@@ -54,7 +60,13 @@ export default connect(
     dispatch => ({
         logout: (user: string)=>{
             dispatch(
-                PostUserLogoff(user)
+                PostUserLogoff(new RequestSetUserLogoff.Builder()
+                    .withData(new UserLogoffConf.Builder()
+                        .withUser(user)
+                        .build()
+                    )
+                    .build()
+                )
             )
         },
         getBackendVersion: () => {

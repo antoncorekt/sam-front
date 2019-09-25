@@ -1,4 +1,4 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
   version: '1.0.0'
   title: Swagger gosamapi
@@ -18,7 +18,7 @@ paths:
   /system/version:
     get:
       description: Enables health check of the service. Makes system observable. Serves like a ping request showing that system is alive.
-      summary: systemVersion
+      summary: SystemVersion
       tags:
         - system
       operationId: SystemVersionGet
@@ -39,7 +39,7 @@ paths:
   /system/stat:
     get:
       description: Enables stat check of the service. Makes debugging and operations easy.
-      summary: systemStatus
+      summary: SystemStatus
       tags:
         - system
       operationId: SystemStatGet
@@ -60,7 +60,7 @@ paths:
   /system/health:
     get:
       description: Enables health check of the service. Makes system observable. Serves like a ping request showing that system is alive.
-      summary: systemHealth
+      summary: SystemHealth
       tags:
         - system
       operationId: SystemHealthGet
@@ -79,7 +79,7 @@ paths:
   /user/login:
     post:
       description: Creates user session and produces authorization token. It validates LDAP profile. Requires user id, role id and domain passowrd. This profile is to be validated with domain service. It will be encoded in thee claims of the JWT token produced by the service. The token has to be used in each subsequent method invocation in header Authorization item with authorization type Bearer.
-      summary: loginUser
+      summary: UserLogin
       tags:
         - user
       operationId: UserLoginPost
@@ -118,7 +118,7 @@ paths:
   /user/relogin:
     post:
       description: Creates user session and produces authorization token using the provided one on the header.
-      summary: reloginUser
+      summary: UserRelogin
       tags:
         - user
       operationId: UserReloginPost
@@ -151,7 +151,7 @@ paths:
   /user/logoff:
     post:
       description: Logs off current logged in user session. The invalidation of the token is based on the explicit storing of the invalid tokens in REDIS backend cache.
-      summary: logoffUser
+      summary: UserLogoff
       tags:
         - user
       operationId: UserLogoffPost
@@ -189,10 +189,43 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
+  /user/info:
+    post:
+      description: Returns info about user using the token
+      summary: UserInfo
+      tags:
+        - user
+      operationId: UserInfoPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetUserInfo'
+          headers:
+            X-Expires-After:
+              type: string
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
   /account:
     post:
       description: "A new mapping is created in W like Working status. Attempts to create item in any other status will be errored out. \n\nRequires:\n- Booker role."
-      summary: createAccount
+      summary: AccountCreateOne
       tags:
         - account
       operationId: AccountPost
@@ -229,7 +262,7 @@ paths:
   /account/{status}/{release}:
     get:
       description: A set of accouts is read and returned. The criteria is per status and version. The varsion must be known a priori. For work version release is always 0.
-      summary: readAccountByStatusRelease
+      summary: AccountReadAll
       tags:
         - account
       operationId: AccountByStatusAndReleaseGet
@@ -277,7 +310,7 @@ paths:
   /account/{status}/{release}/{bscsAccount}:
     put:
       description: "Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Promotion from status value W like Working to C like Controlled may be done only with Controll role.\n\nRequires:\n  \n- Booker role while in W like Work,\n  \n- Control role while in C like Control state and in transition from W like Work to C like Control."
-      summary: updateAccount
+      summary: AccountReadSome
       tags:
         - account
       operationId: AccountBscsAccountByStatusAndReleasePut
@@ -329,7 +362,7 @@ paths:
             $ref: '#/definitions/ResultSetError'
     delete:
       description: "Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Only records in W like Working status may be manipulatd this way. Only records in W like Working status may be manipulatd this way. \n\nRequires:\n- Booker role."
-      summary: deleteAccount
+      summary: AccountDeleteOne
       tags:
         - account
       operationId: AccountBscsAccountByStatusAndReleaseDelete
@@ -384,11 +417,10 @@ paths:
       description: >-
         A new mapping is created in working status, unconfirmed. The entries segment value must be validated with values from dictionary Segment.
 
-
         Requires:
 
         - Control role.
-      summary: createOrder
+      summary: OrderCreateOne
       tags:
         - order
       operationId: OrderPost
@@ -425,7 +457,7 @@ paths:
   /order/{status}/{release}:
     get:
       description: Set of orders is read and returned. The criteria is per status and version. The varsion must be known a priori. For work version release is always 0.
-      summary: readOrderByStatusRelease
+      summary: OrderReadSome
       tags:
         - order
       operationId: OrderByStatusAndReleaseGet
@@ -473,7 +505,7 @@ paths:
   /order/{status}/{release}/{bscsAccount}/{segment}:
     put:
       description: Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Only records in W like Working status may be manipulatd this way.
-      summary: updateOrder
+      summary: OrderUpdateOne
       tags:
         - order
       operationId: OrderBscsAccountSegmentByStatusAndReleasePut
@@ -530,7 +562,7 @@ paths:
             $ref: '#/definitions/ResultSetError'
     delete:
       description: "Most selective access to single row. The primary key is used. One record is deleted. Only records in W like Working status may be manipulatd this way. \n\nRequires:\n- Control role."
-      summary: deleteOrder
+      summary: OrderDeleteOne
       tags:
         - order
       operationId: OrderBscsAccountSegmentByStatusAndReleaseDelete
@@ -588,7 +620,7 @@ paths:
   /release:
     post:
       description: "Does a release of version in state C like Controlled to P like Production. The impact is on Account and Order entries. Existence of not controled entries with status W like Working causes failure. Other validation rules are applied as well, for example valid date check: it must be rounded down and in the future and no clash with entries in status P like Production found in Account or Order backednd tables. \n\nRequires:\n- Control role."
-      summary: doRelease
+      summary: Release
       tags:
         - release
       operationId: ReleasePost
@@ -619,7 +651,7 @@ paths:
   /dictionary/account/bscs:
     get:
       description: The whole configuration is read from the backend. The resource is inmutable as it is part of BSCS baseline setup. In fact the read is to be done from a view adding some of the GL account numbers which are not confgured but they are used in the existing mappings.
-      summary: readAccountDictBscs
+      summary: DictionaryAccountBscsReadAll
       tags:
         - dictionary-account-bscs
       operationId: DictionaryAccountBscsGet
@@ -650,7 +682,7 @@ paths:
   /dictionary/account/sap:
     post:
       description: "Only one description is created in the configuration. \n\nRequires:\n- Admin role."
-      summary: createAccountDictSap
+      summary: DictionaryAccountSapCreate
       tags:
         - dictionary-account-sap
       operationId: DictionaryAccountSapPost
@@ -686,7 +718,7 @@ paths:
             $ref: '#/definitions/ResultSetError'
     get:
       description: The whole configuration is read from the backend.
-      summary: readAccountDictSap
+      summary: DictionaryAccountSapReadAll
       tags:
         - dictionary-account-sap
       operationId: DictionaryAccountSapGet
@@ -718,11 +750,10 @@ paths:
       description: >-
         Unselective cleanup of the configuration. Used in bulk load.
 
-
         Requires:
 
         - Admin role.
-      summary: deleteAccountDictSap
+      summary: DictionaryAccountSapDeleteAll
       tags:
         - dictionary-account-sap
       operationId: DictionaryAccountSapDelete
@@ -753,7 +784,7 @@ paths:
   /dictionary/segment:
     post:
       description: "Only one segment is created in the configuration. \n\nRequires:\n- Admin role"
-      summary: createSegment
+      summary: DictionarySegmentCreate
       tags:
         - dictionary-segment
       operationId: DictionarySegmentPost
@@ -789,7 +820,7 @@ paths:
             $ref: '#/definitions/ResultSetError'
     get:
       description: The whole configuration is read from the backend.
-      summary: readSegment
+      summary: DictionarySegmentReadAll
       tags:
         - dictionary-segment
       operationId: DictionarySegmentGet
@@ -821,11 +852,10 @@ paths:
       description: >-
         Unselective cleanup of the configuration.
 
-
         Requires:
 
         - Admin role.
-      summary: deleteSegment
+      summary: DictionarySegmentDeleteAll
       tags:
         - dictionary-segment
       operationId: DictionarySegmentDelete
@@ -854,12 +884,86 @@ paths:
           schema:
             $ref: '#/definitions/ResultSetError'
 definitions:
-  RequestSetSegment:
-    title: RequestSetSegment
+  RequestSetUserLogin:
+    title: RequestSetUserLogin
     type: object
     properties:
       data:
-        $ref: '#/definitions/Segment'
+        $ref: '#/definitions/UserLogin'
+  UserLogin:
+    title: UserLogin
+    example:
+      user: Nobody
+      role: Booker
+      password: Nothing
+    type: object
+    properties:
+      user:
+        type: string
+      role:
+        $ref: '#/definitions/Role'
+      password:
+        type: string
+  ResultSetUserLogin:
+    title: ResultSetUserLogin
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/UserLoginConf'
+  UserLoginConf:
+    title: UserLoginConf
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/User'
+      token:
+        type: string
+  ResultSetUserInfo:
+    title: ResultSetUserInfo
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/UserLoginInfo'
+  UserLoginInfo:
+    title: UserLoginInfo
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/User'
+  User:
+    title: User
+    type: object
+    properties:
+      user:
+        type: string
+      role:
+        $ref: '#/definitions/Role'
+  RequestSetUserLogoff:
+    title: RequestSetUserLogoff
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/UserLogoffConf'
+  UserLogoffConf:
+    title: UserLogoffConf
+    type: object
+    properties:
+      user:
+        type: string
+  RequestSetAccount:
+    title: RequestSetAccount
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/Account'
+  ResultSetAccount:
+    title: ResultSetAccount
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Account'
   Account:
     title: Account
     example:
@@ -892,6 +996,33 @@ definitions:
       citMarkerVatFlag:
         type: integer
         format: int32
+  ResultSetAccounts:
+    title: ResultSetAccounts
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Account'
+  RequestSetOrder:
+    title: RequestSetOrder
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/Order'
+  ResultSetOrder:
+    title: ResultSetOrder
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Order'
   Order:
     title: Order
     example:
@@ -917,154 +1048,6 @@ definitions:
       validFromDate:
         type: string
         format: date-time
-  ResultSetUserLogin:
-    title: ResultSetUserLogin
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/UserLoginInfo'
-  RequestSetAccountDictBscs:
-    title: RequestSetAccountDictBscs
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/AccountDictBscs'
-  RequestSetAccount:
-    title: RequestSetAccount
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/Account'
-  ResultSetAccount:
-    title: ResultSetAccount
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      data:
-        $ref: '#/definitions/Account'
-  UserLogoff:
-    title: UserLogoff
-    type: object
-    properties:
-      user:
-        type: string
-  ResultSetOrder:
-    title: ResultSetOrder
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      data:
-        $ref: '#/definitions/Order'
-  Segment:
-    title: Segment
-    example:
-      csTradeRef: XXX
-      segmCategory: PRIV
-    type: object
-    properties:
-      csTradeRef:
-        type: string
-      segmCategory:
-        type: string
-  ResultSetCount:
-    title: ResultSetCount
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      count:
-        type: integer
-        format: int32
-  RequestSetAccountDictSap:
-    title: RequestSetAccountDictSap
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/AccountDictSap'
-  Stat:
-    title: Stat
-    type: object
-    properties:
-      alloc:
-        type: integer
-        format: int32
-      totalalloc:
-        type: integer
-        format: int32
-      sys:
-        type: integer
-        format: int32
-      numgc:
-        type: integer
-        format: int32
-  ResultSetStat:
-    title: ResultSetStat
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      data:
-        $ref: '#/definitions/Stat'
-  ResultSetAccountDictSap:
-    title: ResultSetAccountDictSap
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      data:
-        $ref: '#/definitions/AccountDictSap'
-  Version:
-    title: Version
-    type: object
-    properties:
-      version:
-        type: string
-  ResultSetVersion:
-    title: ResultSetVersion
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      data:
-        $ref: '#/definitions/Version'
-  ResultSetOk:
-    title: ResultSetOk
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-  ResultSetSegment:
-    title: ResultSetSegment
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      data:
-        $ref: '#/definitions/Segment'
-  ResultSetAccountDictBscs:
-    title: ResultSetAccountDictBscs
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      data:
-        $ref: '#/definitions/AccountDictBscs'
-  UserLogin:
-    title: UserLogin
-    example:
-      user: NOBODY
-      role: Admin
-      password: NOBODY
-    type: object
-    properties:
-      user:
-        type: string
-      role:
-        $ref: '#/definitions/Role'
-      password:
-        type: string
   ResultSetOrders:
     title: ResultSetOrders
     type: object
@@ -1078,32 +1061,12 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Order'
-  ResultSetAccountDictSaps:
-    title: ResultSetAccountDictSaps
+  RequestSetAccountDictSap:
+    title: RequestSetAccountDictSap
     type: object
     properties:
-      status:
-        $ref: '#/definitions/Status'
-      count:
-        type: integer
-        format: int32
       data:
-        type: array
-        items:
-          $ref: '#/definitions/AccountDictSap'
-  ResultSetAccounts:
-    title: ResultSetAccounts
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      count:
-        type: integer
-        format: int32
-      data:
-        type: array
-        items:
-          $ref: '#/definitions/Account'
+        $ref: '#/definitions/AccountDictSap'
   AccountDictSap:
     title: AccountDictSap
     example:
@@ -1118,6 +1081,41 @@ definitions:
         type: string
       status:
         type: string
+  ResultSetAccountDictSap:
+    title: ResultSetAccountDictSap
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/AccountDictSap'
+  ResultSetAccountDictSaps:
+    title: ResultSetAccountDictSaps
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/AccountDictSap'
+  RequestSetAccountDictBscs:
+    title: RequestSetAccountDictBscs
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/AccountDictBscs'
+  ResultSetAccountDictBscs:
+    title: ResultSetAccountDictBscs
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/AccountDictBscs'
   AccountDictBscs:
     title: AccountDictBscs
     example:
@@ -1135,37 +1133,6 @@ definitions:
         type: string
       glActive:
         type: string
-  ResultSetSegments:
-    title: ResultSetSegments
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/Status'
-      count:
-        type: integer
-        format: int32
-      data:
-        type: array
-        items:
-          $ref: '#/definitions/Segment'
-  RequestSetUserLogoff:
-    title: RequestSetUserLogoff
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/UserLogoff'
-  RequestSetUserLogin:
-    title: RequestSetUserLogin
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/UserLogin'
-  RequestSetOrder:
-    title: RequestSetOrder
-    type: object
-    properties:
-      data:
-        $ref: '#/definitions/Order'
   ResultSetAccountDictBscss:
     title: ResultSetAccountDictBscss
     type: object
@@ -1179,24 +1146,105 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/AccountDictBscs'
+  RequestSetSegment:
+    title: RequestSetSegment
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/Segment'
+  Segment:
+    title: Segment
+    example:
+      csTradeRef: XXX
+      segmCategory: PRIV
+    type: object
+    properties:
+      csTradeRef:
+        type: string
+      segmCategory:
+        type: string
+  ResultSetSegment:
+    title: ResultSetSegment
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Segment'
+  ResultSetSegments:
+    title: ResultSetSegments
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Segment'
+  ResultSetStat:
+    title: ResultSetStat
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Stat'
+  Stat:
+    title: Stat
+    type: object
+    properties:
+      alloc:
+        type: integer
+        format: int32
+      totalalloc:
+        type: integer
+        format: int32
+      sys:
+        type: integer
+        format: int32
+      numgc:
+        type: integer
+        format: int32
+  ResultSetVersion:
+    title: ResultSetVersion
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      data:
+        $ref: '#/definitions/Version'
+  Version:
+    title: Version
+    type: object
+    properties:
+      version:
+        type: string
   ResultSetError:
     title: ResultSetError
     type: object
     properties:
       status:
-        $ref: '#/definitions/Status14'
+        $ref: '#/definitions/Status12'
       message:
         type: string
-  UserLoginInfo:
-    title: UserLoginInfo
+  ResultSetOk:
+    title: ResultSetOk
     type: object
     properties:
-      user:
-        type: string
-      role:
-        $ref: '#/definitions/Role'
-      token:
-        type: string
+      status:
+        $ref: '#/definitions/Status'
+  ResultSetCount:
+    title: ResultSetCount
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
   release:
     title: release
     example: 0
@@ -1218,8 +1266,8 @@ definitions:
     type: string
     enum:
       - Ok
-  Status14:
-    title: Status14
+  Status12:
+    title: Status12
     example: Error
     type: string
     enum:

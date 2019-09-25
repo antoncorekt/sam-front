@@ -67,7 +67,7 @@ class LoginPage extends React.Component<{
 }
 
 const mapStateToProps = (state: MainStateType) => ({
-    auth: state.auth,
+    auth: state.auth
 });
 
 export default connect(
@@ -85,6 +85,7 @@ export default connect(
                     )
                     .build()
                 )
+
             )
         }
     })

@@ -35,6 +35,12 @@ export const PostUserLogoffRequest = "PostUserLogoffRequest";
 export const PostUserLogoffFail = "PostUserLogoffFail"
 ;
 
+// actions for POST /user/info
+export const PostUserInfoSuccess = "PostUserInfoSuccess";
+export const PostUserInfoRequest = "PostUserInfoRequest";
+export const PostUserInfoFail = "PostUserInfoFail"
+;
+
 // actions for POST /account
 export const PostAccountSuccess = "PostAccountSuccess";
 export const PostAccountRequest = "PostAccountRequest";

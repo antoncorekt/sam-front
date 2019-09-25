@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: sam-api-srv
+  name: sam-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sam-api-srv
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: sam-api-srv
+    spec:
+      containers:
+      - name: sam-api-srv-pod
+#        env:
+#        - name: service.external.cpm
+#          value: http://dsp.corpo.t-mobile.pl/cbm/{{ .Values.env_name }}/mock
+
+        image: registry1.corpo.t-mobile.pl/sam/sam-api:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          protocol: TCP

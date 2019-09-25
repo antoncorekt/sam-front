@@ -1,6 +1,5 @@
 import * as ACT from "../api/api-actions-defs";
 import {ActionRequestData, ActionResponseData} from "../api/common-middleware";
-import {ResultSetError, ResultSetStatus} from "../api/api-models";
 
 export const UNAUTHORIZED_ACTION = "UNAUTHORIZED_ACTION";
 
@@ -15,6 +14,7 @@ export const UnauthorizedHandler = () => {
 
             return {
                 ...state,
+                needLogin: true,
                 token: undefined
             };
         }
