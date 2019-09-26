@@ -1,6 +1,7 @@
 import {combineReducers} from "redux";
 import {createReducer} from "../api/common-reducers";
 import {
+    GetDictionaryAccountSapHandler,
     GetDictionarySegmentHandler,
     GetSystemVersionHandler,
     PostUserLoginHandler,
@@ -13,7 +14,8 @@ export type MainStateType = {
     accountOfi: any,
     auth: any,
     segments: any,
-    backendInfo: any
+    backendInfo: any,
+    sapAccountOfi: any,
 }
 
 export const mainReducer = combineReducers(
@@ -24,7 +26,7 @@ export const mainReducer = combineReducers(
         logOffInfo: createReducer({}, [PostUserLogoffHandler()]),
         segments: createReducer({}, [GetDictionarySegmentHandler()]),
         backendInfo: createReducer({version: '?'}, [GetSystemVersionHandler()]),
-
+        sapAccountOfi: createReducer({}, [GetDictionaryAccountSapHandler()]),
         tabsState
     }
 );

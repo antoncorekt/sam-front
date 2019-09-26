@@ -3,6 +3,11 @@ import ReactTable from 'react-table';
 import { Button, Checkbox, Pagination } from 'antd';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
+import {connect} from "react-redux";
+import {GetDictionaryAccountSap} from "../../api/api-func";
+import {AccountDictSap, ResultSetAccountDictSaps} from "../../api/api-models";
+import type {BackendAction} from "../../api/common-middleware";
+import type {MainStateType} from "../../reducers";
 
 const data = [
     {
@@ -21,12 +26,14 @@ const data = [
         modifiedDate: renderDateTime(Date.now()),
         modifiedBy: 'CGSYSADM',
     }
-]
-
+];
+// sapOfiAccount:string;
+// name:string;
+// status:string;
 const columns = [
     {
         Header: 'Konto',
-        accessor: 'account'
+        accessor: 'sapOfiAccount'
     },
     {
         Header: 'Nazwa',
@@ -48,9 +55,15 @@ const columns = [
         Header: 'Zmodyfikował',
         accessor: 'modifiedBy'
     }
-]
+];
 
-export default class SapAccounts extends Component {
+class SapAccountsType extends ResultSetAccountDictSaps implements BackendAction{
+
+}
+
+class SapAccounts extends Component<{
+    sapOfi: SapAccountsType
+}> {
 
     constructor(props) {
         super(props);
@@ -60,6 +73,8 @@ export default class SapAccounts extends Component {
             pageSize: 10,
             filtered: []
         };
+
+        this.props.getSapOfi();
     }
 
     onChange = e => {
@@ -69,6 +84,13 @@ export default class SapAccounts extends Component {
     };
 
     render() {
+
+        const sapAccountLength = this.props.sapOfi.count | 0;
+
+        const data = this.props.sapOfi.data !== undefined ? this.props.sapOfi.data : [];
+
+        console.log("data ", data);
+
         return (
             <div className="sap-accounts">
                 <div className="flex-end-row">
@@ -94,7 +116,7 @@ export default class SapAccounts extends Component {
                 <div className="pagination-container">
                     <Pagination
                         size="small"
-                        total={100}
+                        total={sapAccountLength}
                         showQuickJumper
                         showSizeChanger
                         showTotal={() => {
@@ -113,3 +135,17 @@ export default class SapAccounts extends Component {
         );
     }
 }
+
+const mapStateToProps = (state: MainStateType) => ({
+    sapOfi:state.sapAccountOfi,
+});
+
+export default connect(
+    mapStateToProps,
+    dispatch => ({
+        getSapOfi: () => {
+            dispatch(
+                GetDictionaryAccountSap()
+            )
+        }
+    }))(SapAccounts)

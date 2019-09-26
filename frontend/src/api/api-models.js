@@ -113,7 +113,7 @@ export class Account {
 export class ResultSetAccounts {
     status:StatusEnum;
     count:number;
-    data;
+    data: Array<Account>;
 
     static get Builder() {class Builder { _model: ResultSetAccounts = new ResultSetAccounts();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
@@ -145,7 +145,7 @@ export class Order {
 export class ResultSetOrders {
     status:StatusEnum;
     count:number;
-    data;
+    data: Array<Order>;
 
     static get Builder() {class Builder { _model: ResultSetOrders = new ResultSetOrders();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
@@ -174,7 +174,7 @@ export class ResultSetAccountDictSap {
 export class ResultSetAccountDictSaps {
     status:StatusEnum;
     count:number;
-    data;
+    data: Array<AccountDictSap>;
 
     static get Builder() {class Builder { _model: ResultSetAccountDictSaps = new ResultSetAccountDictSaps();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
@@ -204,7 +204,7 @@ export class AccountDictBscs {
 export class ResultSetAccountDictBscss {
     status:StatusEnum;
     count:number;
-    data;
+    data: Array<AccountDictBscs>;
 
     static get Builder() {class Builder { _model: ResultSetAccountDictBscss = new ResultSetAccountDictBscss();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
@@ -232,7 +232,7 @@ export class ResultSetSegment {
 export class ResultSetSegments {
     status:StatusEnum;
     count:number;
-    data;
+    data: Array<Segment>;
 
     static get Builder() {class Builder { _model: ResultSetSegments = new ResultSetSegments();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
