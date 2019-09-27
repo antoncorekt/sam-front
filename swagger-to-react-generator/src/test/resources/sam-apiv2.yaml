@@ -703,10 +703,48 @@ paths:
           schema:
             $ref: '#/definitions/RequestSetAccountDictSap'
       responses:
-        200:
+        201:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetAccountDictSap'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+    post:
+      description: "Only one description is created in the configuration. \n\nRequires:\n- Admin role."
+      summary: DictionaryAccountSapCreateExcel
+      tags:
+        - dictionary-account-sap
+      operationId: DictionaryAccountSapCreateExcel
+      deprecated: false
+      consumes:
+        - application/xlsx
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: body
+          in: body
+          required: true
+          description: Structure of the objects to be create with all fields to be populated
+          schema:
+            type: file
+      responses:
+        201:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetOk'
           headers: {}
         401:
           description: Not authenticated
@@ -996,6 +1034,21 @@ definitions:
       citMarkerVatFlag:
         type: integer
         format: int32
+      entryDate:
+        type: string
+        format: date-time
+      entryOwner:
+        type: string
+      updateDate:
+        type: string
+        format: date-time
+      updateOwner:
+        type: string
+      releaseDate:
+        type: string
+        format: date-time
+      releaseOwner:
+        type: string
   ResultSetAccounts:
     title: ResultSetAccounts
     type: object
@@ -1048,6 +1101,21 @@ definitions:
       validFromDate:
         type: string
         format: date-time
+      entryDate:
+        type: string
+        format: date-time
+      entryOwner:
+        type: string
+      updateDate:
+        type: string
+        format: date-time
+      updateOwner:
+        type: string
+      releaseDate:
+        type: string
+        format: date-time
+      releaseOwner:
+        type: string
   ResultSetOrders:
     title: ResultSetOrders
     type: object
@@ -1080,6 +1148,16 @@ definitions:
       name:
         type: string
       status:
+        type: string
+      entryDate:
+        type: string
+        format: date-time
+      entryOwner:
+        type: string
+      updateDate:
+        type: string
+        format: date-time
+      updateOwner:
         type: string
   ResultSetAccountDictSap:
     title: ResultSetAccountDictSap
@@ -1133,6 +1211,16 @@ definitions:
         type: string
       glActive:
         type: string
+      entryDate:
+        type: string
+        format: date-time
+      entryOwner:
+        type: string
+      updateDate:
+        type: string
+        format: date-time
+      updateOwner:
+        type: string
   ResultSetAccountDictBscss:
     title: ResultSetAccountDictBscss
     type: object
@@ -1162,6 +1250,16 @@ definitions:
       csTradeRef:
         type: string
       segmCategory:
+        type: string
+      entryDate:
+        type: string
+        format: date-time
+      entryOwner:
+        type: string
+      updateDate:
+        type: string
+        format: date-time
+      updateOwner:
         type: string
   ResultSetSegment:
     title: ResultSetSegment

@@ -44,7 +44,6 @@ public class ApiCallFunction extends FlowFunction {
                 .filter(param -> param.getFlowTypeParamEnum().equals(FlowTypeParam.FlowTypeParamEnum.BODY))
                 .findFirst()
                 .ifPresent(param -> {
-//                    body.set("JSON.stringify(" + param.getName() + ")");
                     body.set(param.getName().getJsLexical());
                     bodyType.set(param.getType());
                 });
@@ -54,8 +53,9 @@ public class ApiCallFunction extends FlowFunction {
                 "\tconst settings = {" +
                         "\t\t// set settings data\n" +
                         "\t\turl:"  + this.buildUrl("") + ",\n" +
+                        "\t\tcontentType:'"  + apiCallFunctionData.getContentType() + "',\n" +
                         "\t\thttpMethod: '" + apiCallFunctionData.getMethod() + "',\n" +
-                        "\t\tbody:" + (body.get().equals("undefined") ? body : "JSON.stringify("+ body + ")") +",\n" +
+                        "\t\tbody:" + (body.get().equals("undefined") || !apiCallFunctionData.getContentType().contains("json") ? body : "JSON.stringify("+ body + ")") +",\n" +
                         "\t\trequestType: ACT."+ apiCallFunctionData.getActionRequestName() + ",\n" +
                         "\t\tsuccessType: ACT."+ apiCallFunctionData.getActionBaseName() + ACTION_SUCCESS_MARKER +  ",\n" +
                         "\t\tfailType: ACT."+ apiCallFunctionData.getActionBaseName() + ACTION_FAIL_MARKER + "\n" +

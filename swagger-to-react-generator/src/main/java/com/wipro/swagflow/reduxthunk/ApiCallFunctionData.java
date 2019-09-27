@@ -35,6 +35,8 @@ public class ApiCallFunctionData {
     private String actionSuccessName;
     private String actionFailName;
 
+    private String contentType = "application/json";
+
     private FlowElement actionsCode;
 
     private ApiCallFunction apiCallFunction;

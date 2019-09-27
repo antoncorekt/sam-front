@@ -28,6 +28,17 @@ import {globalLoginContext} from "./api/common-middleware";
 
 const middleware = [thunk];
 
+// function historyWriter({getState}) {
+//     return (next) => (action) => {
+//         if (changedActionTypes.includes(action.type)) {
+//             ACTIONS_HISTORY.push({id: action.id, type: action.type});
+//         }
+//         return next(action)
+//     }
+// }
+//
+// middleware.push(historyWriter);
+
 export const store = createStore(mainReducer, composeWithDevTools(applyMiddleware(...middleware)));
 
 const LoginWrapper = () => (
@@ -99,6 +110,49 @@ class GroupChecker extends React.Component {
         </div>;
     }
 }
+
+class Logger {
+
+    constructor(store){
+        this.store = store;
+    }
+
+    _dispatch = (message, description, level) => {
+        this.store.dispatch({type: "MESSAGE_LOG", level:level, message: message, description:description});
+    };
+
+    warn = (param) => {
+        notification.warn({
+            message: param.message,
+            description: param.description,
+        });
+        this._dispatch(param.message, param.description, "Warning");
+    };
+    info = (param) => {
+        notification.info({
+            message: param.message,
+            description: param.description,
+        });
+        this._dispatch(param.message, param.description, "Info");
+    };
+    success = (param) => {
+        notification.success({
+            message: param.message,
+            description: param.description,
+        });
+        this._dispatch(param.message, param.description, "Success");
+    };
+    error = (param) => {
+        notification.error({
+            message: param.message,
+            description: param.description,
+        });
+        this._dispatch(param.message, param.description, "Error");
+    };
+}
+
+export const Log = new Logger(store);
+
 
 ReactDOM.render(
     <Provider store={store}>

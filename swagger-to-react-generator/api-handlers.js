@@ -44,13 +44,13 @@ DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-model
 export const GetSystemVersionHandler = () => {
 	return {
 		GetSystemVersionRequest:(state:any, action:ActionRequestData<null, null>)=>{
-			return {...state, ...action};
+			 return {...state, ...action};
 		},
 		GetSystemVersionSuccess:(state:any, action:ActionResponseData<ResultSetVersion,ActionRequestData<null, null>>)=>{
-			return {...state, ...action, version: action.response.data.version};
+			 return {...state, ...action};
 		},
 		GetSystemVersionFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-			return {...state, ...action};
+			 return {...state, ...action};
 		},
 	}
 };
@@ -83,20 +83,13 @@ export const GetSystemHealthHandler = () => {
 export const PostUserLoginHandler = () => {
 	return {
 		PostUserLoginRequest:(state:any, action:ActionRequestData<RequestSetUserLogin, null>)=>{
-			return {...state, ...action};
+			 return {...state, ...action};
 		},
 		PostUserLoginSuccess:(state:any, action:ActionResponseData<ResultSetUserLogin,ActionRequestData<RequestSetUserLogin, null>>)=>{
-
-			globalLoginContext.bearerToken = action.response.data.token;
-
-			return {...state,
-				...action.response.data,
-				...action,
-				response: undefined
-			};
+			 return {...state, ...action};
 		},
 		PostUserLoginFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogin, null>>)=>{
-			return {...state, ...action};
+			 return {...state, ...action};
 		},
 	}
 };
@@ -284,13 +277,13 @@ export const GetDictionaryAccountSapHandler = () => {
 };
 export const PostDictionaryAccountSapHandler = () => {
 	return {
-		PostDictionaryAccountSapRequest:(state:any, action:ActionRequestData<RequestSetAccountDictSap, null>)=>{
+		PostDictionaryAccountSapRequest:(state:any, action:ActionRequestData<File, null>)=>{
 			 return {...state, ...action};
 		},
-		PostDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetAccountDictSap,ActionRequestData<RequestSetAccountDictSap, null>>)=>{
+		PostDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<File, null>>)=>{
 			 return {...state, ...action};
 		},
-		PostDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccountDictSap, null>>)=>{
+		PostDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<File, null>>)=>{
 			 return {...state, ...action};
 		},
 	}

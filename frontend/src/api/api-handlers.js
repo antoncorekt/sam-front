@@ -40,6 +40,7 @@ import {ActionRequestData, ActionResponseData, globalLoginContext} from "./commo
 import {ResultSetStat} from "./api-models";
 
 
+
 export const GetSystemVersionHandler = () => {
     return {
         GetSystemVersionRequest:(state:any, action:ActionRequestData<null, null>)=>{
@@ -283,13 +284,13 @@ export const GetDictionaryAccountSapHandler = () => {
 };
 export const PostDictionaryAccountSapHandler = () => {
     return {
-        PostDictionaryAccountSapRequest:(state:any, action:ActionRequestData<RequestSetAccountDictSap, null>)=>{
+        PostDictionaryAccountSapRequest:(state:any, action:ActionRequestData<File, null>)=>{
             return {...state, ...action};
         },
-        PostDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetAccountDictSap,ActionRequestData<RequestSetAccountDictSap, null>>)=>{
+        PostDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<File, null>>)=>{
             return {...state, ...action};
         },
-        PostDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccountDictSap, null>>)=>{
+        PostDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<File, null>>)=>{
             return {...state, ...action};
         },
     }

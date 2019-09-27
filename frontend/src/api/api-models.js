@@ -1,26 +1,27 @@
 
 // ----- Enums ------
 
-export class StatusEnum {
-    static get OK(){ return 'Ok'; }
-    static get ERROR(){ return 'Error'; }
-}
-
-export class ReleaseEnum {
-    static get 0(){ return '0'; }
-    static get LAST(){ return 'last'; }
-}
-
-export class Status15Enum {
+export class Status15 {
     static get C(){ return 'C'; }
     static get P(){ return 'P'; }
     static get W(){ return 'W'; }
 }
 
-export class RoleEnum {
+export class Release {
+    static get 0(){ return '0'; }
+    static get LAST(){ return 'last'; }
+}
+
+export class Role {
     static get BOOKER(){ return 'Booker'; }
     static get CONTROL(){ return 'Control'; }
     static get ADMIN(){ return 'Admin'; }
+}
+
+
+export class Status {
+    static get OK(){ return 'Ok'; }
+    static get ERROR(){ return 'Error'; }
 }
 
 
@@ -34,7 +35,7 @@ export class RequestSetUserLogin {
 
 export class UserLogin {
     user:string;
-    role:RoleEnum;
+    role:Role;
     password:string;
 
     static get Builder() {class Builder { _model: UserLogin = new UserLogin();withUser(user:string): Builder { this._model.user=user; return this;}withRole(role:Role): Builder { this._model.role=role; return this;}withPassword(password:string): Builder { this._model.password=password; return this;}build(){return this._model;}}return Builder;}
@@ -67,9 +68,9 @@ export class UserLoginInfo {
 
 export class User {
     user:string;
-    role:RoleEnum;
+    role:Role;
 
-    static get Builder() {class Builder { _model: User = new User();withUser(user:string): Builder { this._model.user=user; return this;}withRole(role:RoleEnum): Builder { this._model.role=role; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: User = new User();withUser(user:string): Builder { this._model.user=user; return this;}withRole(role:Role): Builder { this._model.role=role; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class RequestSetUserLogoff {
@@ -91,10 +92,10 @@ export class RequestSetAccount {
 }
 
 export class ResultSetAccount {
-    status:StatusEnum;
+    status:Status;
     data:Account;
 
-    static get Builder() {class Builder { _model: ResultSetAccount = new ResultSetAccount();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withData(data:Account): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetAccount = new ResultSetAccount();withStatus(status:Status): Builder { this._model.status=status; return this;}withData(data:Account): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class Account {
@@ -106,16 +107,22 @@ export class Account {
     vatCodeInd:string;
     ofiSapWbsCode:string;
     citMarkerVatFlag:number;
+    entryDate:Date;
+    entryOwner:string;
+    updateDate:Date;
+    updateOwner:string;
+    releaseDate:Date;
+    releaseOwner:string;
 
-    static get Builder() {class Builder { _model: Account = new Account();withStatus(status:string): Builder { this._model.status=status; return this;}withReleaseId(releaseId:number): Builder { this._model.releaseId=releaseId; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withOfiSapAccount(ofiSapAccount:string): Builder { this._model.ofiSapAccount=ofiSapAccount; return this;}withValidFromDate(validFromDate:Date): Builder { this._model.validFromDate=validFromDate; return this;}withVatCodeInd(vatCodeInd:string): Builder { this._model.vatCodeInd=vatCodeInd; return this;}withOfiSapWbsCode(ofiSapWbsCode:string): Builder { this._model.ofiSapWbsCode=ofiSapWbsCode; return this;}withCitMarkerVatFlag(citMarkerVatFlag:number): Builder { this._model.citMarkerVatFlag=citMarkerVatFlag; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: Account = new Account();withStatus(status:string): Builder { this._model.status=status; return this;}withReleaseId(releaseId:number): Builder { this._model.releaseId=releaseId; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withOfiSapAccount(ofiSapAccount:string): Builder { this._model.ofiSapAccount=ofiSapAccount; return this;}withValidFromDate(validFromDate:Date): Builder { this._model.validFromDate=validFromDate; return this;}withVatCodeInd(vatCodeInd:string): Builder { this._model.vatCodeInd=vatCodeInd; return this;}withOfiSapWbsCode(ofiSapWbsCode:string): Builder { this._model.ofiSapWbsCode=ofiSapWbsCode; return this;}withCitMarkerVatFlag(citMarkerVatFlag:number): Builder { this._model.citMarkerVatFlag=citMarkerVatFlag; return this;}withEntryDate(entryDate:Date): Builder { this._model.entryDate=entryDate; return this;}withEntryOwner(entryOwner:string): Builder { this._model.entryOwner=entryOwner; return this;}withUpdateDate(updateDate:Date): Builder { this._model.updateDate=updateDate; return this;}withUpdateOwner(updateOwner:string): Builder { this._model.updateOwner=updateOwner; return this;}withReleaseDate(releaseDate:Date): Builder { this._model.releaseDate=releaseDate; return this;}withReleaseOwner(releaseOwner:string): Builder { this._model.releaseOwner=releaseOwner; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetAccounts {
-    status:StatusEnum;
+    status:Status;
     count:number;
-    data: Array<Account>;
+    data:Array<Account>;
 
-    static get Builder() {class Builder { _model: ResultSetAccounts = new ResultSetAccounts();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetAccounts = new ResultSetAccounts();withStatus(status:Status): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data:Array<Account>): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class RequestSetOrder {
@@ -125,10 +132,10 @@ export class RequestSetOrder {
 }
 
 export class ResultSetOrder {
-    status:StatusEnum;
+    status:Status;
     data:Order;
 
-    static get Builder() {class Builder { _model: ResultSetOrder = new ResultSetOrder();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withData(data:Order): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetOrder = new ResultSetOrder();withStatus(status:Status): Builder { this._model.status=status; return this;}withData(data:Order): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class Order {
@@ -138,16 +145,22 @@ export class Order {
     segmentCode:string;
     orderNumber:string;
     validFromDate:Date;
+    entryDate:Date;
+    entryOwner:string;
+    updateDate:Date;
+    updateOwner:string;
+    releaseDate:Date;
+    releaseOwner:string;
 
-    static get Builder() {class Builder { _model: Order = new Order();withStatus(status:string): Builder { this._model.status=status; return this;}withReleaseId(releaseId:number): Builder { this._model.releaseId=releaseId; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withSegmentCode(segmentCode:string): Builder { this._model.segmentCode=segmentCode; return this;}withOrderNumber(orderNumber:string): Builder { this._model.orderNumber=orderNumber; return this;}withValidFromDate(validFromDate:Date): Builder { this._model.validFromDate=validFromDate; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: Order = new Order();withStatus(status:string): Builder { this._model.status=status; return this;}withReleaseId(releaseId:number): Builder { this._model.releaseId=releaseId; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withSegmentCode(segmentCode:string): Builder { this._model.segmentCode=segmentCode; return this;}withOrderNumber(orderNumber:string): Builder { this._model.orderNumber=orderNumber; return this;}withValidFromDate(validFromDate:Date): Builder { this._model.validFromDate=validFromDate; return this;}withEntryDate(entryDate:Date): Builder { this._model.entryDate=entryDate; return this;}withEntryOwner(entryOwner:string): Builder { this._model.entryOwner=entryOwner; return this;}withUpdateDate(updateDate:Date): Builder { this._model.updateDate=updateDate; return this;}withUpdateOwner(updateOwner:string): Builder { this._model.updateOwner=updateOwner; return this;}withReleaseDate(releaseDate:Date): Builder { this._model.releaseDate=releaseDate; return this;}withReleaseOwner(releaseOwner:string): Builder { this._model.releaseOwner=releaseOwner; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetOrders {
-    status:StatusEnum;
+    status:Status;
     count:number;
-    data: Array<Order>;
+    data:Array<Order>;
 
-    static get Builder() {class Builder { _model: ResultSetOrders = new ResultSetOrders();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetOrders = new ResultSetOrders();withStatus(status:Status): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data:Array<Order>): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class RequestSetAccountDictSap {
@@ -160,23 +173,27 @@ export class AccountDictSap {
     sapOfiAccount:string;
     name:string;
     status:string;
+    entryDate:Date;
+    entryOwner:string;
+    updateDate:Date;
+    updateOwner:string;
 
-    static get Builder() {class Builder { _model: AccountDictSap = new AccountDictSap();withSapOfiAccount(sapOfiAccount:string): Builder { this._model.sapOfiAccount=sapOfiAccount; return this;}withName(name:string): Builder { this._model.name=name; return this;}withStatus(status:string): Builder { this._model.status=status; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: AccountDictSap = new AccountDictSap();withSapOfiAccount(sapOfiAccount:string): Builder { this._model.sapOfiAccount=sapOfiAccount; return this;}withName(name:string): Builder { this._model.name=name; return this;}withStatus(status:string): Builder { this._model.status=status; return this;}withEntryDate(entryDate:Date): Builder { this._model.entryDate=entryDate; return this;}withEntryOwner(entryOwner:string): Builder { this._model.entryOwner=entryOwner; return this;}withUpdateDate(updateDate:Date): Builder { this._model.updateDate=updateDate; return this;}withUpdateOwner(updateOwner:string): Builder { this._model.updateOwner=updateOwner; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetAccountDictSap {
-    status:StatusEnum;
+    status:Status;
     data:AccountDictSap;
 
-    static get Builder() {class Builder { _model: ResultSetAccountDictSap = new ResultSetAccountDictSap();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withData(data:AccountDictSap): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetAccountDictSap = new ResultSetAccountDictSap();withStatus(status:Status): Builder { this._model.status=status; return this;}withData(data:AccountDictSap): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetAccountDictSaps {
-    status:StatusEnum;
+    status:Status;
     count:number;
-    data: Array<AccountDictSap>;
+    data:Array<AccountDictSap>;
 
-    static get Builder() {class Builder { _model: ResultSetAccountDictSaps = new ResultSetAccountDictSaps();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetAccountDictSaps = new ResultSetAccountDictSaps();withStatus(status:Status): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data:Array<AccountDictSap>): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class RequestSetAccountDictBscs {
@@ -186,10 +203,10 @@ export class RequestSetAccountDictBscs {
 }
 
 export class ResultSetAccountDictBscs {
-    status:StatusEnum;
+    status:Status;
     data:AccountDictBscs;
 
-    static get Builder() {class Builder { _model: ResultSetAccountDictBscs = new ResultSetAccountDictBscs();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withData(data:AccountDictBscs): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetAccountDictBscs = new ResultSetAccountDictBscs();withStatus(status:Status): Builder { this._model.status=status; return this;}withData(data:AccountDictBscs): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class AccountDictBscs {
@@ -197,16 +214,20 @@ export class AccountDictBscs {
     glDes:string;
     glType:string;
     glActive:string;
+    entryDate:Date;
+    entryOwner:string;
+    updateDate:Date;
+    updateOwner:string;
 
-    static get Builder() {class Builder { _model: AccountDictBscs = new AccountDictBscs();withGlCode(glCode:string): Builder { this._model.glCode=glCode; return this;}withGlDes(glDes:string): Builder { this._model.glDes=glDes; return this;}withGlType(glType:string): Builder { this._model.glType=glType; return this;}withGlActive(glActive:string): Builder { this._model.glActive=glActive; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: AccountDictBscs = new AccountDictBscs();withGlCode(glCode:string): Builder { this._model.glCode=glCode; return this;}withGlDes(glDes:string): Builder { this._model.glDes=glDes; return this;}withGlType(glType:string): Builder { this._model.glType=glType; return this;}withGlActive(glActive:string): Builder { this._model.glActive=glActive; return this;}withEntryDate(entryDate:Date): Builder { this._model.entryDate=entryDate; return this;}withEntryOwner(entryOwner:string): Builder { this._model.entryOwner=entryOwner; return this;}withUpdateDate(updateDate:Date): Builder { this._model.updateDate=updateDate; return this;}withUpdateOwner(updateOwner:string): Builder { this._model.updateOwner=updateOwner; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetAccountDictBscss {
-    status:StatusEnum;
+    status:Status;
     count:number;
-    data: Array<AccountDictBscs>;
+    data:Array<AccountDictBscs>;
 
-    static get Builder() {class Builder { _model: ResultSetAccountDictBscss = new ResultSetAccountDictBscss();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetAccountDictBscss = new ResultSetAccountDictBscss();withStatus(status:Status): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data:Array<AccountDictBscs>): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class RequestSetSegment {
@@ -218,30 +239,34 @@ export class RequestSetSegment {
 export class Segment {
     csTradeRef:string;
     segmCategory:string;
+    entryDate:Date;
+    entryOwner:string;
+    updateDate:Date;
+    updateOwner:string;
 
-    static get Builder() {class Builder { _model: Segment = new Segment();withCsTradeRef(csTradeRef:string): Builder { this._model.csTradeRef=csTradeRef; return this;}withSegmCategory(segmCategory:string): Builder { this._model.segmCategory=segmCategory; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: Segment = new Segment();withCsTradeRef(csTradeRef:string): Builder { this._model.csTradeRef=csTradeRef; return this;}withSegmCategory(segmCategory:string): Builder { this._model.segmCategory=segmCategory; return this;}withEntryDate(entryDate:Date): Builder { this._model.entryDate=entryDate; return this;}withEntryOwner(entryOwner:string): Builder { this._model.entryOwner=entryOwner; return this;}withUpdateDate(updateDate:Date): Builder { this._model.updateDate=updateDate; return this;}withUpdateOwner(updateOwner:string): Builder { this._model.updateOwner=updateOwner; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetSegment {
-    status:StatusEnum;
+    status:Status;
     data:Segment;
 
-    static get Builder() {class Builder { _model: ResultSetSegment = new ResultSetSegment();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withData(data:Segment): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetSegment = new ResultSetSegment();withStatus(status:Status): Builder { this._model.status=status; return this;}withData(data:Segment): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetSegments {
-    status:StatusEnum;
+    status:Status;
     count:number;
-    data: Array<Segment>;
+    data:Array<Segment>;
 
-    static get Builder() {class Builder { _model: ResultSetSegments = new ResultSetSegments();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetSegments = new ResultSetSegments();withStatus(status:Status): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data:Array<Segment>): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetStat {
-    status:StatusEnum;
+    status:Status;
     data:Stat;
 
-    static get Builder() {class Builder { _model: ResultSetStat = new ResultSetStat();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withData(data:Stat): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetStat = new ResultSetStat();withStatus(status:Status): Builder { this._model.status=status; return this;}withData(data:Stat): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class Stat {
@@ -254,10 +279,10 @@ export class Stat {
 }
 
 export class ResultSetVersion {
-    status:StatusEnum;
+    status:Status;
     data:Version;
 
-    static get Builder() {class Builder { _model: ResultSetVersion = new ResultSetVersion();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withData(data:Version): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetVersion = new ResultSetVersion();withStatus(status:Status): Builder { this._model.status=status; return this;}withData(data:Version): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class Version {
@@ -267,69 +292,69 @@ export class Version {
 }
 
 export class ResultSetError {
-    status:StatusEnum;
+    status:Status;
     message:string;
 
-    static get Builder() {class Builder { _model: ResultSetError = new ResultSetError();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withMessage(message:string): Builder { this._model.message=message; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetError = new ResultSetError();withStatus(status:Status): Builder { this._model.status=status; return this;}withMessage(message:string): Builder { this._model.message=message; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetOk {
-    status:StatusEnum;
+    status:Status;
 
-    static get Builder() {class Builder { _model: ResultSetOk = new ResultSetOk();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetOk = new ResultSetOk();withStatus(status:Status): Builder { this._model.status=status; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetCount {
-    status:StatusEnum;
+    status:Status;
     count:number;
 
-    static get Builder() {class Builder { _model: ResultSetCount = new ResultSetCount();withStatus(status:StatusEnum): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: ResultSetCount = new ResultSetCount();withStatus(status:Status): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class GetAccountByStatusByReleaseQueryParams {
-    status:Status15Enum;
-    release:ReleaseEnum;
+    status:Status15;
+    release:Release;
 
-    static get Builder() {class Builder { _model: GetAccountByStatusByReleaseQueryParams = new GetAccountByStatusByReleaseQueryParams();withStatus(status:Status15Enum): Builder { this._model.status=status; return this;}withRelease(release:ReleaseEnum): Builder { this._model.release=release; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: GetAccountByStatusByReleaseQueryParams = new GetAccountByStatusByReleaseQueryParams();withStatus(status:Status15): Builder { this._model.status=status; return this;}withRelease(release:Release): Builder { this._model.release=release; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class PutAccountByStatusByReleaseByBscsAccountQueryParams {
-    status:Status15Enum;
-    release:ReleaseEnum;
+    status:Status15;
+    release:Release;
     bscsAccount:string;
 
-    static get Builder() {class Builder { _model: PutAccountByStatusByReleaseByBscsAccountQueryParams = new PutAccountByStatusByReleaseByBscsAccountQueryParams();withStatus(status:Status15Enum): Builder { this._model.status=status; return this;}withRelease(release:ReleaseEnum): Builder { this._model.release=release; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: PutAccountByStatusByReleaseByBscsAccountQueryParams = new PutAccountByStatusByReleaseByBscsAccountQueryParams();withStatus(status:Status15): Builder { this._model.status=status; return this;}withRelease(release:Release): Builder { this._model.release=release; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class DeleteAccountByStatusByReleaseByBscsAccountQueryParams {
-    status:Status15Enum;
-    release:ReleaseEnum;
+    status:Status15;
+    release:Release;
     bscsAccount:string;
 
-    static get Builder() {class Builder { _model: DeleteAccountByStatusByReleaseByBscsAccountQueryParams = new DeleteAccountByStatusByReleaseByBscsAccountQueryParams();withStatus(status:Status15Enum): Builder { this._model.status=status; return this;}withRelease(release:ReleaseEnum): Builder { this._model.release=release; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: DeleteAccountByStatusByReleaseByBscsAccountQueryParams = new DeleteAccountByStatusByReleaseByBscsAccountQueryParams();withStatus(status:Status15): Builder { this._model.status=status; return this;}withRelease(release:Release): Builder { this._model.release=release; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class GetOrderByStatusByReleaseQueryParams {
-    status:Status15Enum;
-    release:ReleaseEnum;
+    status:Status15;
+    release:Release;
 
-    static get Builder() {class Builder { _model: GetOrderByStatusByReleaseQueryParams = new GetOrderByStatusByReleaseQueryParams();withStatus(status:Status15Enum): Builder { this._model.status=status; return this;}withRelease(release:ReleaseEnum): Builder { this._model.release=release; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: GetOrderByStatusByReleaseQueryParams = new GetOrderByStatusByReleaseQueryParams();withStatus(status:Status15): Builder { this._model.status=status; return this;}withRelease(release:Release): Builder { this._model.release=release; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams {
-    status:Status15Enum;
-    release:ReleaseEnum;
+    status:Status15;
+    release:Release;
     bscsAccount:string;
     segment:string;
 
-    static get Builder() {class Builder { _model: PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();withStatus(status:Status15Enum): Builder { this._model.status=status; return this;}withRelease(release:ReleaseEnum): Builder { this._model.release=release; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withSegment(segment:string): Builder { this._model.segment=segment; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();withStatus(status:Status15): Builder { this._model.status=status; return this;}withRelease(release:Release): Builder { this._model.release=release; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withSegment(segment:string): Builder { this._model.segment=segment; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams {
-    status:Status15Enum;
-    release:ReleaseEnum;
+    status:Status15;
+    release:Release;
     bscsAccount:string;
     segment:string;
 
-    static get Builder() {class Builder { _model: DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();withStatus(status:Status15Enum): Builder { this._model.status=status; return this;}withRelease(release:ReleaseEnum): Builder { this._model.release=release; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withSegment(segment:string): Builder { this._model.segment=segment; return this;}build(){return this._model;}}return Builder;}
+    static get Builder() {class Builder { _model: DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams = new DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams();withStatus(status:Status15): Builder { this._model.status=status; return this;}withRelease(release:Release): Builder { this._model.release=release; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withSegment(segment:string): Builder { this._model.segment=segment; return this;}build(){return this._model;}}return Builder;}
 }

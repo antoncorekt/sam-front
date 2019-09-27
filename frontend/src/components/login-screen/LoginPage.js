@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect} from "react-redux";
 import type {MainStateType} from "../../reducers";
 import {PostUserLogin} from "../../api/api-func";
-import {RequestSetUserLogin, RoleEnum, UserLogin, UserLoginInfo} from "../../api/api-models";
+import {RequestSetUserLogin, Role, UserLogin, UserLoginInfo} from "../../api/api-models";
 import {BackendAction} from "../../api/common-middleware";
 import {Button, Input} from 'antd';
 import { Radio } from 'antd';
@@ -13,7 +13,7 @@ class LoginPagePropsType extends UserLoginInfo implements BackendAction {
 }
 
 type LoginPageStateType = {
-    group: RoleEnum,
+    group: Role,
     user: string,
     password: string
 }
@@ -22,7 +22,7 @@ class LoginPage extends React.Component<{
     auth: LoginPagePropsType
 }>{
     state:LoginPageStateType = {
-        group: RoleEnum.ADMIN,
+        group: Role.ADMIN,
         user: null,
         password: null
     };
@@ -50,9 +50,9 @@ class LoginPage extends React.Component<{
                 <Input.Password placeholder="Hasło" onChange={(e)=>this.setState({password: e.target.value})}/>
             </div>
             <Radio.Group onChange={(e)=>this.setState({group: e.target.value})} value={this.state.group}>
-                <Radio value={RoleEnum.CONTROL}>{RoleEnum.CONTROL}</Radio>
-                <Radio value={RoleEnum.ADMIN}>{RoleEnum.ADMIN}</Radio>
-                <Radio value={RoleEnum.BOOKER}>{RoleEnum.BOOKER}</Radio>
+                <Radio value={Role.CONTROL}>{Role.CONTROL}</Radio>
+                <Radio value={Role.ADMIN}>{Role.ADMIN}</Radio>
+                <Radio value={Role.BOOKER}>{Role.BOOKER}</Radio>
             </Radio.Group>
 
             <Button
@@ -74,7 +74,7 @@ export default connect(
     mapStateToProps,
 
     dispatch => ({
-        login : (user: string, password: string, role: RoleEnum = RoleEnum.CONTROL) => {
+        login : (user: string, password: string, role: Role = Role.CONTROL) => {
             dispatch(
                 PostUserLogin(new RequestSetUserLogin.Builder()
                     .withData(new UserLogin.Builder()

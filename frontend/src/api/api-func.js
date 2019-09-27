@@ -1,50 +1,54 @@
 import {
-	RequestSetSegment,
-	Account,
-	Order,
-	ResultSetUserLogin,
-	RequestSetAccountDictBscs,
-	RequestSetAccount,
-	ResultSetAccount,
-	UserLogoff,
-	ResultSetOrder,
-	Segment,
-	ResultSetCount,
-	RequestSetAccountDictSap,
-	Stat,
-	ResultSetStat,
-	ResultSetAccountDictSap,
-	Version,
-	ResultSetVersion,
-	ResultSetOk,
-	ResultSetSegment,
-	ResultSetAccountDictBscs,
-	UserLogin,
-	ResultSetOrders,
-	ResultSetAccountDictSaps,
-	ResultSetAccounts,
-	AccountDictSap,
-	AccountDictBscs,
-	ResultSetSegments,
-	RequestSetUserLogoff,
-	RequestSetUserLogin,
-	RequestSetOrder,
-	ResultSetAccountDictBscss,
-	ResultSetError,
-	UserLoginInfo,
-	GetAccountByStatusByReleaseQueryParams,
-	PutAccountByStatusByReleaseByBscsAccountQueryParams,
-	DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
-	GetOrderByStatusByReleaseQueryParams,
-	PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
-	DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
+    RequestSetUserLogin,
+    UserLogin,
+    ResultSetUserLogin,
+    UserLoginConf,
+    ResultSetUserInfo,
+    UserLoginInfo,
+    User,
+    RequestSetUserLogoff,
+    UserLogoffConf,
+    RequestSetAccount,
+    ResultSetAccount,
+    Account,
+    ResultSetAccounts,
+    RequestSetOrder,
+    ResultSetOrder,
+    Order,
+    ResultSetOrders,
+    RequestSetAccountDictSap,
+    AccountDictSap,
+    ResultSetAccountDictSap,
+    ResultSetAccountDictSaps,
+    RequestSetAccountDictBscs,
+    ResultSetAccountDictBscs,
+    AccountDictBscs,
+    ResultSetAccountDictBscss,
+    RequestSetSegment,
+    Segment,
+    ResultSetSegment,
+    ResultSetSegments,
+    ResultSetStat,
+    Stat,
+    ResultSetVersion,
+    Version,
+    ResultSetError,
+    ResultSetOk,
+    ResultSetCount,
+    GetAccountByStatusByReleaseQueryParams,
+    PutAccountByStatusByReleaseByBscsAccountQueryParams,
+    DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+    GetOrderByStatusByReleaseQueryParams} from './api-models.js'
+import {Release} from "./api-models";
 import {commonCallApi} from "./common-middleware";
 import * as ACT from "./api-actions-defs";
-import {ReleaseEnum, Status15Enum} from "./api-models";
 
+
+// call UserLogin
 export const PostUserLogin = (body:RequestSetUserLogin) => {
     const settings = {		// set settings data
         url:`/user/login`,
+        contentType:'application/json',
         httpMethod: 'POST',
         body:JSON.stringify(body),
         requestType: ACT.PostUserLoginRequest,
@@ -59,6 +63,7 @@ export const PostUserLogin = (body:RequestSetUserLogin) => {
 export const PostUserRelogin = () => {
     const settings = {		// set settings data
         url:`/user/relogin`,
+        contentType:'application/json',
         httpMethod: 'POST',
         body:undefined,
         requestType: ACT.PostUserReloginRequest,
@@ -73,6 +78,7 @@ export const PostUserRelogin = () => {
 export const PostUserLogoff = (body:RequestSetUserLogoff) => {
     const settings = {		// set settings data
         url:`/user/logoff`,
+        contentType:'application/json',
         httpMethod: 'POST',
         body:JSON.stringify(body),
         requestType: ACT.PostUserLogoffRequest,
@@ -87,6 +93,7 @@ export const PostUserLogoff = (body:RequestSetUserLogoff) => {
 export const PostUserInfo = () => {
     const settings = {		// set settings data
         url:`/user/info`,
+        contentType:'application/json',
         httpMethod: 'POST',
         body:undefined,
         requestType: ACT.PostUserInfoRequest,
@@ -101,6 +108,7 @@ export const PostUserInfo = () => {
 export const PostAccount = (body:RequestSetAccount) => {
     const settings = {		// set settings data
         url:`/account`,
+        contentType:'application/json',
         httpMethod: 'POST',
         body:JSON.stringify(body),
         requestType: ACT.PostAccountRequest,
@@ -115,6 +123,7 @@ export const PostAccount = (body:RequestSetAccount) => {
 export const PostOrder = (body:RequestSetOrder) => {
     const settings = {		// set settings data
         url:`/order`,
+        contentType:'application/json',
         httpMethod: 'POST',
         body:JSON.stringify(body),
         requestType: ACT.PostOrderRequest,
@@ -129,6 +138,7 @@ export const PostOrder = (body:RequestSetOrder) => {
 export const PostRelease = () => {
     const settings = {		// set settings data
         url:`/release`,
+        contentType:'application/json',
         httpMethod: 'POST',
         body:undefined,
         requestType: ACT.PostReleaseRequest,
@@ -139,12 +149,13 @@ export const PostRelease = () => {
 };
 
 
-// call DictionaryAccountSapCreate
-export const PostDictionaryAccountSap = (body:RequestSetAccountDictSap) => {
+// call DictionaryAccountSapCreateExcel
+export const PostDictionaryAccountSap = (body:File) => {
     const settings = {		// set settings data
         url:`/dictionary/account/sap`,
+        contentType:'application/xlsx',
         httpMethod: 'POST',
-        body:JSON.stringify(body),
+        body:body,
         requestType: ACT.PostDictionaryAccountSapRequest,
         successType: ACT.PostDictionaryAccountSapSuccess,
         failType: ACT.PostDictionaryAccountSapFail
@@ -157,6 +168,7 @@ export const PostDictionaryAccountSap = (body:RequestSetAccountDictSap) => {
 export const PostDictionarySegment = (body:RequestSetSegment) => {
     const settings = {		// set settings data
         url:`/dictionary/segment`,
+        contentType:'application/json',
         httpMethod: 'POST',
         body:JSON.stringify(body),
         requestType: ACT.PostDictionarySegmentRequest,
@@ -171,6 +183,7 @@ export const PostDictionarySegment = (body:RequestSetSegment) => {
 export const GetSystemVersion = () => {
     const settings = {		// set settings data
         url:`/system/version`,
+        contentType:'application/json',
         httpMethod: 'GET',
         body:undefined,
         requestType: ACT.GetSystemVersionRequest,
@@ -185,6 +198,7 @@ export const GetSystemVersion = () => {
 export const GetSystemStat = () => {
     const settings = {		// set settings data
         url:`/system/stat`,
+        contentType:'application/json',
         httpMethod: 'GET',
         body:undefined,
         requestType: ACT.GetSystemStatRequest,
@@ -199,6 +213,7 @@ export const GetSystemStat = () => {
 export const GetSystemHealth = () => {
     const settings = {		// set settings data
         url:`/system/health`,
+        contentType:'application/json',
         httpMethod: 'GET',
         body:undefined,
         requestType: ACT.GetSystemHealthRequest,
@@ -210,9 +225,10 @@ export const GetSystemHealth = () => {
 
 
 // call AccountReadAll
-export const GetAccountByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
+export const GetAccountByStatusByRelease = (status:Status15,release:Release) => {
     const settings = {		// set settings data
         url:`/account/${status}/${release}`,
+        contentType:'application/json',
         httpMethod: 'GET',
         body:undefined,
         requestType: ACT.GetAccountByStatusByReleaseRequest,
@@ -224,9 +240,10 @@ export const GetAccountByStatusByRelease = (status:Status15Enum,release:ReleaseE
 
 
 // call OrderReadSome
-export const GetOrderByStatusByRelease = (status:Status15Enum,release:ReleaseEnum) => {
+export const GetOrderByStatusByRelease = (status:Status15,release:Release) => {
     const settings = {		// set settings data
         url:`/order/${status}/${release}`,
+        contentType:'application/json',
         httpMethod: 'GET',
         body:undefined,
         requestType: ACT.GetOrderByStatusByReleaseRequest,
@@ -241,6 +258,7 @@ export const GetOrderByStatusByRelease = (status:Status15Enum,release:ReleaseEnu
 export const GetDictionaryAccountBscs = () => {
     const settings = {		// set settings data
         url:`/dictionary/account/bscs`,
+        contentType:'application/json',
         httpMethod: 'GET',
         body:undefined,
         requestType: ACT.GetDictionaryAccountBscsRequest,
@@ -255,6 +273,7 @@ export const GetDictionaryAccountBscs = () => {
 export const GetDictionaryAccountSap = () => {
     const settings = {		// set settings data
         url:`/dictionary/account/sap`,
+        contentType:'application/json',
         httpMethod: 'GET',
         body:undefined,
         requestType: ACT.GetDictionaryAccountSapRequest,
@@ -269,6 +288,7 @@ export const GetDictionaryAccountSap = () => {
 export const GetDictionarySegment = () => {
     const settings = {		// set settings data
         url:`/dictionary/segment`,
+        contentType:'application/json',
         httpMethod: 'GET',
         body:undefined,
         requestType: ACT.GetDictionarySegmentRequest,
@@ -280,9 +300,10 @@ export const GetDictionarySegment = () => {
 
 
 // call AccountReadSome
-export const PutAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
+export const PutAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string) => {
     const settings = {		// set settings data
         url:`/account/${status}/${release}/${bscsAccount}`,
+        contentType:'application/json',
         httpMethod: 'PUT',
         body:undefined,
         requestType: ACT.PutAccountByStatusByReleaseByBscsAccountRequest,
@@ -294,9 +315,10 @@ export const PutAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,rel
 
 
 // call OrderUpdateOne
-export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
+export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15,release:Release,bscsAccount:string,segment:string) => {
     const settings = {		// set settings data
         url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
+        contentType:'application/json',
         httpMethod: 'PUT',
         body:undefined,
         requestType: ACT.PutOrderByStatusByReleaseByBscsAccountBySegmentRequest,
@@ -308,9 +330,10 @@ export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15E
 
 
 // call AccountDeleteOne
-export const DeleteAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string) => {
+export const DeleteAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string) => {
     const settings = {		// set settings data
         url:`/account/${status}/${release}/${bscsAccount}`,
+        contentType:'application/json',
         httpMethod: 'DELETE',
         body:undefined,
         requestType: ACT.DeleteAccountByStatusByReleaseByBscsAccountRequest,
@@ -322,9 +345,10 @@ export const DeleteAccountByStatusByReleaseByBscsAccount = (status:Status15Enum,
 
 
 // call OrderDeleteOne
-export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15Enum,release:ReleaseEnum,bscsAccount:string,segment:string) => {
+export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15,release:Release,bscsAccount:string,segment:string) => {
     const settings = {		// set settings data
         url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
+        contentType:'application/json',
         httpMethod: 'DELETE',
         body:undefined,
         requestType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest,
@@ -339,6 +363,7 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status
 export const DeleteDictionaryAccountSap = () => {
     const settings = {		// set settings data
         url:`/dictionary/account/sap`,
+        contentType:'application/json',
         httpMethod: 'DELETE',
         body:undefined,
         requestType: ACT.DeleteDictionaryAccountSapRequest,
@@ -353,6 +378,7 @@ export const DeleteDictionaryAccountSap = () => {
 export const DeleteDictionarySegment = () => {
     const settings = {		// set settings data
         url:`/dictionary/segment`,
+        contentType:'application/json',
         httpMethod: 'DELETE',
         body:undefined,
         requestType: ACT.DeleteDictionarySegmentRequest,

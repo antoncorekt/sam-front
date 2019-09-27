@@ -3,6 +3,7 @@
 import {Dispatch} from "redux";
 import {BACKEND_URL} from "./conf";
 import {UNAUTHORIZED_ACTION} from "../reducers/auth-reducer";
+import {AddToRequestPanelActionBuilder} from "../reducers/request-panel-reducer";
 
 export interface BackendAction {
     get fetching(): boolean;
@@ -19,6 +20,7 @@ export class ActionRequestData<T, P> implements BackendAction{
     type: string;
     method: string;
     fetching: true;
+    // requestId: number;
 }
 
 export class ActionResponseData<T, R> implements BackendAction {
@@ -31,6 +33,7 @@ export class ActionResponseData<T, R> implements BackendAction {
     code: string;
     errorType: string;
     fetching: false;
+    // requestId: number;
 }
 
 // general components for function
@@ -57,6 +60,7 @@ const additionalFunctions = ( ) => {
 
     function successActionCreatorFunction(type:string, response: any, requestAction: ActionRequestData, msg: string, code: string): ActionResponseData {
         const date = new Date();
+        const respDate = requestAction.date === undefined ? new Date() :  requestAction.date.getTime();
         return {
             requestAction: requestAction,
             date: date,
@@ -65,14 +69,14 @@ const additionalFunctions = ( ) => {
             type: type,
             msg: msg,
             code: code,
-            timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
+            timeDiff: Math.abs(date.getTime() - respDate),
             fail: false
         }
     }
 
-    function failActionCreatorFunctionBackendError(response: any, requestAction: ActionRequestData,  msg: string, code: string): ActionResponseData {
+    function failActionCreatorFunctionBackendError(type:string, response: any, requestAction: ActionRequestData,  msg: string, code: string): ActionResponseData {
         return {
-            ...successActionCreatorFunction(response, requestAction, msg, code),
+            ...successActionCreatorFunction(type, response, requestAction, msg, code),
             fail: true,
             errorType: "backend"
         }
@@ -80,6 +84,7 @@ const additionalFunctions = ( ) => {
 
     function failActionCreatorFunctionNetworkError(type:string, reason:string, requestAction: ActionRequestData,  msg: string, code: string): ResponseData {
         const date = new Date();
+        const respDate = requestAction.date === undefined ? new Date() :  requestAction.date.getTime();
         return {
             type: type,
             requestAction: requestAction,
@@ -87,7 +92,7 @@ const additionalFunctions = ( ) => {
             fetching: false,
             msg: msg + " reason[" + reason + "]",
             code: code,
-            timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
+            timeDiff: Math.abs(date.getTime() - respDate),
             fail: true,
             errorType: "network"
         }
@@ -151,6 +156,7 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
         method: props.httpMethod,
         mode: 'cors',
         headers: {
+            // "Content-Type": props.contentType === undefined ? "application/json" : props.contentType,
             "Content-Type": "application/json",
             "Authorization": `Bearer ${globalLoginContext.bearerToken}`
         },
@@ -166,6 +172,9 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
     const requestAction =  _.requestActionCreator(props);
     dispatch(
         requestAction
+    );
+    dispatch(
+        AddToRequestPanelActionBuilder.REQ_ACTION(idRequest, requestAction)
     );
 
     return fetch(url, settings)
@@ -215,24 +224,36 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
                     )
                 }
                 else {
+                    const responseAction = _.failActionCreatorBackendError(props.failType, response, requestAction, callApiContext.responseText, callApiContext.responseStatus);
                     dispatch(
-                        _.failActionCreatorBackendError(response, requestAction, callApiContext.responseText, callApiContext.responseStatus)
-                    )
+                        responseAction
+                    );
+                    dispatch(
+                        AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, responseAction)
+                    );
                 }
 
             }
             else {
+                const responseAction =  _.successActionCreator(props.successType, response, requestAction, callApiContext.responseText, callApiContext.responseStatus);
                 dispatch(
                     _.successActionCreator(props.successType, response, requestAction, callApiContext.responseText, callApiContext.responseStatus)
-                )
+                );
+                dispatch(
+                    AddToRequestPanelActionBuilder.SUCCESS_ACTION(idRequest, responseAction)
+                );
             }
         })
         .catch(( error:any) => {
 
 
         console.error("handlerFunctionError", error);
+        const failAction = _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
         dispatch(
-            _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
+            failAction
+        );
+        dispatch(
+            AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, {requestAction, response: failAction})
         );
 
     });

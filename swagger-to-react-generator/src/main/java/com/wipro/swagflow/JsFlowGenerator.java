@@ -1,6 +1,5 @@
 package com.wipro.swagflow;
 
-import com.wipro.swagflow.files.AbstractJsFile;
 import com.wipro.swagflow.files.JsCodeFile;
 import com.wipro.swagflow.flow.*;
 import com.wipro.swagflow.reduxthunk.ApiCallFunction;
@@ -14,7 +13,6 @@ import io.swagger.models.parameters.QueryParameter;
 import io.swagger.models.properties.*;
 import io.swagger.v3.oas.models.PathItem;
 import lombok.Data;
-import sun.text.normalizer.NormalizerBase;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -170,11 +168,21 @@ public class JsFlowGenerator {
         Map<HttpMethod, Operation> operations = path.getOperationMap();
 
         for (Map.Entry<HttpMethod, Operation> o : operations.entrySet()) {
-            ApiCallFunctionData apiCallFunctionData = new ApiCallFunctionData();
+            final ApiCallFunctionData apiCallFunctionData = new ApiCallFunctionData();
             apiCallFunctionData.setMethod(o.getKey());
             apiCallFunctionData.setPath(pathEntry.getKey());
             apiCallFunctionData.setSummary(o.getValue().getSummary());
             List<FlowTypeParam> flowTypeParams = new ArrayList<>();
+
+            if (o.getValue().getConsumes() == null){
+                apiCallFunctionData.setContentType("application/json");
+            }
+            else {
+                o.getValue().getConsumes().stream().findFirst().ifPresent(
+                        apiCallFunctionData::setContentType
+                );
+            }
+
             for (Parameter parameter : o.getValue().getParameters()) {
 
                 if (parameter instanceof QueryParameter){
@@ -235,7 +243,11 @@ public class JsFlowGenerator {
                                 type = "string";
                             }
                             else {
-                                throw new IllegalStateException("Not implement object model. Please define separate model in swagger. " + parameter.getName());
+                                if (model.getType().equals("file")){
+                                    type = "File";
+                                }
+                                else
+                                    throw new IllegalStateException("Not implement object model. Please define separate model in swagger. " + parameter.getName());
                             }
                         }
                     }
@@ -272,7 +284,7 @@ public class JsFlowGenerator {
 
         JsWord typeNameJsWorld = new JsWord( modelEntry.getKey()) ;
 
-        if (typeNameJsWorld.getOriginal().equals("ResultSetSegments")){
+        if (typeNameJsWorld.getOriginal().equals("UserLogin")){
             System.out.println("bla");
         }
 
@@ -288,7 +300,7 @@ public class JsFlowGenerator {
 
                 if (modelImpl.getEnum() != null && !modelImpl.getEnum().isEmpty()){
                     FlowEnum flowEnum = new FlowEnum();
-                    flowEnum.setName(typeNameJsWorld.getJsLexicalWithUpperCase() + "Enum");
+                    flowEnum.setName(typeNameJsWorld.getJsLexicalWithUpperCase());
                     flowEnum.setParam(modelImpl.getEnum());
 
                     enums.add(flowEnum);
@@ -312,6 +324,10 @@ public class JsFlowGenerator {
             flowTypeParam.setName(JsWord.from(stringPropertyEntry.getKey()));
 
             Property property = stringPropertyEntry.getValue();
+
+            if (property.getType() == null){
+                throw new IllegalStateException(stringPropertyEntry.getKey() + " property is null. Please check it");
+            }
 
             if (property.getType().equals("string")) {
 
@@ -345,8 +361,13 @@ public class JsFlowGenerator {
                         ArrayProperty arrayProperty = ((ArrayProperty) property);
 
 
-                        if (arrayProperty.getItems() instanceof StringProperty)
+                        if (arrayProperty.getItems() instanceof StringProperty) {
                             flowTypeParam.setType("Array<" + ((StringProperty) arrayProperty.getItems()).getDefault() + ">");
+                        }
+                        else {
+                            if (arrayProperty.getItems().getType().equals("ref"))
+                                getArrayTypeFromRefModel(flowTypeParam, (RefProperty) arrayProperty.getItems(), true);
+                        }
 
                     }
                     else {
@@ -358,20 +379,7 @@ public class JsFlowGenerator {
                 } else {
                     if (property.getType().equals("ref")) {
 
-                        String refType = ((RefProperty) property).getSimpleRef();
-
-                        Optional<FlowArrayType> isThisModelArray = models.stream()
-                                .filter(model -> model instanceof FlowArrayType)
-                                .map(model -> (FlowArrayType) model)
-                                .filter(arrModel -> arrModel.getArrayName().equals(refType))
-                                .findAny();
-
-                        if (isThisModelArray.isPresent()) {
-                            flowTypeParam.setType("Array<" + isThisModelArray.get().getName() + ">");
-                        }
-                        else {
-                            flowTypeParam.setType(refType);
-                        }
+                        getArrayTypeFromRefModel(flowTypeParam, (RefProperty) property, false);
 
 
                     }
@@ -394,6 +402,26 @@ public class JsFlowGenerator {
 
         models.add(new FlowObjectType(typeNameJsWorld, flowTypeParams));
 
+    }
+
+    private void getArrayTypeFromRefModel(FlowTypeParam flowTypeParam, RefProperty property, boolean isArray) {
+        String refType = property.getSimpleRef();
+
+        Optional<FlowArrayType> isThisModelArray = models.stream()
+                .filter(model -> model instanceof FlowArrayType)
+                .map(model -> (FlowArrayType) model)
+                .filter(arrModel -> arrModel.getArrayName().equals(refType))
+                .findAny();
+
+        if (isThisModelArray.isPresent()) {
+            flowTypeParam.setType("Array<" + isThisModelArray.get().getName() + ">");
+        }
+        else {
+            if (isArray)
+                flowTypeParam.setType("Array<" + refType + ">");
+            else
+                flowTypeParam.setType(refType );
+        }
     }
 
 }

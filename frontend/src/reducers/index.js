@@ -9,6 +9,7 @@ import {
 } from "../api/api-handlers";
 import {tabsState} from "./tabReducer";
 import {UnauthorizedHandler} from "./auth-reducer";
+import {RequestPanelHandler, RequestPanelType} from "./request-panel-reducer";
 
 export type MainStateType = {
     accountOfi: any,
@@ -16,6 +17,7 @@ export type MainStateType = {
     segments: any,
     backendInfo: any,
     sapAccountOfi: any,
+    requestPanel: RequestPanelType
 }
 
 export const mainReducer = combineReducers(
@@ -27,6 +29,7 @@ export const mainReducer = combineReducers(
         segments: createReducer({}, [GetDictionarySegmentHandler()]),
         backendInfo: createReducer({version: '?'}, [GetSystemVersionHandler()]),
         sapAccountOfi: createReducer({}, [GetDictionaryAccountSapHandler()]),
+        requestPanel: createReducer(new RequestPanelType(), [RequestPanelHandler()]),
         tabsState
     }
 );
