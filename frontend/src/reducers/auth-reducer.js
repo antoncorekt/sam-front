@@ -14,8 +14,7 @@ export const UnauthorizedHandler = () => {
 
             return {
                 ...state,
-                needLogin: true,
-                token: undefined
+                userInfo: {fail:true, msg: "Session expired"}
             };
         }
     }
