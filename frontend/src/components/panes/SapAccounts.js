@@ -8,6 +8,7 @@ import {GetDictionaryAccountSap} from "../../api/api-func";
 import {AccountDictSap, ResultSetAccountDictSaps} from "../../api/api-models";
 import type {BackendAction} from "../../api/common-middleware";
 import type {MainStateType} from "../../reducers";
+import {ActionRequestData, ActionResponseData} from "../../api/common-middleware";
 
 const data = [
     {
@@ -41,15 +42,15 @@ const columns = [
     },
     {
         Header: 'Data utworzenia',
-        accessor: 'createdDate'
+        accessor: 'entryDate'
     },
     {
         Header: 'Utworzył',
-        accessor: 'createdBy'
+        accessor: 'entryOwner'
     },
     {
         Header: 'Data modyfikacji',
-        accessor: 'modifiedDate'
+        accessor: 'updateDate'
     },
     {
         Header: 'Zmodyfikował',
@@ -57,12 +58,8 @@ const columns = [
     }
 ];
 
-class SapAccountsType extends ResultSetAccountDictSaps implements BackendAction{
-
-}
-
 class SapAccounts extends Component<{
-    sapOfi: SapAccountsType
+    sapOfi: ActionResponseData<ResultSetAccountDictSaps,ActionRequestData<null, null>>
 }> {
 
     constructor(props) {
@@ -85,9 +82,9 @@ class SapAccounts extends Component<{
 
     render() {
 
-        const sapAccountLength = this.props.sapOfi.count | 0;
-
-        const data = this.props.sapOfi.data !== undefined ? this.props.sapOfi.data : [];
+        const data = this.props.sapOfi.response !== undefined
+            ? this.props.sapOfi.response.data
+            : [];
 
         console.log("data ", data);
 
@@ -116,7 +113,7 @@ class SapAccounts extends Component<{
                 <div className="pagination-container">
                     <Pagination
                         size="small"
-                        total={sapAccountLength}
+                        total={data.length}
                         showQuickJumper
                         showSizeChanger
                         showTotal={() => {

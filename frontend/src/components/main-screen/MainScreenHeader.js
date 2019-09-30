@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import RequestQueuePanel from './RequestQueuePanel';
@@ -10,8 +9,7 @@ import type {MainStateType} from "../../reducers";
 import {GetSystemVersion, PostUserInfo, PostUserLogoff} from "../../api/api-func";
 import {
     RequestSetUserLogoff,
-    ResultSetVersion, Status,
-    UserLoginInfo,
+    Status,
     UserLogoffConf,
     Version
 } from "../../api/api-models";
@@ -29,17 +27,7 @@ class MainScreenHeader extends Component<{
         this.props.getBackendVersion();
     }
 
-    componentDidUpdate(prevProps: Readonly<{auth: AuthType}>, prevState: Readonly<S>, snapshot: SS): void {
-        if (prevProps.auth.logoutInfo.response === undefined
-            && this.props.auth.logoutInfo.response !== undefined
-            && this.props.auth.logoutInfo.response.status === Status.OK){
-            this.props.getUserName();
-        }
-    }
-
     render() {
-
-        console.warn("this.props", this.props)
 
         return (
             <div className='main-screen-header'>
