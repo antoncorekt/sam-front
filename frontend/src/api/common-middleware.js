@@ -156,8 +156,8 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
         method: props.httpMethod,
         mode: 'cors',
         headers: {
-            // "Content-Type": props.contentType === undefined ? "application/json" : props.contentType,
-            "Content-Type": "application/json",
+            "Content-Type": props.contentType === undefined ? "application/json" : props.contentType,
+            // "Content-Type": "application/json",
             "Authorization": `Bearer ${globalLoginContext.bearerToken}`
         },
         body: props.body

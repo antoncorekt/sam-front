@@ -39,7 +39,7 @@ import {
     PutAccountByStatusByReleaseByBscsAccountQueryParams,
     DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
     GetOrderByStatusByReleaseQueryParams} from './api-models.js'
-import {Release} from "./api-models";
+import {Release, Status15} from "./api-models";
 import {commonCallApi} from "./common-middleware";
 import * as ACT from "./api-actions-defs";
 

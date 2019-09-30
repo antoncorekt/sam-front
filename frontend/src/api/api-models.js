@@ -2,9 +2,9 @@
 // ----- Enums ------
 
 export class Status15 {
-    static get C(){ return 'C'; }
-    static get P(){ return 'P'; }
-    static get W(){ return 'W'; }
+    static get C(){ return 'C'; } // to control
+    static get P(){ return 'P'; } // prod
+    static get W(){ return 'W'; } // work
 }
 
 export class Release {

@@ -8,6 +8,7 @@ import {GetDictionaryAccountSap} from "../../api/api-func";
 import {AccountDictSap, ResultSetAccountDictSaps} from "../../api/api-models";
 import type {BackendAction} from "../../api/common-middleware";
 import type {MainStateType} from "../../reducers";
+import AccountSapUploader from "../uploader-panel/AccountSapUploader";
 
 const data = [
     {
@@ -97,9 +98,7 @@ class SapAccounts extends Component<{
                     <Checkbox className="checkbox" onChange={null}>
                         Aktualizuj opisy istniejących kont
                     </Checkbox>
-                    <Button type="primary" icon="upload" onClick={null}>
-                        Wczytaj plik
-                    </Button>
+                    <AccountSapUploader />
                 </div >
                 <div className="table-container">
                     <ReactTable

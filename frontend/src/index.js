@@ -156,7 +156,7 @@ export const Log = new Logger(store);
 
 ReactDOM.render(
     <Provider store={store}>
-        <ErrorBoundaryWrapper>
+        {/*<ErrorBoundaryWrapper>*/}
             <CookiesProvider>
                 <LocaleProvider locale={plPL}>
                     <BrowserRouter basename={process.env.REACT_APP_ROUTER_BASE || ''}>
@@ -167,7 +167,7 @@ ReactDOM.render(
                     </BrowserRouter>
                 </LocaleProvider>
             </CookiesProvider>
-        </ErrorBoundaryWrapper>
+        {/*</ErrorBoundaryWrapper>*/}
     </Provider>
     , document.getElementById('root'));
 
