@@ -1,56 +1,65 @@
+// @flow
+
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
-import { Button, Pagination } from 'antd';
+import { Button, Icon, Pagination } from 'antd';
+import { EditableCell } from './common/EditableCell.js';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
-import {connect} from "react-redux";
-import {RequestSetSegment, RequestSetUserLogin, ResultSetSegments, Segment, UserLogin} from "../../api/api-models";
-import {ActionRequestData, ActionResponseData} from "../../api/common-middleware";
-import {GetDictionaryAccountSap, GetDictionarySegment, PostDictionarySegment} from "../../api/api-func";
+import { connect } from "react-redux";
+import { RequestSetSegment, Segment } from "../../api/api-models";
+import { GetDictionarySegment, PostDictionarySegment } from "../../api/api-func";
+import { updateSegmentPropertiesInRedux } from "../../actions/segmentsActions";
 
-const data = [
-    {
-        segment: 'PRIV',
-        category: 'PRIV',
-        createdDate: renderDateTime(Date.now() - 100000000),
-        createdBy: 'CGSYSADM',
-        modifiedDate: renderDateTime(Date.now()),
-        modifiedBy: 'CGSYSADM',
-    },
-    {
-        segment: 'SOHO',
-        category: 'BIZ',
-        createdDate: renderDateTime(Date.now() - 100000000),
-        createdBy: 'CGSYSADM',
-        modifiedDate: renderDateTime(Date.now()),
-        modifiedBy: 'CGSYSADM',
-    }
-]
+const DEFAULT_CURRENT_PAGE = 0;
+const DEFAULT_PAGE_SIZE = 10;
 
-const columns = [
+const columns = (that) => [
     {
         Header: 'Segment',
-        accessor: 'csTradeRef'
+        accessor: 'csTradeRef',
+        Cell: x => (
+            <div>
+                <EditableCell
+                    rowId={x.index}
+                    field_key='csTradeRef'
+                    value={x.original.csTradeRef}
+                    handleChange={that.props.updateSegmentPropertiesInRedux}
+                />
+            </div>
+        )
     },
     {
         Header: 'Kategoria',
-        accessor: 'csType'
+        accessor: 'segmCategory',
+        Cell: x => (
+            <div>
+                <EditableCell
+                    rowId={x.index}
+                    field_key='segmCategory'
+                    value={x.original.segmCategory}
+                    handleChange={that.props.updateSegmentPropertiesInRedux}
+                />
+            </div>
+        )
     },
     {
         Header: 'Data utworzenia',
-        accessor: 'createdDate'
+        accessor: 'entryDate',
+        Cell: x => (renderDateTime(x.original.entryDate))
     },
     {
         Header: 'Utworzył',
-        accessor: 'createdBy'
+        accessor: 'entryOwner'
     },
     {
         Header: 'Data modyfikacji',
-        accessor: 'modifiedDate'
+        accessor: 'updateDate',
+        Cell: x => (renderDateTime(x.original.entryDate))
     },
     {
         Header: 'Zmodyfikował',
-        accessor: 'modifiedBy'
+        accessor: 'updateOwner'
     },
     {
         Header: 'Akcja',
@@ -58,63 +67,118 @@ const columns = [
         filterable: false,
         sortable: false
     }
-]
+];
 
 class Segments extends Component<{
-    segments: ActionResponseData<ResultSetSegments,ActionRequestData<null, null>>
+    segments: ActionResponseData<ResultSetSegments, ActionRequestData<null, null>>
 }> {
 
     constructor(props) {
         super(props);
 
+        this.reactTable = React.createRef();
         this.state = {
-            pageSize: 10,
+            currentPage: DEFAULT_CURRENT_PAGE,
+            pageSize: DEFAULT_PAGE_SIZE,
             filtered: []
         };
+        this.props.getAllSegments();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.segments !== undefined
+            && this.props.segments.fail !== undefined
+            && this.props.segments.fail !== true
+            && this.props.segments.fetching === false
+            && prevProps.segments.fetching === true) {
+            this.setState({
+                currentPage: DEFAULT_CURRENT_PAGE,
+                pageSize: DEFAULT_PAGE_SIZE,
+                filtered: []
+            });
+        }
+    }
+
+    getSegmentsData(property, negativeResult) {
+        return this.props.segments !== undefined
+            && this.props.segments.fail === false
+            && this.props.segments.response !== undefined
+            && this.props.segments.response[property] !== undefined
+            ?
+            this.props.segments.response[property]
+            :
+            negativeResult;
     }
 
     render() {
-
-        const data = [];
+        const pageSizeOptions = [
+            5,
+            10,
+            50,
+            100,
+            this.props.segments !== undefined && this.props.segments.response !== undefined
+                ? this.props.segments.response.count
+                : 0
+        ]
+            .filter(item => item !== 0)
+            .filter((item, pos, arr) => arr.indexOf(item) === pos)
+            .sort((a, b) => a - b)
+            .map(x => "" + x);
 
         return (
             <div className="segments">
                 <div className="flex-end-row">
-                    <Button type="primary" icon="plus-circle" onClick={()=>{this.props.insertSegments()}}>
+                    <Button type="primary" icon="plus-circle" onClick={() => { }}>
                         Dodaj segment
-                    </Button>
-                    <Button type="primary" icon="plus-circle" onClick={()=>{this.props.getAllSegments()}}>
-                        Load
                     </Button>
                 </div >
                 <div className="table-container">
                     <ReactTable
-                        data={data}
-                        columns={columns}
-                        noDataText="Brak danych"
+                        data={this.props.segments.fetching ? [] : this.getSegmentsData("data", [])}
+                        columns={columns(this)}
+                        noDataText={this.props.segments ? (this.props.segments.fetching ? "Wczytuję..." : "Brak danych") : ""}
+                        ref={(r) => { this.reactTable = r; }} // TODO: fix pagination after filtering (using this ref)
                         filterable
                         filtered={this.state.filtered}
+                        onFilteredChange={filtered => {
+                            // console.log(this.reactTable.getResolvedState().sortedData);
+                            this.setState({ filtered });
+                        }}
                         showPagination={false}
-                        pageSize={this.state.pageSize}
-                        onFilteredChange={filtered => this.setState({ filtered })}
+                        minRows={0}
+                        page={this.state.currentPage}
+                        pageSize={Math.min(this.getSegmentsData("count", 0), this.state.pageSize)}
                     />
                 </div>
                 <div className="pagination-container">
                     <Pagination
                         size="small"
-                        total={100}
+                        total={this.getSegmentsData("count", 0)}
                         showQuickJumper
                         showSizeChanger
                         showTotal={() => {
-                            return "Ilość pozycji: " + 0;
+                            return "Ilość pozycji: " + (this.props.segments.fetching ? 0 : this.getSegmentsData("count", 0));
                         }}
+                        pageSize={this.state.pageSize}
                         onChange={(page, pageSize) => {
-                            this.setState({ pageSize: pageSize });
+                            this.setState({
+                                currentPage: page - 1,
+                            });
                         }}
                         onShowSizeChange={(current, size) => {
-                            this.setState({ pageSize: size });
+                            this.setState({
+                                pageSize: size
+                            });
                         }}
-                        pageSizeOptions={[10, 25, 50, 100]}
+                        pageSizeOptions={pageSizeOptions}
+                    />
+                    <Icon
+                        className="pagination-refresh"
+                        type="reload"
+                        onClick={() => {
+                            this.props.getAllSegments();
+                        }}
+                        spin={this.props.segments.fetching}
                     />
                 </div>
             </div>
@@ -123,30 +187,33 @@ class Segments extends Component<{
 }
 
 const mapStateToProps = (state: any) => ({
-    segments:state.segments,
+    segments: state.segments,
 });
 
 export default connect(
     mapStateToProps,
     dispatch => ({
         getAllSegments: () => {
-
             dispatch(
                 GetDictionarySegment()
             )
         },
-
-        insertSegments: () => {
+        updateSegmentPropertiesInRedux: (segmentData: Segment, rowId) => {
             dispatch(
-                PostDictionarySegment(new RequestSetSegment.Builder()
-                    .withData(new Segment.Builder()
-                        .withCsType(99)
-                        .withCsTradefer("tradeRef")
-                        .build()
-                    )
-                    .build()
-                )
+                updateSegmentPropertiesInRedux(segmentData, rowId)
             )
-        }
+        },
+        // insertSegments: () => {
+        //     dispatch(
+        //         PostDictionarySegment(new RequestSetSegment.Builder()
+        //             .withData(new Segment.Builder()
+        //                 .withCsType(99)
+        //                 .withCsTradefer("tradeRef")
+        //                 .build()
+        //             )
+        //             .build()
+        //         )
+        //     )
+        // }
     })
 )(Segments);

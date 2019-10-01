@@ -1,5 +1,5 @@
-import {combineReducers} from "redux";
-import {createReducer} from "../api/common-reducers";
+import { combineReducers } from "redux";
+import { createReducer } from "../api/common-reducers";
 import {
     GetDictionaryAccountSapHandler,
     GetDictionarySegmentHandler,
@@ -7,10 +7,11 @@ import {
     PostUserLoginHandler,
     PostUserLogoffHandler
 } from "../api/api-handlers";
-import {tabsState} from "./tabReducer";
-import {UnauthorizedHandler} from "./auth-reducer";
-import {RequestPanelHandler, RequestPanelType} from "./request-panel-reducer";
-import {ActionRequestData, ActionResponseData} from "../api/common-middleware";
+import { tabsState } from "./tabReducer";
+import { UnauthorizedHandler } from "./auth-reducer";
+import { RequestPanelHandler, RequestPanelType } from "./request-panel-reducer";
+import { UpdateSegmentPropertiesInReduxHandler } from "./segments-reducer";
+import { ActionRequestData, ActionResponseData } from "../api/common-middleware";
 import {
     RequestSetUserLogin, RequestSetUserLogoff,
     ResultSetOk,
@@ -19,10 +20,10 @@ import {
     User
 } from "../api/api-models";
 
-export class AuthType{
-    login: ActionResponseData<ResultSetUserLogin,ActionRequestData<RequestSetUserLogin, null>> = {};
-    userInfo: ActionResponseData<ResultSetUserInfo,ActionRequestData<null, null>> = {};
-    logoutInfo: ActionResponseData<ResultSetOk,ActionRequestData<RequestSetUserLogoff, null>> = {};
+export class AuthType {
+    login: ActionResponseData<ResultSetUserLogin, ActionRequestData<RequestSetUserLogin, null>> = {};
+    userInfo: ActionResponseData<ResultSetUserInfo, ActionRequestData<null, null>> = {};
+    logoutInfo: ActionResponseData<ResultSetOk, ActionRequestData<RequestSetUserLogoff, null>> = {};
 
     static isLoginOk(obj: AuthType) {
         if (obj.userInfo === undefined || obj.userInfo.fail === true)
@@ -37,7 +38,7 @@ export class AuthType{
     }
 
     static getUserData(obj: AuthType): User {
-        if (this.isLoginOk(obj)){
+        if (this.isLoginOk(obj)) {
             return obj.userInfo.response.data.user;
         }
 
@@ -60,8 +61,8 @@ export const mainReducer = combineReducers(
     {
         accountOfi: createReducer({}, []),
         auth: createReducer(new AuthType(), [UnauthorizedHandler(), PostUserLoginHandler(), PostUserInfoHandler(), PostUserLogoffHandler()]),
-        segments: createReducer({}, [GetDictionarySegmentHandler()]),
-        backendInfo: createReducer({version: '?'}, [GetSystemVersionHandler()]),
+        segments: createReducer({}, [GetDictionarySegmentHandler(), UpdateSegmentPropertiesInReduxHandler()]),
+        backendInfo: createReducer({ version: '?' }, [GetSystemVersionHandler()]),
         sapAccountOfi: createReducer({}, [GetDictionaryAccountSapHandler()]),
         requestPanel: createReducer(new RequestPanelType(), [RequestPanelHandler()]),
         tabsState
