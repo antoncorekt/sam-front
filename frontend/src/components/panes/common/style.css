@@ -1,0 +1,8 @@
+.editable-cell {
+    background: aliceblue;
+}
+
+.editable-cell .input {
+    margin: -5px 0px -5px 0px;
+    height: 24px;
+}

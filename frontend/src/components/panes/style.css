@@ -51,7 +51,17 @@
 }
 
 .segments .pagination-container {
+    display: flex;
+    flex-direction: row;
     margin: 6px 0px 6px 0px;
+}
+
+.segments .pagination-refresh {
+    margin-top: 5px;
+}
+
+.segments .pagination-refresh :hover {
+    color: lightskyblue;
 }
 
 .bscs-to-sap-mappings .flex-end-row {

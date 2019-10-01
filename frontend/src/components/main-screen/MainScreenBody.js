@@ -25,7 +25,7 @@ class MainScreenBody extends Component {
             {
                 id: TAB_IDS.SEGMENTS,
                 title: 'Segmenty rynku',
-                content: <Segments />
+                content: <Segments key="2" />
             },
             {
                 id: TAB_IDS.BSCS_TO_SAP_MAPPINGS,
@@ -44,19 +44,29 @@ class MainScreenBody extends Component {
             }];
 
         this.props.initDefaultTabs(tabPanes);
+
+        this.state = {
+            activeKey: "2"
+        };
     }
+
+    onChange = (activeKey) => {
+        this.setState({ activeKey });
+    };
 
     render() {
         return (
             <div className='main-screen-body'>
-                <Tabs className='tab-panes'
-                    defaultActiveKey="1" >
+                <Tabs
+                    className='tab-panes'
+                    activeKey={this.state.activeKey}
+                    onChange={this.onChange}
+                >
                     {
                         this.props.store.tabsState.map((x) => (
                             <TabPane
                                 tab={x.title}
-                                key={x.id}
-                                // style={{height: document.body.clientHeight-90}}
+                                key={"" + (x.id)}
                             >
                                 {x.content}
                             </TabPane>
