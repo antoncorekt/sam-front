@@ -10,6 +10,7 @@ import type {BackendAction} from "../../api/common-middleware";
 import type {MainStateType} from "../../reducers";
 import AccountSapUploader from "../uploader-panel/AccountSapUploader";
 import {ActionRequestData, ActionResponseData} from "../../api/common-middleware";
+import {SapAccountStoreType} from "../../reducers/sap-account/sap-account-store-type";
 
 const data = [
     {
@@ -60,7 +61,7 @@ const columns = [
 ];
 
 class SapAccounts extends Component<{
-    sapOfi: ActionResponseData<ResultSetAccountDictSaps,ActionRequestData<null, null>>
+    sapOfi: SapAccountStoreType
 }> {
 
     constructor(props) {
@@ -81,13 +82,12 @@ class SapAccounts extends Component<{
         });
     };
 
+    componentDidUpdate(prevProps: Readonly<{sapOfi: SapAccountStoreType}>, prevState: Readonly<S>, snapshot: SS): void {
+    }
+
     render() {
 
-        const data = this.props.sapOfi.response !== undefined
-            ? this.props.sapOfi.response.data
-            : [];
-
-        console.log("data ", data);
+        const data = SapAccountStoreType.getSapAccounts(this.props.sapOfi);
 
         return (
             <div className="sap-accounts">
@@ -95,7 +95,7 @@ class SapAccounts extends Component<{
                     <Checkbox className="checkbox" onChange={null}>
                         Aktualizuj opisy istniejących kont
                     </Checkbox>
-                    <AccountSapUploader />
+                    <AccountSapUploader fileFetching={this.props.sapOfi.fileUploadStatus.fetching} />
                 </div >
                 <div className="table-container">
                     <ReactTable

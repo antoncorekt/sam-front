@@ -13,8 +13,8 @@ import {
     UserLogoffConf,
     Version
 } from "../../api/api-models";
-import {AuthType} from "../../reducers";
 import {globalLoginContext} from "../../api/common-middleware";
+import {AuthType} from "../../reducers/auth/auth-store-type";
 
 class MainScreenHeader extends Component<{
     auth: AuthType,
@@ -29,6 +29,8 @@ class MainScreenHeader extends Component<{
 
     render() {
 
+        const userLogin = AuthType.getUserData(this.props.auth).user;
+
         return (
             <div className='main-screen-header'>
                 <div className="logo-img">
@@ -40,9 +42,9 @@ class MainScreenHeader extends Component<{
                     <div className="reporter-container">
                         <Reporter />
                     </div>
-                    <div className="user vertical-middle">User: {AuthType.getUserData(this.props.auth).user} </div>
+                    <div className="user vertical-middle">User: {userLogin} </div>
                     <Button className="logout-button" size="small"
-                            onClick={()=>this.props.logout(AuthType.getUserData(this.props.auth).user)}>Logout</Button>
+                            onClick={()=>this.props.logout(userLogin)}>Logout</Button>
                 </div>
             </div >
         );

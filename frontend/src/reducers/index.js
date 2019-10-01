@@ -1,50 +1,17 @@
 import {combineReducers} from "redux";
 import {createReducer} from "../api/common-reducers";
 import {
-    GetDictionaryAccountSapHandler,
     GetDictionarySegmentHandler,
-    GetSystemVersionHandler, PostUserInfoHandler,
-    PostUserLoginHandler,
-    PostUserLogoffHandler
+    GetSystemVersionHandler
 } from "../api/api-handlers";
 import {tabsState} from "./tabReducer";
-import {UnauthorizedHandler} from "./auth-reducer";
+import {PostUserInfoHandler, PostUserLoginHandler, PostUserLogoffHandler, UnauthorizedHandler} from "./auth/auth-reducer";
 import {RequestPanelHandler, RequestPanelType} from "./request-panel-reducer";
-import {ActionRequestData, ActionResponseData} from "../api/common-middleware";
-import {
-    RequestSetUserLogin, RequestSetUserLogoff,
-    ResultSetOk,
-    ResultSetUserInfo,
-    ResultSetUserLogin,
-    User
-} from "../api/api-models";
+import {AuthType} from "./auth/auth-store-type";
+import {GetDictionaryAccountSapHandler, PostDictionaryAccountSapHandler} from "./sap-account/sap-account-reducer";
+import {SapAccountStoreType} from "./sap-account/sap-account-store-type";
 
-export class AuthType{
-    login: ActionResponseData<ResultSetUserLogin,ActionRequestData<RequestSetUserLogin, null>> = {};
-    userInfo: ActionResponseData<ResultSetUserInfo,ActionRequestData<null, null>> = {};
-    logoutInfo: ActionResponseData<ResultSetOk,ActionRequestData<RequestSetUserLogoff, null>> = {};
 
-    static isLoginOk(obj: AuthType) {
-        if (obj.userInfo === undefined || obj.userInfo.fail === true)
-            return false;
-
-        if (obj.login.fail === true)
-            return false;
-
-        return !(obj.userInfo.response === undefined
-            || obj.userInfo.response.data === undefined
-            || obj.userInfo.response.data.user === undefined);
-    }
-
-    static getUserData(obj: AuthType): User {
-        if (this.isLoginOk(obj)){
-            return obj.userInfo.response.data.user;
-        }
-
-        console.error("getUserData not found user return {}");
-        return {}
-    }
-}
 
 export type MainStateType = {
     accountOfi: any,
@@ -62,7 +29,7 @@ export const mainReducer = combineReducers(
         auth: createReducer(new AuthType(), [UnauthorizedHandler(), PostUserLoginHandler(), PostUserInfoHandler(), PostUserLogoffHandler()]),
         segments: createReducer({}, [GetDictionarySegmentHandler()]),
         backendInfo: createReducer({version: '?'}, [GetSystemVersionHandler()]),
-        sapAccountOfi: createReducer({}, [GetDictionaryAccountSapHandler()]),
+        sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler()]),
         requestPanel: createReducer(new RequestPanelType(), [RequestPanelHandler()]),
         tabsState
     }

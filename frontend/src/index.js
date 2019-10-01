@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import WelcomePage from './WelcomePage';
 import * as serviceWorker from './serviceWorker';
 import {Button, Input, notification, Radio} from "antd";
 import { CookiesProvider } from 'react-cookie';
@@ -13,17 +12,11 @@ import thunk from 'redux-thunk';
 import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import { combineReducers } from 'redux';
-import ErrorBoundaryWrapper from "./components/error-boundary/ErrorBoundaryWrapper";
-import {createReducer} from "./api/common-reducers";
 import MainScreen from './components/main-screen/MainScreen';
-import { tabsState } from './reducers/tabReducer';
 import "react-table/react-table.css";
-import {GetDictionarySegmentHandler} from "./api/api-handlers";
 import {mainReducer} from "./reducers";
 import LoginPage from "./components/login-screen/LoginPage";
-import {RoleEnum} from "./api/api-models";
-import {globalLoginContext} from "./api/common-middleware";
+
 
 
 const middleware = [thunk];

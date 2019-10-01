@@ -80,24 +80,7 @@ export const GetSystemHealthHandler = () => {
         },
     }
 };
-export const PostUserLoginHandler = () => {
-    return {
-        PostUserLoginRequest:(state:any, action:ActionRequestData<RequestSetUserLogin, null>)=>{
-            return {...state, login: action};
-        },
-        PostUserLoginSuccess:(state:any, action:ActionResponseData<ResultSetUserLogin,ActionRequestData<RequestSetUserLogin, null>>)=>{
 
-            globalLoginContext.bearerToken = action.response.data.token;
-
-            return {...state,
-                login: action
-            };
-        },
-        PostUserLoginFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogin, null>>)=>{
-            return {...state, login: action};
-        },
-    }
-};
 export const PostUserReloginHandler = () => {
     return {
         PostUserReloginRequest:(state:any, action:ActionRequestData<null, null>)=>{
@@ -111,35 +94,7 @@ export const PostUserReloginHandler = () => {
         },
     }
 };
-export const PostUserLogoffHandler = () => {
-    return {
-        PostUserLogoffRequest:(state:any, action:ActionRequestData<RequestSetUserLogoff, null>)=>{
-            return {...state, logoutInfo:action};
-        },
-        PostUserLogoffSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<RequestSetUserLogoff, null>>)=>{
-            return {...state, logoutInfo:action};
-        },
-        PostUserLogoffFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogoff, null>>)=>{
-            return {...state, logoutInfo:action};
-        },
-    }
-};
-export const PostUserInfoHandler = () => {
-    return {
-        PostUserInfoRequest:(state:any, action:ActionRequestData<null, null>)=>{
-            return {...state, logoutInfo: {}, userInfo: action};
-        },
-        PostUserInfoSuccess:(state:any, action:ActionResponseData<ResultSetUserInfo,ActionRequestData<null, null>>)=>{
 
-            return {...state,
-                    userInfo: action
-                };
-        },
-        PostUserInfoFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-            return {...state, userInfo: action};
-        },
-    }
-};
 export const PostAccountHandler = () => {
     return {
         PostAccountRequest:(state:any, action:ActionRequestData<RequestSetAccount, null>)=>{
@@ -270,32 +225,8 @@ export const GetDictionaryAccountBscsHandler = () => {
         },
     }
 };
-export const GetDictionaryAccountSapHandler = () => {
-    return {
-        GetDictionaryAccountSapRequest:(state:any, action:ActionRequestData<null, null>)=>{
-            return {...state, ...action};
-        },
-        GetDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetAccountDictSaps,ActionRequestData<null, null>>)=>{
-            return {...state, ...action};
-        },
-        GetDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-            return {...state, ...action};
-        },
-    }
-};
-export const PostDictionaryAccountSapHandler = () => {
-    return {
-        PostDictionaryAccountSapRequest:(state:any, action:ActionRequestData<File, null>)=>{
-            return {...state, ...action};
-        },
-        PostDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<File, null>>)=>{
-            return {...state, ...action};
-        },
-        PostDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<File, null>>)=>{
-            return {...state, ...action};
-        },
-    }
-};
+
+
 export const DeleteDictionaryAccountSapHandler = () => {
     return {
         DeleteDictionaryAccountSapRequest:(state:any, action:ActionRequestData<null, null>)=>{
