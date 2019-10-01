@@ -1,16 +1,17 @@
 import * as React from "react";
 import {connect} from "react-redux";
 import type {MainStateType} from "../../reducers";
-import {PostUserLogin} from "../../api/api-func";
-import {RequestSetUserLogin, Role, UserLogin, UserLoginInfo} from "../../api/api-models";
-import {BackendAction} from "../../api/common-middleware";
+import {PostUserInfo, PostUserLogin} from "../../api/api-func";
+import {
+    RequestSetUserLogin,
+    Role,
+    UserLogin
+} from "../../api/api-models";
 import {Button, Input} from 'antd';
 import { Radio } from 'antd';
 import "./style.css"
+import {AuthType} from "../../reducers";
 
-class LoginPagePropsType extends UserLoginInfo implements BackendAction {
-
-}
 
 type LoginPageStateType = {
     group: Role,
@@ -19,7 +20,7 @@ type LoginPageStateType = {
 }
 
 class LoginPage extends React.Component<{
-    auth: LoginPagePropsType
+    auth: AuthType
 }>{
     state:LoginPageStateType = {
         group: Role.ADMIN,
@@ -27,17 +28,27 @@ class LoginPage extends React.Component<{
         password: null
     };
 
-    render() {
+    constructor(props){
+        super(props);
 
-        if (this.props.auth.token !== undefined){
-            return this.props.children;
+        this.props.getUserName();
+    }
+
+    componentDidUpdate(prevProps: Readonly<{auth: AuthType}>, prevState: Readonly<S>, snapshot: SS): void {
+        if (!AuthType.isLoginOk(prevProps)
+            && prevProps.auth.login.response === undefined
+            && this.props.auth.login.response !== undefined
+            && this.props.auth.login.response.data !== undefined){
+            this.props.getUserName();
         }
+    }
 
-        return <div className="login-container">
+    loginRender = () => (
+        <div className="login-container">
 
             <div style={{width: "300px", color: "red"}}>
-                {this.props.auth.fail
-                    ? "Error type: " + this.props.auth.errorType + " ; msg: " + this.props.auth.msg
+                {this.props.auth.login.fail
+                    ? "Error type: " + this.props.auth.login.errorType + " ; msg: " + this.props.auth.login.msg
                     : undefined
                 }
             </div>
@@ -57,12 +68,31 @@ class LoginPage extends React.Component<{
 
             <Button
                 className={"login-button"}
-                loading={this.props.auth.fetching}
-                onClick={()=>this.props.login(this.state.user, this.state.password, this.state.group)}
+                loading={this.props.auth.login.fetching}
+                onClick={()=>this.props.loginHandle(this.state.user, this.state.password, this.state.group)}
             >
                 Login
             </Button>
-        </div>;
+        </div>
+    );
+
+    render() {
+
+        if (AuthType.isLoginOk(this.props.auth)){
+            return this.props.children;
+        }
+        else {
+            if (this.props.auth.userInfo.fetching){
+                return <div className="logo">
+
+                </div>;
+            }
+            else {
+                return this.loginRender();
+            }
+        }
+
+
     }
 }
 
@@ -74,7 +104,7 @@ export default connect(
     mapStateToProps,
 
     dispatch => ({
-        login : (user: string, password: string, role: Role = Role.CONTROL) => {
+        loginHandle : (user: string, password: string, role: Role = Role.CONTROL) => {
             dispatch(
                 PostUserLogin(new RequestSetUserLogin.Builder()
                     .withData(new UserLogin.Builder()
@@ -86,6 +116,11 @@ export default connect(
                     .build()
                 )
 
+            )
+        },
+        getUserName: () => {
+            dispatch(
+                PostUserInfo()
             )
         }
     })

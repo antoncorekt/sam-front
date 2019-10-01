@@ -37,7 +37,7 @@ PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
 DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
 import * as ACT from './api-actions-defs';
 import {ActionRequestData, ActionResponseData, globalLoginContext} from "./common-middleware";
-import {ResultSetStat} from "./api-models";
+import {ResultSetStat, ResultSetUserInfo} from "./api-models";
 
 
 
@@ -83,20 +83,18 @@ export const GetSystemHealthHandler = () => {
 export const PostUserLoginHandler = () => {
     return {
         PostUserLoginRequest:(state:any, action:ActionRequestData<RequestSetUserLogin, null>)=>{
-            return {...state, ...action};
+            return {...state, login: action};
         },
         PostUserLoginSuccess:(state:any, action:ActionResponseData<ResultSetUserLogin,ActionRequestData<RequestSetUserLogin, null>>)=>{
 
             globalLoginContext.bearerToken = action.response.data.token;
 
             return {...state,
-                ...action.response.data,
-                ...action,
-                response: undefined
+                login: action
             };
         },
         PostUserLoginFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogin, null>>)=>{
-            return {...state, ...action};
+            return {...state, login: action};
         },
     }
 };
@@ -116,26 +114,29 @@ export const PostUserReloginHandler = () => {
 export const PostUserLogoffHandler = () => {
     return {
         PostUserLogoffRequest:(state:any, action:ActionRequestData<RequestSetUserLogoff, null>)=>{
-            return {...state, ...action};
+            return {...state, logoutInfo:action};
         },
         PostUserLogoffSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<RequestSetUserLogoff, null>>)=>{
-            return {...state, ...action};
+            return {...state, logoutInfo:action};
         },
         PostUserLogoffFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetUserLogoff, null>>)=>{
-            return {...state, ...action};
+            return {...state, logoutInfo:action};
         },
     }
 };
 export const PostUserInfoHandler = () => {
     return {
         PostUserInfoRequest:(state:any, action:ActionRequestData<null, null>)=>{
-            return {...state, ...action};
+            return {...state, logoutInfo: {}, userInfo: action};
         },
         PostUserInfoSuccess:(state:any, action:ActionResponseData<ResultSetUserInfo,ActionRequestData<null, null>>)=>{
-            return {...state, ...action};
+
+            return {...state,
+                    userInfo: action
+                };
         },
         PostUserInfoFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-            return {...state, ...action};
+            return {...state, userInfo: action};
         },
     }
 };

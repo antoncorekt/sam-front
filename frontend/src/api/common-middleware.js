@@ -130,7 +130,7 @@ type CallApiContextType = {
 class GlobalLoginContext {
 
     constructor(){
-        this.bearerToken = window.localStorage.getItem("bearerToken") | null;
+        this.bearerToken = window.localStorage.getItem("bearerToken") || null;
     }
 
     _bearerToken: string;

@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import RequestQueuePanel from './RequestQueuePanel';
@@ -7,17 +6,18 @@ import logo from '../../media/logo_small.jpg';
 import './style.css';
 import {connect} from "react-redux";
 import type {MainStateType} from "../../reducers";
-import {GetSystemVersion, PostUserLogoff} from "../../api/api-func";
+import {GetSystemVersion, PostUserInfo, PostUserLogoff} from "../../api/api-func";
 import {
     RequestSetUserLogoff,
-    ResultSetVersion,
-    UserLoginInfo,
+    Status,
     UserLogoffConf,
     Version
 } from "../../api/api-models";
+import {AuthType} from "../../reducers";
+import {globalLoginContext} from "../../api/common-middleware";
 
 class MainScreenHeader extends Component<{
-    auth: UserLoginInfo,
+    auth: AuthType,
     backendInfo: Version
 }> {
 
@@ -28,8 +28,6 @@ class MainScreenHeader extends Component<{
     }
 
     render() {
-
-        console.warn("this.props", this.props)
 
         return (
             <div className='main-screen-header'>
@@ -42,8 +40,9 @@ class MainScreenHeader extends Component<{
                     <div className="reporter-container">
                         <Reporter />
                     </div>
-                    <div className="user vertical-middle">User: {this.props.auth.user.user} </div>
-                    <Button className="logout-button" size="small" onClick={()=>this.props.logout(this.props.auth.user.user)}>Logout</Button>
+                    <div className="user vertical-middle">User: {AuthType.getUserData(this.props.auth).user} </div>
+                    <Button className="logout-button" size="small"
+                            onClick={()=>this.props.logout(AuthType.getUserData(this.props.auth).user)}>Logout</Button>
                 </div>
             </div >
         );
@@ -59,6 +58,7 @@ export default connect(
     mapStateToProps,
     dispatch => ({
         logout: (user: string)=>{
+            globalLoginContext.bearerToken = null;
             dispatch(
                 PostUserLogoff(new RequestSetUserLogoff.Builder()
                     .withData(new UserLogoffConf.Builder()
@@ -67,11 +67,19 @@ export default connect(
                     )
                     .build()
                 )
+            );
+            dispatch(
+                PostUserInfo()
             )
         },
         getBackendVersion: () => {
             dispatch(
                 GetSystemVersion()
+            );
+        },
+        getUserName: () => {
+            dispatch(
+                PostUserInfo()
             )
         }
     })
