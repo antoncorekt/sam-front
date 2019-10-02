@@ -30,6 +30,7 @@ export class EditableCell extends React.Component {
         let objectData = new Object();
         objectData[key] = value;
         this.props.handleChange(objectData, rowId);
+        this.props.handleRowModification("mark");
     }
 
     render() {
@@ -49,6 +50,7 @@ export class EditableCell extends React.Component {
                             onChange={(e) => this.setState({ value: e.target.value })}
                             onBlur={() => {
                                 this.setState({ editable: false });
+                                this.updateSingleObjectPropertyInRedux(this.props.field_key, this.state.value, this.props.rowId);
                             }}
                             onPressEnter={() => {
                                 this.setState({ editable: false });

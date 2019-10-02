@@ -64,6 +64,14 @@
     color: lightskyblue;
 }
 
+.segments .save-button {
+    margin: -5px 5px -5px 0px;
+}
+
+.segments .cancel-button {
+    margin: -5px 0px -5px 0px;
+}
+
 .bscs-to-sap-mappings .flex-end-row {
     display: flex;
     justify-content: flex-end;

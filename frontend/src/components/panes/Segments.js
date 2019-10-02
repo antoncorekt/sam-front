@@ -25,6 +25,7 @@ const columns = (that) => [
                     field_key='csTradeRef'
                     value={x.original.csTradeRef}
                     handleChange={that.props.updateSegmentPropertiesInRedux}
+                    handleRowModification={(action) => { that.rowModification(x.index, action) }}
                 />
             </div>
         )
@@ -39,6 +40,7 @@ const columns = (that) => [
                     field_key='segmCategory'
                     value={x.original.segmCategory}
                     handleChange={that.props.updateSegmentPropertiesInRedux}
+                    handleRowModification={(action) => { that.rowModification(x.index, action) }}
                 />
             </div>
         )
@@ -65,7 +67,17 @@ const columns = (that) => [
         Header: 'Akcja',
         accessor: 'action',
         filterable: false,
-        sortable: false
+        sortable: false,
+        Cell: x => (
+            <div>
+                {that.state.modified.includes(x.index) ?
+                    <div>
+                        <Button className="save-button" size="small">Zapisz zmiany</Button>
+                        <Button className="cancel-button" size="small">Anuluj zmiany</Button>
+                    </div> : null
+                }
+            </div>
+        ),
     }
 ];
 
@@ -80,7 +92,8 @@ class Segments extends Component<{
         this.state = {
             currentPage: DEFAULT_CURRENT_PAGE,
             pageSize: DEFAULT_PAGE_SIZE,
-            filtered: []
+            filtered: [],
+            modified: []
         };
         this.props.getAllSegments();
     }
@@ -108,6 +121,27 @@ class Segments extends Component<{
             this.props.segments.response[property]
             :
             negativeResult;
+    }
+
+    rowModification(rowId, action) {
+        switch (action) {
+            case "mark":
+                if (!this.state.modified.includes(rowId)) {
+                    let newArray = this.state.modified.concat(rowId);
+                    this.setState({ modified: newArray });
+                }
+                return true;
+            case "unmark":
+                let index = this.state.modified.indexOf(rowId);
+                if (index > -1) {
+                    let newArray = this.state.modified.filter(item => item !== rowId);
+                    this.setState({ modified: newArray });
+                }
+                return true;
+            case "unmark-all":
+                this.setState({ modified: [] });
+                return true;
+        }
     }
 
     render() {
@@ -177,6 +211,7 @@ class Segments extends Component<{
                         type="reload"
                         onClick={() => {
                             this.props.getAllSegments();
+                            this.rowModification(null, "unmark-all");
                         }}
                         spin={this.props.segments.fetching}
                     />
