@@ -27,7 +27,11 @@ export class Uploader extends React.Component{
         const formData = new FormData();
         formData.append("file", fileList[0]);
 
-       this.props.onUpload(formData);
+
+        console.log("fileFromFileList", fileList[0]);
+        console.log("formData", formData);
+
+        this.props.onUpload(fileList[0]);
 
     };
 

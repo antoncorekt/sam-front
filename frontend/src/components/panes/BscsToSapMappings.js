@@ -3,6 +3,9 @@ import ReactTable from 'react-table';
 import { Button, Checkbox, Icon, Pagination } from 'antd';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
+import type {MainStateType} from "../../reducers";
+import {connect} from "react-redux";
+import {DeleteDictionaryAccountSap, GetDictionaryAccountSap} from "../../api/api-func";
 
 const data = [
     {
@@ -104,7 +107,7 @@ const columns = [
     }
 ]
 
-export default class BscsToSapMappings extends Component {
+class BscsToSapMappings extends Component {
 
     constructor(props) {
         super(props);
@@ -160,3 +163,22 @@ export default class BscsToSapMappings extends Component {
         );
     }
 }
+
+const mapStateToProps = (state: MainStateType) => ({
+    sapOfi: state.sapAccountOfi,
+});
+
+export default connect(
+    mapStateToProps,
+    dispatch => ({
+        getSapOfi: () => {
+            dispatch(
+                GetDictionaryAccountSap()
+            )
+        },
+        deleteDict: () => {
+            dispatch(
+                DeleteDictionaryAccountSap()
+            )
+        }
+    }))(BscsToSapMappings)

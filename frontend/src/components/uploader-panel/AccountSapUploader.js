@@ -6,7 +6,7 @@ import {Uploader} from "./Uploader";
 class AccountSapUploader extends React.Component {
 
     render() {
-        return  <Uploader onUpload={this.props.uploadSapAccountViaFile}/>;
+        return  <Uploader fetching={this.props.fileFetching} onUpload={this.props.uploadSapAccountViaFile}/>;
     }
 
 }

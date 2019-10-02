@@ -2,7 +2,7 @@
 
 import {Dispatch} from "redux";
 import {BACKEND_URL} from "./conf";
-import {UNAUTHORIZED_ACTION} from "../reducers/auth-reducer";
+import {UNAUTHORIZED_ACTION} from "../reducers/auth/auth-reducer";
 import {AddToRequestPanelActionBuilder} from "../reducers/request-panel-reducer";
 
 export interface BackendAction {
@@ -187,8 +187,12 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
             callApiContext.responseText = response.statusText;
 
             if (contentType && contentType.includes("application/json")) {
-                console.log("response is json =) try to response.json() ");
+                console.log("response is json =) try to response.json() ", response) ;
+                // if (response.bodyUsed)
                 return response.json();
+                // else {
+                //     return {}
+                // }
             }
             else {
                 console.warn("response.headers", response.headers);
@@ -247,14 +251,32 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
         .catch(( error:any) => {
 
 
-        console.error("handlerFunctionError", error);
-        const failAction = _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
-        dispatch(
-            failAction
-        );
-        dispatch(
-            AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, {requestAction, response: failAction})
-        );
+            console.error("handlerFunctionError", error);
+            console.error("callApiContext", callApiContext);
+
+            if (callApiContext.responseStatus < 300){
+                const resp = {
+                    code: callApiContext.responseStatus,
+                    text: callApiContext.responseText
+                };
+
+                const responseAction =  _.successActionCreator(props.successType, resp, requestAction, callApiContext.responseText, callApiContext.responseStatus);
+                dispatch(
+                    _.successActionCreator(props.successType, resp, requestAction, callApiContext.responseText, callApiContext.responseStatus)
+                );
+                dispatch(
+                    AddToRequestPanelActionBuilder.SUCCESS_ACTION(idRequest, responseAction)
+                );
+            }else {
+
+                const failAction = _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
+                dispatch(
+                    failAction
+                );
+                dispatch(
+                    AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, {requestAction, response: failAction})
+                );
+            }
 
     });
 };

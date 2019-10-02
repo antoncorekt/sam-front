@@ -1,15 +1,18 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactTable from 'react-table';
-import { Button, Checkbox, Pagination } from 'antd';
-import { renderDateTime } from '../../utils/Utils.js';
+import {Button, Checkbox, Pagination, Spin} from 'antd';
+import {renderDateTime} from '../../utils/Utils.js';
 import './style.css';
 import {connect} from "react-redux";
-import {GetDictionaryAccountSap} from "../../api/api-func";
+import {DeleteDictionaryAccountSap, GetDictionaryAccountSap} from "../../api/api-func";
 import {AccountDictSap, ResultSetAccountDictSaps} from "../../api/api-models";
 import type {BackendAction} from "../../api/common-middleware";
 import type {MainStateType} from "../../reducers";
 import AccountSapUploader from "../uploader-panel/AccountSapUploader";
 import {ActionRequestData, ActionResponseData} from "../../api/common-middleware";
+import {SapAccountStoreType} from "../../reducers/sap-account/sap-account-store-type";
+import {TestEnvContainer} from "./common/TestEnvContainer";
+import {getPageSizeOption, getPaginationArray} from "../../utils/Utils";
 
 const data = [
     {
@@ -60,7 +63,7 @@ const columns = [
 ];
 
 class SapAccounts extends Component<{
-    sapOfi: ActionResponseData<ResultSetAccountDictSaps,ActionRequestData<null, null>>
+    sapOfi: SapAccountStoreType
 }> {
 
     constructor(props) {
@@ -69,6 +72,7 @@ class SapAccounts extends Component<{
         this.state = {
             checked: false,
             pageSize: 10,
+            page: 1,
             filtered: []
         };
 
@@ -81,33 +85,50 @@ class SapAccounts extends Component<{
         });
     };
 
+    componentDidUpdate(prevProps: Readonly<{ sapOfi: SapAccountStoreType }>, prevState: Readonly<S>, snapshot: SS): void {
+
+        if (prevProps.sapOfi.fileUploadStatus.fetching === true
+            && SapAccountStoreType.isFileUploadSuccess(this.props.sapOfi)
+        ) {
+            this.props.getSapOfi();
+        }
+
+        if (prevProps.sapOfi.deleteDict.fetching === true &&
+            this.props.sapOfi.deleteDict.fetching === false
+        ) {
+            this.props.getSapOfi();
+        }
+
+    }
+
     render() {
 
-        const data = this.props.sapOfi.response !== undefined
-            ? this.props.sapOfi.response.data
-            : [];
-
-        console.log("data ", data);
+        const data = SapAccountStoreType.getSapAccounts(this.props.sapOfi);
 
         return (
             <div className="sap-accounts">
                 <div className="flex-end-row">
+                    <TestEnvContainer>
+                        <Button style={{margin:"0px 10px 0px 10px"}} onClick={()=>this.props.deleteDict()} loading={this.props.sapOfi.deleteDict.fetching}>Remove All</Button>
+                    </TestEnvContainer>
                     <Checkbox className="checkbox" onChange={null}>
                         Aktualizuj opisy istniejących kont
                     </Checkbox>
-                    <AccountSapUploader />
-                </div >
+                    <AccountSapUploader fileFetching={this.props.sapOfi.fileUploadStatus.fetching}/>
+                </div>
                 <div className="table-container">
-                    <ReactTable
-                        data={data}
-                        columns={columns}
-                        noDataText="Brak danych"
-                        filterable
-                        filtered={this.state.filtered}
-                        showPagination={false}
-                        pageSize={this.state.pageSize}
-                        onFilteredChange={filtered => this.setState({ filtered })}
-                    />
+                    <Spin tip={"Pobieram słownik"} spinning={this.props.sapOfi.dict.fetching}>
+                        <ReactTable
+                            data={getPaginationArray(data, this.state.page, this.state.pageSize)}
+                            columns={columns}
+                            noDataText="Brak danych"
+                            filterable
+                            filtered={this.state.filtered}
+                            showPagination={false}
+                            pageSize={this.state.pageSize}
+                            onFilteredChange={filtered => this.setState({filtered})}
+                        />
+                    </Spin>
                 </div>
                 <div className="pagination-container">
                     <Pagination
@@ -116,15 +137,15 @@ class SapAccounts extends Component<{
                         showQuickJumper
                         showSizeChanger
                         showTotal={() => {
-                            return "Ilość pozycji: " + 0;
+                            return "Ilość pozycji: " + data.length;
                         }}
                         onChange={(page, pageSize) => {
-                            this.setState({ pageSize: pageSize });
+                            this.setState({pageSize: pageSize, page: page});
                         }}
                         onShowSizeChange={(current, size) => {
-                            this.setState({ pageSize: size });
+                            this.setState({pageSize: size});
                         }}
-                        pageSizeOptions={[10, 25, 50, 100]}
+                        pageSizeOptions={getPageSizeOption(data)}
                     />
                 </div>
             </div>
@@ -133,7 +154,7 @@ class SapAccounts extends Component<{
 }
 
 const mapStateToProps = (state: MainStateType) => ({
-    sapOfi:state.sapAccountOfi,
+    sapOfi: state.sapAccountOfi,
 });
 
 export default connect(
@@ -142,6 +163,11 @@ export default connect(
         getSapOfi: () => {
             dispatch(
                 GetDictionaryAccountSap()
+            )
+        },
+        deleteDict: () => {
+            dispatch(
+                DeleteDictionaryAccountSap()
             )
         }
     }))(SapAccounts)

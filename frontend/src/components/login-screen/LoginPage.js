@@ -10,8 +10,7 @@ import {
 import {Button, Input} from 'antd';
 import { Radio } from 'antd';
 import "./style.css"
-import {AuthType} from "../../reducers";
-
+import {AuthType} from "../../reducers/auth/auth-store-type";
 
 type LoginPageStateType = {
     group: Role,
