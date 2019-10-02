@@ -1,5 +1,5 @@
 import {ActionRequestData, ActionResponseData} from "../../api/common-middleware";
-import {ResultSetAccountDictSaps, ResultSetError, ResultSetOk} from "../../api/api-models";
+import {ResultSetAccountDictSaps, ResultSetCount, ResultSetError, ResultSetOk} from "../../api/api-models";
 import {SapAccountStoreType} from "./sap-account-store-type";
 
 
@@ -27,6 +27,26 @@ export const GetDictionaryAccountSapHandler = () => {
         },
         GetDictionaryAccountSapFail:(state:SapAccountStoreType, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
             return {...state, dict: action};
+        },
+    }
+};
+
+export const DeleteDictionaryAccountSapHandler = () => {
+    return {
+        DeleteDictionaryAccountSapRequest:(state:any, action:ActionRequestData<null, null>)=>{
+            return {...state, deleteDict:action};
+        },
+        DeleteDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
+            return {...state,
+                deleteDict:action,
+                dict: new ResultSetAccountDictSaps.Builder()
+                    .withData([])
+                    .build()
+
+            };
+        },
+        DeleteDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+            return {...state,  deleteDict:action};
         },
     }
 };

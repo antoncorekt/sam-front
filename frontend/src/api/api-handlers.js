@@ -227,19 +227,7 @@ export const GetDictionaryAccountBscsHandler = () => {
 };
 
 
-export const DeleteDictionaryAccountSapHandler = () => {
-    return {
-        DeleteDictionaryAccountSapRequest:(state:any, action:ActionRequestData<null, null>)=>{
-            return {...state, ...action};
-        },
-        DeleteDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, null>>)=>{
-            return {...state, ...action};
-        },
-        DeleteDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-            return {...state, ...action};
-        },
-    }
-};
+
 export const GetDictionarySegmentHandler = () => {
     return {
         GetDictionarySegmentRequest:(state:any, action:ActionRequestData<null, null>)=>{
