@@ -14,23 +14,9 @@ export class EditableCell extends React.Component {
         }
     }
 
-    // componentWillUpdate() {
-    //     if (this.props.forceRender) {
-    //         this.setState({value: this.props.value});
-    //         this.props.unRender();
-    //     }
-    // }
-
     componentDidUpdate() {
         if (this.inputRef !== undefined && this.state.editable)
             this.inputRef.focus();
-    }
-
-    updateSingleObjectPropertyInRedux(key, value, rowId) {
-        let objectData = new Object();
-        objectData[key] = value;
-        this.props.handleChange(objectData, rowId);
-        this.props.handleRowModification("mark");
     }
 
     render() {
@@ -50,11 +36,11 @@ export class EditableCell extends React.Component {
                             onChange={(e) => this.setState({ value: e.target.value })}
                             onBlur={() => {
                                 this.setState({ editable: false });
-                                this.updateSingleObjectPropertyInRedux(this.props.field_key, this.state.value, this.props.rowId);
+                                this.props.handleCellModification(this.props.field_key, this.state.value);
                             }}
                             onPressEnter={() => {
                                 this.setState({ editable: false });
-                                this.updateSingleObjectPropertyInRedux(this.props.field_key, this.state.value, this.props.rowId);
+                                this.props.handleCellModification(this.props.field_key, this.state.value);
                             }}
                         />
                         :

@@ -9,7 +9,7 @@ import './style.css';
 import { connect } from "react-redux";
 import { RequestSetSegment, Segment } from "../../api/api-models";
 import { GetDictionarySegment, PostDictionarySegment } from "../../api/api-func";
-import { updateSegmentPropertiesInRedux } from "../../actions/segmentsActions";
+import { cancelEditionOfSegmentPropertiesInRedux, editSegmentPropertiesInRedux } from "../../actions/segmentsActions";
 
 const DEFAULT_CURRENT_PAGE = 0;
 const DEFAULT_PAGE_SIZE = 10;
@@ -24,8 +24,7 @@ const columns = (that) => [
                     rowId={x.index}
                     field_key='csTradeRef'
                     value={x.original.csTradeRef}
-                    handleChange={that.props.updateSegmentPropertiesInRedux}
-                    handleRowModification={(action) => { that.rowModification(x.index, action) }}
+                    handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>
         )
@@ -39,8 +38,7 @@ const columns = (that) => [
                     rowId={x.index}
                     field_key='segmCategory'
                     value={x.original.segmCategory}
-                    handleChange={that.props.updateSegmentPropertiesInRedux}
-                    handleRowModification={(action) => { that.rowModification(x.index, action) }}
+                    handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>
         )
@@ -57,7 +55,7 @@ const columns = (that) => [
     {
         Header: 'Data modyfikacji',
         accessor: 'updateDate',
-        Cell: x => (renderDateTime(x.original.entryDate))
+        Cell: x => (renderDateTime(x.original.updateDate))
     },
     {
         Header: 'Zmodyfikował',
@@ -70,10 +68,18 @@ const columns = (that) => [
         sortable: false,
         Cell: x => (
             <div>
-                {that.state.modified.includes(x.index) ?
+                {x.original.modified === true ?
                     <div>
-                        <Button className="save-button" size="small">Zapisz zmiany</Button>
-                        <Button className="cancel-button" size="small">Anuluj zmiany</Button>
+                        <Button
+                            className="save-button"
+                            size="small"
+                            onClick={() => that.handleSaveRowChanges(x.index)}
+                        >Zapisz zmiany</Button>
+                        <Button
+                            className="cancel-button"
+                            size="small"
+                            onClick={() => that.handleCancelRowChanges(x.index)}
+                        >Anuluj zmiany</Button>
                     </div> : null
                 }
             </div>
@@ -92,8 +98,7 @@ class Segments extends Component<{
         this.state = {
             currentPage: DEFAULT_CURRENT_PAGE,
             pageSize: DEFAULT_PAGE_SIZE,
-            filtered: [],
-            modified: []
+            filtered: []
         };
         this.props.getAllSegments();
     }
@@ -123,25 +128,20 @@ class Segments extends Component<{
             negativeResult;
     }
 
-    rowModification(rowId, action) {
-        switch (action) {
-            case "mark":
-                if (!this.state.modified.includes(rowId)) {
-                    let newArray = this.state.modified.concat(rowId);
-                    this.setState({ modified: newArray });
-                }
-                return true;
-            case "unmark":
-                let index = this.state.modified.indexOf(rowId);
-                if (index > -1) {
-                    let newArray = this.state.modified.filter(item => item !== rowId);
-                    this.setState({ modified: newArray });
-                }
-                return true;
-            case "unmark-all":
-                this.setState({ modified: [] });
-                return true;
-        }
+    handleCellModification(rowId, key, value) {
+        let segmentData = new Segment();
+        segmentData[key] = value;
+        segmentData.updateDate = Date.now();
+        segmentData.updateOwner = "TODO_User1";
+        this.props.editSegmentPropertiesInRedux(rowId, segmentData);
+    }
+
+    handleSaveRowChanges(rowId) {
+        alert("Not handled yet.");
+    }
+
+    handleCancelRowChanges(rowId) {
+        this.props.cancelEditionOfSegmentPropertiesInRedux(rowId, Date.now(), "TODO_User2");
     }
 
     render() {
@@ -233,9 +233,14 @@ export default connect(
                 GetDictionarySegment()
             )
         },
-        updateSegmentPropertiesInRedux: (segmentData: Segment, rowId) => {
+        editSegmentPropertiesInRedux: (rowId, segmentData: Segment) => {
             dispatch(
-                updateSegmentPropertiesInRedux(segmentData, rowId)
+                editSegmentPropertiesInRedux(rowId, segmentData)
+            )
+        },
+        cancelEditionOfSegmentPropertiesInRedux: (rowId) => {
+            dispatch(
+                cancelEditionOfSegmentPropertiesInRedux(rowId)
             )
         },
         // insertSegments: () => {

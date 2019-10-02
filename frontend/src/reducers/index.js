@@ -11,7 +11,7 @@ import {
     PostDictionaryAccountSapHandler
 } from "./sap-account/sap-account-reducer";
 import {SapAccountStoreType} from "./sap-account/sap-account-store-type";
-import { UpdateSegmentPropertiesInReduxHandler } from "./segments-reducer";
+import { SegmentPropertiesInReduxHandler } from "./segments-reducer";
 import {GetDictionarySegmentHandler, GetSystemVersionHandler} from "../api/api-handlers";
 
 
@@ -27,7 +27,7 @@ export const mainReducer = combineReducers(
     // add reducers
     {
         auth: createReducer(new AuthType(), [UnauthorizedHandler(), PostUserLoginHandler(), PostUserInfoHandler(), PostUserLogoffHandler()]),
-        segments: createReducer({}, [GetDictionarySegmentHandler(), UpdateSegmentPropertiesInReduxHandler()]),
+        segments: createReducer({}, [GetDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
         backendInfo: createReducer({version: '?'}, [GetSystemVersionHandler()]),
         sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler(), DeleteDictionaryAccountSapHandler()]),
         requestPanel: createReducer(new RequestPanelType(), [RequestPanelHandler()]),
