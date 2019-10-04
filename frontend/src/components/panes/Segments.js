@@ -4,15 +4,17 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { Button, Icon, Pagination } from 'antd';
 import { EditableCell } from './common/EditableCell.js';
+import { SelectableCell } from './common/SelectableCell.js';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
 import { connect } from "react-redux";
-import { RequestSetSegment, Segment } from "../../api/api-models";
+import { Segment } from "../../api/api-models";
 import { GetDictionarySegment, PostDictionarySegment } from "../../api/api-func";
-import { cancelEditionOfSegmentPropertiesInRedux, editSegmentPropertiesInRedux } from "../../actions/segmentsActions";
+import { cancelEditionOfSegmentPropertiesInRedux, deleteSegmentInRedux, editSegmentPropertiesInRedux, unshiftSegmentInRedux } from "../../actions/segmentsActions";
 
 const DEFAULT_CURRENT_PAGE = 0;
 const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_SEGM_CATEGORY = "PRIV";
 
 const columns = (that) => [
     {
@@ -34,10 +36,11 @@ const columns = (that) => [
         accessor: 'segmCategory',
         Cell: x => (
             <div>
-                <EditableCell
+                <SelectableCell
                     rowId={x.index}
                     field_key='segmCategory'
                     value={x.original.segmCategory}
+                    options={["PRIV", "BIZ"]}
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>
@@ -98,7 +101,8 @@ class Segments extends Component<{
         this.state = {
             currentPage: DEFAULT_CURRENT_PAGE,
             pageSize: DEFAULT_PAGE_SIZE,
-            filtered: []
+            filtered: [],
+            rowAdditionInProgress: false
         };
         this.props.getAllSegments();
     }
@@ -117,7 +121,7 @@ class Segments extends Component<{
         }
     }
 
-    getSegmentsData(property, negativeResult) {
+    getSegmentsDataProperty(property, negativeResult) {
         return this.props.segments !== undefined
             && this.props.segments.fail === false
             && this.props.segments.response !== undefined
@@ -126,6 +130,23 @@ class Segments extends Component<{
             this.props.segments.response[property]
             :
             negativeResult;
+    }
+
+    handleRowAddition() {
+        this.setState({
+            currentPage: DEFAULT_CURRENT_PAGE
+        });
+        let segmentData = new Segment.Builder()
+            .withCsTradeRef("")
+            .withSegmCategory(DEFAULT_SEGM_CATEGORY)
+            .withEntryDate(Date.now())
+            .withEntryOwner("TODO_User3")
+            .withUpdateDate(Date.now())
+            .withUpdateOwner("TODO_User3")
+            .build();
+        segmentData.modified = true;
+        segmentData.newRow = true;
+        this.props.unshiftSegmentInRedux(segmentData);
     }
 
     handleCellModification(rowId, key, value) {
@@ -141,7 +162,12 @@ class Segments extends Component<{
     }
 
     handleCancelRowChanges(rowId) {
-        this.props.cancelEditionOfSegmentPropertiesInRedux(rowId, Date.now(), "TODO_User2");
+        if (this.getSegmentsDataProperty("data", [])[rowId].newRow === true) {
+            this.props.deleteSegmentInRedux(rowId);
+        }
+        else {
+            this.props.cancelEditionOfSegmentPropertiesInRedux(rowId, Date.now(), "TODO_User2");
+        }
     }
 
     render() {
@@ -162,13 +188,16 @@ class Segments extends Component<{
         return (
             <div className="segments">
                 <div className="flex-end-row">
-                    <Button type="primary" icon="plus-circle" onClick={() => { }}>
-                        Dodaj segment
+                    <Button
+                        type="primary"
+                        icon="plus-circle"
+                        onClick={() => { this.handleRowAddition() }}
+                    >Dodaj segment
                     </Button>
                 </div >
                 <div className="table-container">
                     <ReactTable
-                        data={this.props.segments.fetching ? [] : this.getSegmentsData("data", [])}
+                        data={this.props.segments.fetching ? [] : this.getSegmentsDataProperty("data", [])}
                         columns={columns(this)}
                         noDataText={this.props.segments ? (this.props.segments.fetching ? "Wczytuję..." : "Brak danych") : ""}
                         ref={(r) => { this.reactTable = r; }} // TODO: fix pagination after filtering (using this ref)
@@ -181,17 +210,17 @@ class Segments extends Component<{
                         showPagination={false}
                         minRows={0}
                         page={this.state.currentPage}
-                        pageSize={Math.min(this.getSegmentsData("count", 0), this.state.pageSize)}
+                        pageSize={Math.min(this.getSegmentsDataProperty("count", 0), this.state.pageSize)}
                     />
                 </div>
                 <div className="pagination-container">
                     <Pagination
                         size="small"
-                        total={this.getSegmentsData("count", 0)}
+                        total={this.getSegmentsDataProperty("count", 0)}
                         showQuickJumper
                         showSizeChanger
                         showTotal={() => {
-                            return "Ilość pozycji: " + (this.props.segments.fetching ? 0 : this.getSegmentsData("count", 0));
+                            return "Ilość pozycji: " + (this.props.segments.fetching ? 0 : this.getSegmentsDataProperty("count", 0));
                         }}
                         pageSize={this.state.pageSize}
                         onChange={(page, pageSize) => {
@@ -211,7 +240,6 @@ class Segments extends Component<{
                         type="reload"
                         onClick={() => {
                             this.props.getAllSegments();
-                            this.rowModification(null, "unmark-all");
                         }}
                         spin={this.props.segments.fetching}
                     />
@@ -241,6 +269,16 @@ export default connect(
         cancelEditionOfSegmentPropertiesInRedux: (rowId) => {
             dispatch(
                 cancelEditionOfSegmentPropertiesInRedux(rowId)
+            )
+        },
+        unshiftSegmentInRedux: (segmentData: Segment) => {
+            dispatch(
+                unshiftSegmentInRedux(segmentData)
+            )
+        },
+        deleteSegmentInRedux: (rowId) => {
+            dispatch(
+                deleteSegmentInRedux(rowId)
             )
         },
         // insertSegments: () => {

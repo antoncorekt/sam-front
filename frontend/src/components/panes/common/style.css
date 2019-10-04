@@ -6,3 +6,16 @@
     margin: -5px 0px -5px 0px;
     height: 24px;
 }
+
+.editable-cell .label {
+    height: 14px;
+}
+
+.selectable-cell {
+    background: aliceblue;
+}
+
+.selectable-cell .select {
+    margin: -5px 0px -5px 0px;
+    width: 100%;
+}

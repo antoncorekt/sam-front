@@ -5,7 +5,7 @@ export const SegmentPropertiesInReduxHandler = () => {
                 ...state,
                 response: {
                     ...state.response,
-                    data: state.response.data.map((content, i) => i === action.rowId
+                    data: state.response.data.map((content, index) => index === action.rowId
                         ? {
                             ...content,
                             csTradeRef: action.segmentData.csTradeRef !== undefined
@@ -31,7 +31,7 @@ export const SegmentPropertiesInReduxHandler = () => {
                 ...state,
                 response: {
                     ...state.response,
-                    data: state.response.data.map((content, i) => i === action.rowId
+                    data: state.response.data.map((content, index) => index === action.rowId
                         ? {
                             ...content,
                             csTradeRef: content.originalCsTradeRef !== undefined ? content.originalCsTradeRef : content.csTradeRef,
@@ -45,6 +45,26 @@ export const SegmentPropertiesInReduxHandler = () => {
                             modified: false
                         }
                         : content)
+                }
+            };
+        },
+        unshiftSegmentInRedux: (state, action) => {
+            return {
+                ...state,
+                response: {
+                    ...state.response,
+                    data: [action.segmentData, ...state.response.data],
+                    count: state.response.count + 1
+                }
+            };
+        },
+        deleteSegmentInRedux: (state, action) => {
+            return {
+                ...state,
+                response: {
+                    ...state.response,
+                    data: state.response.data.filter((item, index) => index !== action.rowId),
+                    count: state.response.count - 1
                 }
             };
         }

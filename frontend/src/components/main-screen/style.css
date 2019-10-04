@@ -80,6 +80,7 @@
 }
 
 .req-que-panel .top-part {
+    margin-top: 8px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

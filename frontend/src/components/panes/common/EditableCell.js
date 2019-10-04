@@ -1,7 +1,6 @@
 import React from 'react';
 import { Input } from 'antd';
 import './style.css';
-import { Segment } from '../../../api/api-models';
 
 export class EditableCell extends React.Component {
 
@@ -10,7 +9,8 @@ export class EditableCell extends React.Component {
 
         this.state = {
             editable: false,
-            value: this.props.value
+            value: this.props.value,
+            changed: false
         }
     }
 
@@ -21,7 +21,8 @@ export class EditableCell extends React.Component {
 
     render() {
         return (
-            <div className="editable-cell"
+            <div
+                className="editable-cell"
                 onClick={() => {
                     if (!this.state.editable)
                         this.setState({ editable: true });
@@ -33,18 +34,26 @@ export class EditableCell extends React.Component {
                             className="input"
                             ref={ref => this.inputRef = ref}
                             value={this.state.value}
-                            onChange={(e) => this.setState({ value: e.target.value })}
+                            onChange={(e) => {
+                                this.setState({ value: e.target.value, changed: true });
+                            }}
                             onBlur={() => {
-                                this.setState({ editable: false });
-                                this.props.handleCellModification(this.props.field_key, this.state.value);
+                                if (this.state.changed === true) {
+                                    this.props.handleCellModification(this.props.field_key, this.state.value);
+                                }
+                                this.setState({ editable: false, changed: false });
                             }}
                             onPressEnter={() => {
-                                this.setState({ editable: false });
-                                this.props.handleCellModification(this.props.field_key, this.state.value);
+                                if (this.state.changed === true) {
+                                    this.props.handleCellModification(this.props.field_key, this.state.value);
+                                }
+                                this.setState({ editable: false, changed: false });
                             }}
                         />
                         :
-                        this.props.value
+                        <div className="label">
+                            {this.props.value}
+                        </div>
                 }
             </div>
         )
