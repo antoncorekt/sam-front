@@ -5,7 +5,10 @@ import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
 import type {MainStateType} from "../../reducers";
 import {connect} from "react-redux";
-import {DeleteDictionaryAccountSap, GetDictionaryAccountSap} from "../../api/api-func";
+import {DeleteDictionaryAccountSap, GetDictionaryAccountSap, PostAccount} from "../../api/api-func";
+import {Account, RequestSetAccount} from "../../api/api-models";
+import {AuthType} from "../../reducers/auth/auth-store-type";
+import {SapAccountStoreType} from "../../reducers/sap-account/sap-account-store-type";
 
 const data = [
     {
@@ -105,27 +108,48 @@ const columns = [
         filterable: false,
         sortable: false
     }
-]
+];
 
-class BscsToSapMappings extends Component {
+type BscsToSapMappingsStateType = {
+    pageSize: number,
+    filtered: Array<any>,
+    account: Account
+}
+
+class BscsToSapMappings extends Component<{
+    sapOfi: SapAccountStoreType,
+    userInfo: AuthType
+}> {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            pageSize: 10,
-            filtered: []
-        };
     }
 
+
+    state = {
+        pageSize: 10,
+        filtered: [],
+        account: null
+    };
+
+    addNewAccount = () => {
+        this.setState({
+            account: new Account.Builder()
+                .withEntryOwner(AuthType.getUserData(this.props.userInfo).user)
+                .build()
+        })
+    };
+
     render() {
+
+
         return (
             <div className="bscs-to-sap-mappings">
                 <div className="flex-end-row">
-                    <Button className="right-margin" type="primary" icon="export" onClick={null}>
+                    <Button className="right-margin" type="primary" icon="export" onClick={()=>{}}>
                         Eksportuj wszystkie
                     </Button>
-                    <Button type="primary" icon="plus-circle" onClick={null}>
+                    <Button type="primary" icon="plus-circle" onClick={this.addNewAccount}>
                         Dodaj mapowanie
                     </Button>
                 </div >
@@ -166,14 +190,20 @@ class BscsToSapMappings extends Component {
 
 const mapStateToProps = (state: MainStateType) => ({
     sapOfi: state.sapAccountOfi,
+    userInfo: state.auth
 });
 
 export default connect(
     mapStateToProps,
     dispatch => ({
-        getSapOfi: () => {
+        postAccount: () => {
+            const account: Account = new Account();
+
             dispatch(
-                GetDictionaryAccountSap()
+                PostAccount(new RequestSetAccount.Builder()
+                    .withData(account)
+                    .build()
+                )
             )
         },
         deleteDict: () => {

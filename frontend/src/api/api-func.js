@@ -223,7 +223,6 @@ export const GetSystemHealth = () => {
     return commonCallApi(settings);
 };
 
-
 // call AccountReadAll
 export const GetAccountByStatusByRelease = (status:Status15,release:Release) => {
     const settings = {		// set settings data
