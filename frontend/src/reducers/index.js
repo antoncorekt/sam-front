@@ -13,6 +13,8 @@ import {
 import {SapAccountStoreType} from "./sap-account/sap-account-store-type";
 import { SegmentPropertiesInReduxHandler } from "./segments-reducer";
 import {GetDictionarySegmentHandler, GetSystemVersionHandler} from "../api/api-handlers";
+import {UsersBscsToSapMappings} from "./bscs-account/bscs-account-reducer";
+import {AccountMappingType} from "./bscs-account/bscs-account-store-type";
 
 
 export type MainStateType = {
@@ -29,6 +31,7 @@ export const mainReducer = combineReducers(
         auth: createReducer(new AuthType(), [UnauthorizedHandler(), PostUserLoginHandler(), PostUserInfoHandler(), PostUserLogoffHandler()]),
         segments: createReducer({}, [GetDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
         backendInfo: createReducer({version: '?'}, [GetSystemVersionHandler()]),
+        accountMapping: createReducer(new AccountMappingType(), [UsersBscsToSapMappings()]),
         sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler(), DeleteDictionaryAccountSapHandler()]),
         requestPanel: createReducer(new RequestPanelType(), [RequestPanelHandler()]),
         tabsState

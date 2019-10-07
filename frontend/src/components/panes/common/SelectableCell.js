@@ -1,21 +1,24 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
+import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import './style.css';
 
 const { Option } = Select;
 
-export class SelectableCell extends React.Component {
+type SelectableCellStateType = {
+    editable: boolean,
+    value: string,
+    loadDictionary: false
+}
 
-    constructor(props) {
-        super(props);
+export class SelectableCell extends React.Component{
 
-        this.state = {
-            editable: false,
-            value: this.props.value
-        }
-    }
+    state: SelectableCellStateType = {
+        editable: false,
+        value: this.props.value
+    };
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<SelectableCellStateType>, snapshot: SS): void {
         if (this.selectRef !== undefined && this.state.editable)
             this.selectRef.focus();
     }
@@ -25,8 +28,9 @@ export class SelectableCell extends React.Component {
             <div
                 className="selectable-cell"
                 onClick={() => {
-                    if (!this.state.editable)
-                        this.setState({ editable: true });
+                    if (!this.state.editable) {
+                        this.setState({editable: true});
+                    }
                 }}
             >
                 {
@@ -43,9 +47,10 @@ export class SelectableCell extends React.Component {
                             onBlur={() => {
                                 this.setState({ editable: false });
                             }}
+                            onFocus={this.onFocus}
                         >
                             {
-                                this.props.options.map(option => { return <Option key={option} value={option}> {option} </Option> })
+                                this.props.options.map((option, i) => { return <Option key={option + "_" + i} value={option}> {option} </Option> })
                             }
                         </Select>
                         :
@@ -57,3 +62,10 @@ export class SelectableCell extends React.Component {
         )
     }
 }
+
+SelectableCell.propTypes = {
+    handleCellModification: PropTypes.func.isRequired,
+    value: PropTypes.string.isRequired,
+    options: PropTypes.array.isRequired,
+    loadDictionaryHandler: PropTypes.func
+};
