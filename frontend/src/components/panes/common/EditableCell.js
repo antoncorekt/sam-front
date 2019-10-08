@@ -35,7 +35,7 @@ export class EditableCell extends React.Component {
                             ref={ref => this.inputRef = ref}
                             value={this.state.value}
                             onChange={(e) => {
-                                this.setState({ value: e.target.value, changed: true });
+                                this.setState({ value: this.props.upperCased ? e.target.value.toUpperCase() : e.target.value, changed: true });
                             }}
                             onBlur={() => {
                                 if (this.state.changed === true) {

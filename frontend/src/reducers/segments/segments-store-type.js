@@ -2,8 +2,8 @@ import { ActionRequestData, ActionResponseData } from "../../api/common-middlewa
 import { RequestSetSegment, ResultSetSegment, ResultSetSegments } from "../../api/api-models";
 
 export class SegmentsType {
-    GET: ActionResponseData<ResultSetSegments, ActionRequestData<RequestSetSegment, null>> = {};
-    POST: ActionResponseData<ResultSetSegment, ActionRequestData<RequestSetSegment, null>> = {};
+    GET: ActionResponseData<ResultSetSegments, ActionRequestData<RequestSetSegment, null>>;
+    POST: ActionResponseData<ResultSetSegment, ActionRequestData<RequestSetSegment, null>>;
 }
 
 export const getSegmentsReduxProperty = (root, requestType, property, negativeResult) => {

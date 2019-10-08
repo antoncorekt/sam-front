@@ -20,7 +20,7 @@ import {
 import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty, SegmentsType } from '../../reducers/segments/segments-store-type.js';
 
 const DEFAULT_CURRENT_PAGE = 0;
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 30;
 const DEFAULT_FILTERED_COUNT = 1000000;
 const DEFAULT_SEGM_CATEGORY = "PRIV";
 
@@ -34,6 +34,7 @@ const columns = (that) => [
                     rowId={x.index}
                     field_key='csTradeRef'
                     value={x.original.csTradeRef}
+                    upperCased={true}
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>

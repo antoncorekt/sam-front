@@ -4,6 +4,16 @@ export const GetDictionarySegmentHandler = () => {
             return { ...state, GET: action };
         },
         GetDictionarySegmentSuccess: (state: SegmentsType, action: ActionResponseData<ResultSetSegments, ActionRequestData<RequestSetSegment, null>>) => {
+            action.response.data.sort(function (a, b) {
+                if (a.csTradeRef > b.csTradeRef) {
+                    return 1;
+                }
+                else if (a.csTradeRef === b.csTradeRef) {
+                    return 0;
+                }
+                else
+                    return -1;
+            });
             return { ...state, GET: action };
         },
         GetDictionarySegmentFail: (state: SegmentsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetSegment, null>>) => {
