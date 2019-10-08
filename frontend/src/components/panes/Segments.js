@@ -2,18 +2,26 @@
 
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
-import { Button, Icon, Pagination } from 'antd';
+import { Button, Icon, Modal, Pagination } from 'antd';
 import { EditableCell } from './common/EditableCell.js';
 import { SelectableCell } from './common/SelectableCell.js';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
 import { connect } from "react-redux";
-import { Segment } from "../../api/api-models";
+import { RequestSetSegment, Segment } from "../../api/api-models";
 import { GetDictionarySegment, PostDictionarySegment } from "../../api/api-func";
-import { cancelEditionOfSegmentPropertiesInRedux, deleteSegmentInRedux, editSegmentPropertiesInRedux, unshiftSegmentInRedux } from "../../actions/segmentsActions";
+import {
+    cancelEditionOfSegmentPropertiesInRedux,
+    deleteSegmentInRedux,
+    editSegmentPropertiesInRedux,
+    handleSegmentPostInRedux,
+    unshiftSegmentInRedux
+} from "../../actions/segmentsActions";
+import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty, SegmentsType } from '../../reducers/segments/segments-store-type.js';
 
 const DEFAULT_CURRENT_PAGE = 0;
 const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_FILTERED_COUNT = 1000000;
 const DEFAULT_SEGM_CATEGORY = "PRIV";
 
 const columns = (that) => [
@@ -76,13 +84,13 @@ const columns = (that) => [
                         <Button
                             className="save-button"
                             size="small"
-                            onClick={() => that.handleSaveRowChanges(x.index)}
-                        >Zapisz zmiany</Button>
+                            onClick={() => that.handleSaveRowChanges(x.index, x.original)}
+                        >Zapisz</Button>
                         <Button
                             className="cancel-button"
                             size="small"
                             onClick={() => that.handleCancelRowChanges(x.index)}
-                        >Anuluj zmiany</Button>
+                        >Anuluj</Button>
                     </div> : null
                 }
             </div>
@@ -91,45 +99,51 @@ const columns = (that) => [
 ];
 
 class Segments extends Component<{
-    segments: ActionResponseData<ResultSetSegments, ActionRequestData<null, null>>
+    segments: SegmentsType
 }> {
 
     constructor(props) {
         super(props);
 
         this.reactTable = React.createRef();
+
         this.state = {
             currentPage: DEFAULT_CURRENT_PAGE,
             pageSize: DEFAULT_PAGE_SIZE,
             filtered: [],
-            rowAdditionInProgress: false
+            filteredCount: DEFAULT_FILTERED_COUNT
         };
         this.props.getAllSegments();
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.segments !== undefined
-            && this.props.segments.fail !== undefined
-            && this.props.segments.fail !== true
-            && this.props.segments.fetching === false
-            && prevProps.segments.fetching === true) {
+        if (getSegmentsReduxProperty(this.props, "GET", "fail", true) !== true
+            && getSegmentsReduxProperty(this.props, "GET", "fetching", true) === false
+            && getSegmentsReduxProperty(prevProps, "GET", "fetching", false) === true) {
             this.setState({
                 currentPage: DEFAULT_CURRENT_PAGE,
                 pageSize: DEFAULT_PAGE_SIZE,
                 filtered: []
             });
         }
-    }
 
-    getSegmentsDataProperty(property, negativeResult) {
-        return this.props.segments !== undefined
-            && this.props.segments.fail === false
-            && this.props.segments.response !== undefined
-            && this.props.segments.response[property] !== undefined
-            ?
-            this.props.segments.response[property]
-            :
-            negativeResult;
+        if (getSegmentsResponseReduxProperty(this.props, "GET", "count", -1)
+            !== getSegmentsResponseReduxProperty(prevProps, "GET", "count", -1)) {
+            this.setState({ filteredCount: this.reactTable.getResolvedState().sortedData.length });
+        }
+
+        if (getSegmentsReduxProperty(this.props, "POST", "fetching", true) === false
+            && getSegmentsReduxProperty(prevProps, "POST", "fetching", false) === true) {
+            if (getSegmentsReduxProperty(this.props, "POST", "fail", true) !== true) {
+                this.props.handleSegmentPostInRedux(getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).csTradeRef);
+            }
+            else {
+                Modal.error({
+                    title: 'Wystąpił błąd przy zapisie segmentu:',
+                    content: getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).error,
+                });
+            }
+        }
     }
 
     handleRowAddition() {
@@ -157,12 +171,17 @@ class Segments extends Component<{
         this.props.editSegmentPropertiesInRedux(rowId, segmentData);
     }
 
-    handleSaveRowChanges(rowId) {
-        alert("Not handled yet.");
+    handleSaveRowChanges(rowId, rowData) {
+        if (getSegmentsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
+            this.props.insertSegment(rowData.csTradeRef, rowData.segmCategory);
+        }
+        else {
+            alert("PATCH request has NOT been handled yet!");
+        }
     }
 
     handleCancelRowChanges(rowId) {
-        if (this.getSegmentsDataProperty("data", [])[rowId].newRow === true) {
+        if (getSegmentsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
             this.props.deleteSegmentInRedux(rowId);
         }
         else {
@@ -172,18 +191,18 @@ class Segments extends Component<{
 
     render() {
         const pageSizeOptions = [
+            2,
             5,
             10,
             50,
             100,
-            this.props.segments !== undefined && this.props.segments.response !== undefined
-                ? this.props.segments.response.count
-                : 0
+            getSegmentsResponseReduxProperty(this.props, "GET", "count", 0)
         ]
             .filter(item => item !== 0)
             .filter((item, pos, arr) => arr.indexOf(item) === pos)
             .sort((a, b) => a - b)
             .map(x => "" + x);
+        const fc = this.state.filteredCount;
 
         return (
             <div className="segments">
@@ -197,30 +216,36 @@ class Segments extends Component<{
                 </div >
                 <div className="table-container">
                     <ReactTable
-                        data={this.props.segments.fetching ? [] : this.getSegmentsDataProperty("data", [])}
+                        data={getSegmentsReduxProperty(this.props, "GET", "fetching", false) === true
+                            ? []
+                            : getSegmentsResponseReduxProperty(this.props, "GET", "data", [])}
                         columns={columns(this)}
-                        noDataText={this.props.segments ? (this.props.segments.fetching ? "Wczytuję..." : "Brak danych") : ""}
-                        ref={(r) => { this.reactTable = r; }} // TODO: fix pagination after filtering (using this ref)
+                        noDataText={getSegmentsReduxProperty(this.props, "GET", "fetching", false) === true
+                            ? "Wczytuję..."
+                            : "Brak danych"}
+                        ref={(r) => { this.reactTable = r; }}
                         filterable
                         filtered={this.state.filtered}
                         onFilteredChange={filtered => {
-                            // console.log(this.reactTable.getResolvedState().sortedData);
-                            this.setState({ filtered });
+                            this.setState({ filtered, filteredCount: this.reactTable.getResolvedState().sortedData.length });
                         }}
                         showPagination={false}
                         minRows={0}
                         page={this.state.currentPage}
-                        pageSize={Math.min(this.getSegmentsDataProperty("count", 0), this.state.pageSize)}
+                        pageSize={this.state.pageSize}
                     />
                 </div>
                 <div className="pagination-container">
                     <Pagination
                         size="small"
-                        total={this.getSegmentsDataProperty("count", 0)}
+                        total={Math.min(getSegmentsResponseReduxProperty(this.props, "GET", "count", 0), this.state.filteredCount)}
                         showQuickJumper
                         showSizeChanger
                         showTotal={() => {
-                            return "Ilość pozycji: " + (this.props.segments.fetching ? 0 : this.getSegmentsDataProperty("count", 0));
+                            return "Ilość pozycji: "
+                                + (getSegmentsReduxProperty(this.props, "GET", "fetching", false) === true
+                                    ? 0
+                                    : Math.min(getSegmentsResponseReduxProperty(this.props, "GET", "count", 0), this.state.filteredCount));
                         }}
                         pageSize={this.state.pageSize}
                         onChange={(page, pageSize) => {
@@ -239,9 +264,12 @@ class Segments extends Component<{
                         className="pagination-refresh"
                         type="reload"
                         onClick={() => {
+                            this.setState({
+                                filteredCount: DEFAULT_FILTERED_COUNT
+                            });
                             this.props.getAllSegments();
                         }}
-                        spin={this.props.segments.fetching}
+                        spin={getSegmentsReduxProperty(this.props, "GET", "fetching", false)}
                     />
                 </div>
             </div>
@@ -281,17 +309,22 @@ export default connect(
                 deleteSegmentInRedux(rowId)
             )
         },
-        // insertSegments: () => {
-        //     dispatch(
-        //         PostDictionarySegment(new RequestSetSegment.Builder()
-        //             .withData(new Segment.Builder()
-        //                 .withCsType(99)
-        //                 .withCsTradefer("tradeRef")
-        //                 .build()
-        //             )
-        //             .build()
-        //         )
-        //     )
-        // }
+        handleSegmentPostInRedux: (csTradeRef) => {
+            dispatch(
+                handleSegmentPostInRedux(csTradeRef)
+            )
+        },
+        insertSegment: (csTradeRef, segmCategory) => {
+            dispatch(
+                PostDictionarySegment(new RequestSetSegment.Builder()
+                    .withData(new Segment.Builder()
+                        .withCsTradeRef(csTradeRef)
+                        .withSegmCategory(segmCategory)
+                        .build()
+                    )
+                    .build()
+                )
+            )
+        }
     })
 )(Segments);
