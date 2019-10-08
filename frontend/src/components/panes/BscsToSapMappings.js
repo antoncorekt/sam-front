@@ -9,6 +9,8 @@ import {DeleteDictionaryAccountSap, GetDictionaryAccountSap, PostAccount} from "
 import {Account, RequestSetAccount} from "../../api/api-models";
 import {AuthType} from "../../reducers/auth/auth-store-type";
 import {SapAccountStoreType} from "../../reducers/sap-account/sap-account-store-type";
+import {SelectableCell} from "./common/SelectableCell";
+import {getPageSizeOption} from "../../utils/Utils";
 
 const data = [
     {
@@ -39,9 +41,9 @@ const data = [
     }
 ]
 
-const columns = [
+const columns = (deleteNewAccountHandler, setAccountHandler, loadSapAccountHandler) => (sapAccountsDictionary) => [
     {
-        Cell: item => <Icon onClick={() => null} style={{ cursor: "pointer" }} type="delete" />,
+        Cell: item => <Icon onClick={deleteNewAccountHandler} style={{ cursor: "pointer" }} type="delete" />,
         width: 26,
         filterable: false
     },
@@ -50,8 +52,12 @@ const columns = [
         accessor: 'BSCSaccount'
     },
     {
+        Cell: item => <SelectableCell options={sapAccountsDictionary}
+                                           value={item.original.ofiSapAccount}
+                                           loadDictionaryHandler={loadSapAccountHandler}
+                                           handleCellModification={setAccountHandler}/>,
         Header: 'Konto SAP OFI',
-        accessor: 'SAPaccount'
+        // accessor: 'ofiSapAccount'
     },
     {
         Header: 'VAT',
@@ -92,7 +98,7 @@ const columns = [
     },
     {
         Header: 'Utworzył',
-        accessor: 'createdBy'
+        accessor: 'entryOwner'
     },
     {
         Header: 'Data modyfikacji',
@@ -136,17 +142,39 @@ class BscsToSapMappings extends Component<{
         this.setState({
             account: new Account.Builder()
                 .withEntryOwner(AuthType.getUserData(this.props.userInfo).user)
+                .withOfiSapAccount("enter sap account hear")
+                .withStatus("?")
                 .build()
         })
     };
 
-    render() {
+    setAccountHandler = (accountKey) => (field, value) => {
+        this.setState({
+            account: {...this.state.account, [accountKey]: value}
+        })
+    };
 
+    deleteNewAccount = () => {
+        this.setState({
+            account: null
+         })
+    };
+
+    render() {
+        const {account} = this.state;
+
+        const sapAccountDictName = SapAccountStoreType.getSapAccounts(this.props.sapOfi)
+            .map(sapAcc => sapAcc.name);
+        const bscsToSAPAccounts = [];
+
+        const data = [account, ...bscsToSAPAccounts]
+            .filter(acc => acc !== null)
+        ;
 
         return (
             <div className="bscs-to-sap-mappings">
                 <div className="flex-end-row">
-                    <Button className="right-margin" type="primary" icon="export" onClick={()=>{}}>
+                    <Button className="right-margin" type="primary" icon="export" onClick={()=>this.props.test(AuthType.getUserData(this.props.userInfo).user)}>
                         Eksportuj wszystkie
                     </Button>
                     <Button type="primary" icon="plus-circle" onClick={this.addNewAccount}>
@@ -156,7 +184,13 @@ class BscsToSapMappings extends Component<{
                 <div className="table-container">
                     <ReactTable
                         data={data}
-                        columns={columns}
+                        columns={columns(
+                            this.deleteNewAccount,
+                            this.setAccountHandler("ofiSapAccount"),
+                            this.props.getSapOfi
+                        )(
+                            sapAccountDictName
+                        )}
                         noDataText="Brak danych"
                         filterable
                         filtered={this.state.filtered}
@@ -180,7 +214,7 @@ class BscsToSapMappings extends Component<{
                         onShowSizeChange={(current, size) => {
                             this.setState({ pageSize: size });
                         }}
-                        pageSizeOptions={[10, 25, 50, 100]}
+                        pageSizeOptions={getPageSizeOption(data)}
                     />
                 </div>
             </div>
@@ -206,9 +240,24 @@ export default connect(
                 )
             )
         },
+        test: (login) => {
+            dispatch({
+                type: "AddEmptyAccount",
+                action: {
+                    user: login
+                }
+            })
+
+        },
         deleteDict: () => {
             dispatch(
                 DeleteDictionaryAccountSap()
             )
-        }
+        },
+        getSapOfi: () => {
+            console.log("LOAD DICT ACCOUNT SAP!!!");
+            dispatch(
+                GetDictionaryAccountSap()
+            )
+        },
     }))(BscsToSapMappings)
