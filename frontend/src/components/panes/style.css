@@ -25,7 +25,17 @@
 }
 
 .sap-accounts .pagination-container {
+    display: flex;
+    flex-direction: row;
     margin: 6px 0px 6px 0px;
+}
+
+.sap-accounts .pagination-refresh {
+    margin-top: 5px;
+}
+
+.sap-accounts .pagination-refresh :hover {
+    color: lightskyblue;
 }
 
 .segments .flex-end-row {
@@ -109,7 +119,17 @@
 }
 
 .bscs-to-sap-mappings .pagination-container {
+    display: flex;
+    flex-direction: row;
     margin: 6px 0px 6px 0px;
+}
+
+.bscs-to-sap-mappings .pagination-refresh {
+    margin-top: 5px;
+}
+
+.bscs-to-sap-mappings .pagination-refresh :hover {
+    color: lightskyblue;
 }
 
 .sap-to-segment-mappings .flex-end-row {
@@ -147,5 +167,15 @@
 }
 
 .sap-to-segment-mappings .pagination-container {
+    display: flex;
+    flex-direction: row;
     margin: 6px 0px 6px 0px;
+}
+
+.sap-to-segment-mappings .pagination-refresh {
+    margin-top: 5px;
+}
+
+.sap-to-segment-mappings .pagination-refresh :hover {
+    color: lightskyblue;
 }

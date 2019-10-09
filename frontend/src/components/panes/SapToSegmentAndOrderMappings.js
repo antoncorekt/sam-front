@@ -4,38 +4,17 @@ import { Button, Icon, Input, Pagination, Select } from 'antd';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
 import { connect } from "react-redux";
-import { RequestSetSegment, Segment } from "../../api/api-models";
 import { GetOrderByStatusByRelease } from "../../api/api-func";
+import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type.js';
+
+const DEFAULT_CURRENT_PAGE = 0;
+const DEFAULT_PAGE_SIZE = 30;
+const DEFAULT_FILTERED_COUNT = 1000000;
 
 const InputGroup = Input.Group;
 const { Option } = Select;
 
-const data = [
-    {
-        SAPaccount: 70130200,
-        segment: 'PRIV',
-        orderNumber: 123,
-        validFromDate: renderDateTime(Date.now() - 100000000),
-        state: 'Roboczy',
-        createdDate: renderDateTime(Date.now() - 100000000),
-        createdBy: 'CGSYSADM',
-        modifiedDate: renderDateTime(Date.now()),
-        modifiedBy: 'CGSYSADM'
-    },
-    {
-        SAPaccount: 70130200,
-        segment: 'BIZ',
-        orderNumber: 456,
-        validFromDate: renderDateTime(Date.now() - 100000000),
-        state: 'Zatwierdzony',
-        createdDate: renderDateTime(Date.now() - 100000000),
-        createdBy: 'CGSYSADM',
-        modifiedDate: renderDateTime(Date.now()),
-        modifiedBy: 'CGSYSADM'
-    }
-]
-
-const columns = [
+const columns = (that) => [
     {
         Cell: item => <Icon onClick={() => null} style={{ cursor: "pointer" }} type="delete" />,
         width: 26,
@@ -91,14 +70,47 @@ class SapToSegmentAndOrderMappings extends Component {
     constructor(props) {
         super(props);
 
+        this.reactTable = React.createRef();
         this.state = {
-            pageSize: 10,
-            filtered: []
+            currentPage: DEFAULT_CURRENT_PAGE,
+            pageSize: DEFAULT_PAGE_SIZE,
+            filtered: [],
+            filteredCount: DEFAULT_FILTERED_COUNT
         };
-        this.props.getAllOrders("W", 0);
+
+        this.props.getAllOrders("W", 0); // TODO_TKB: fix this
+    }
+
+    componentDidUpdate(prevProps) {
+        if (getOrderMappingsReduxProperty(this.props, "GET", "fail", true) !== true
+            && getOrderMappingsReduxProperty(this.props, "GET", "fetching", true) === false
+            && getOrderMappingsReduxProperty(prevProps, "GET", "fetching", false) === true) {
+            this.setState({
+                currentPage: DEFAULT_CURRENT_PAGE,
+                pageSize: DEFAULT_PAGE_SIZE,
+                filtered: []
+            });
+        }
+
+        if (getOrderMappingsResponseReduxProperty(this.props, "GET", "count", -1)
+            !== getOrderMappingsResponseReduxProperty(prevProps, "GET", "count", -1)) {
+            this.setState({ filteredCount: this.reactTable.getResolvedState().sortedData.length });
+        }
     }
 
     render() {
+        const pageSizeOptions = [
+            5,
+            10,
+            50,
+            100,
+            getOrderMappingsResponseReduxProperty(this.props, "GET", "count", 0)
+        ]
+            .filter(item => item !== 0)
+            .filter((item, pos, arr) => arr.indexOf(item) === pos)
+            .sort((a, b) => a - b)
+            .map(x => "" + x);
+
         return (
             <div className="sap-to-segment-mappings">
                 <div className="flex-end-row">
@@ -122,32 +134,60 @@ class SapToSegmentAndOrderMappings extends Component {
                 </div >
                 <div className="table-container">
                     <ReactTable
-                        data={data}
-                        columns={columns}
-                        noDataText="Brak danych"
+                        data={getOrderMappingsReduxProperty(this.props, "GET", "fetching", false) === true
+                            ? []
+                            : getOrderMappingsResponseReduxProperty(this.props, "GET", "data", [])}
+                        columns={columns(this)}
+                        noDataText={getOrderMappingsReduxProperty(this.props, "GET", "fetching", false) === true
+                            ? "Wczytuję..."
+                            : "Brak danych"}
+                        ref={(r) => { this.reactTable = r; }}
                         filterable
                         filtered={this.state.filtered}
+                        onFilteredChange={filtered => {
+                            this.setState({ filtered, filteredCount: this.reactTable.getResolvedState().sortedData.length });
+                        }}
                         showPagination={false}
+                        minRows={0}
+                        page={this.state.currentPage}
                         pageSize={this.state.pageSize}
-                        onFilteredChange={filtered => this.setState({ filtered })}
                     />
                 </div>
                 <div className="pagination-container">
                     <Pagination
                         size="small"
-                        total={100}
+                        total={Math.min(getOrderMappingsResponseReduxProperty(this.props, "GET", "count", 0), this.state.filteredCount)}
                         showQuickJumper
                         showSizeChanger
                         showTotal={() => {
-                            return "Ilość pozycji: " + 0;
+                            return "Ilość pozycji: "
+                                + (getOrderMappingsReduxProperty(this.props, "GET", "fetching", false) === true
+                                    ? 0
+                                    : Math.min(getOrderMappingsResponseReduxProperty(this.props, "GET", "count", 0), this.state.filteredCount));
                         }}
+                        pageSize={this.state.pageSize}
                         onChange={(page, pageSize) => {
-                            this.setState({ pageSize: pageSize });
+                            this.setState({
+                                currentPage: page - 1,
+                            });
                         }}
                         onShowSizeChange={(current, size) => {
-                            this.setState({ pageSize: size });
+                            this.setState({
+                                pageSize: size
+                            });
                         }}
-                        pageSizeOptions={[10, 25, 50, 100]}
+                        pageSizeOptions={pageSizeOptions}
+                    />
+                    <Icon
+                        className="pagination-refresh"
+                        type="reload"
+                        onClick={() => {
+                            this.setState({
+                                filteredCount: DEFAULT_FILTERED_COUNT
+                            });
+                            this.props.getAllOrders("W", 0); // TODO_TKB: fix this
+                        }}
+                        spin={getOrderMappingsReduxProperty(this.props, "GET", "fetching", false)}
                     />
                 </div>
             </div>
