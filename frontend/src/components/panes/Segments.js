@@ -278,7 +278,7 @@ class Segments extends Component<{
     }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: MainStateType) => ({
     segments: state.segments,
 });
 

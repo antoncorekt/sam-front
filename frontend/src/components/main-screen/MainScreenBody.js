@@ -4,7 +4,7 @@ import { initTabPanes, TAB_IDS } from "../../actions/tabActions";
 import BscsToSapMappings from '../panes/BscsToSapMappings';
 import Logs from '../panes/Logs';
 import SapAccounts from '../panes/SapAccounts';
-import SapToSegmentMappings from '../panes/SapToSegmentMappings';
+import SapToSegmentAndOrderMappings from '../panes/SapToSegmentAndOrderMappings';
 import Segments from '../panes/Segments';
 import { Tabs } from 'antd';
 import './style.css';
@@ -33,9 +33,9 @@ class MainScreenBody extends Component {
                 content: <BscsToSapMappings />
             },
             {
-                id: TAB_IDS.SAP_TO_SEGMENT_MAPPINGS,
+                id: TAB_IDS.SAP_TO_SEGMENT_AND_ORDER_MAPPINGS,
                 title: 'Mapowania kont SAP OFI na segmenty rynku i numery zamówień',
-                content: <SapToSegmentMappings />
+                content: <SapToSegmentAndOrderMappings />
             },
             {
                 id: TAB_IDS.LOGS,
@@ -46,7 +46,7 @@ class MainScreenBody extends Component {
         this.props.initDefaultTabs(tabPanes);
 
         this.state = {
-            activeKey: "2"
+            activeKey: "" + TAB_IDS.SAP_TO_SEGMENT_AND_ORDER_MAPPINGS
         };
     }
 

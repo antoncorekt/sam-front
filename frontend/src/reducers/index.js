@@ -5,6 +5,7 @@ import { AuthType } from "./auth/auth-store-type";
 import { SapAccountStoreType } from "./sap-account/sap-account-store-type";
 import { SegmentsType } from "./segments/segments-store-type";
 import { AccountMappingType } from "./bscs-account/bscs-account-store-type";
+import { OrderMappingsType } from "./order-mappings/order-mappings-store-type";
 
 import { PostUserInfoHandler, PostUserLoginHandler, PostUserLogoffHandler, UnauthorizedHandler } from "./auth/auth-reducer";
 import { GetSystemVersionHandler } from "../api/api-handlers";
@@ -20,6 +21,10 @@ import {
     SegmentPropertiesInReduxHandler
 } from "./segments/segments-reducer";
 import { UsersBscsToSapMappings } from "./bscs-account/bscs-account-reducer";
+import {
+    GetOrderByStatusByReleaseHandler
+} from "./order-mappings/order-mappings-reducer";
+
 import { tabsState } from "./tabReducer";
 
 export type MainStateType = {
@@ -34,11 +39,14 @@ export const mainReducer = combineReducers(
     // add reducers
     {
         auth: createReducer(new AuthType(), [UnauthorizedHandler(), PostUserLoginHandler(), PostUserInfoHandler(), PostUserLogoffHandler()]),
-        segments: createReducer(new SegmentsType(), [GetDictionarySegmentHandler(), PostDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
         backendInfo: createReducer({ version: '?' }, [GetSystemVersionHandler()]),
-        accountMapping: createReducer(new AccountMappingType(), [UsersBscsToSapMappings()]),
-        sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler(), DeleteDictionaryAccountSapHandler()]),
         requestPanel: createReducer(new RequestPanelType(), [RequestPanelHandler()]),
+
+        sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler(), DeleteDictionaryAccountSapHandler()]),
+        segments: createReducer(new SegmentsType(), [GetDictionarySegmentHandler(), PostDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
+        accountMapping: createReducer(new AccountMappingType(), [UsersBscsToSapMappings()]),
+        orderMappings: createReducer(new OrderMappingsType(), [GetOrderByStatusByReleaseHandler()]),
+
         tabsState
     }
 );

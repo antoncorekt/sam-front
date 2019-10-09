@@ -3,6 +3,9 @@ import ReactTable from 'react-table';
 import { Button, Icon, Input, Pagination, Select } from 'antd';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
+import { connect } from "react-redux";
+import { RequestSetSegment, Segment } from "../../api/api-models";
+import { GetOrderByStatusByRelease } from "../../api/api-func";
 
 const InputGroup = Input.Group;
 const { Option } = Select;
@@ -83,7 +86,7 @@ const columns = [
     }
 ]
 
-export default class SapToSegmentMappings extends Component {
+class SapToSegmentAndOrderMappings extends Component {
 
     constructor(props) {
         super(props);
@@ -92,6 +95,7 @@ export default class SapToSegmentMappings extends Component {
             pageSize: 10,
             filtered: []
         };
+        this.props.getAllOrders("W", 0);
     }
 
     render() {
@@ -150,3 +154,17 @@ export default class SapToSegmentMappings extends Component {
         );
     }
 }
+
+const mapStateToProps = (state: any) => ({
+    orders: state.orders,
+});
+
+export default connect(
+    mapStateToProps,
+    dispatch => ({
+        getAllOrders: (status, release) => {
+            dispatch(
+                GetOrderByStatusByRelease(status, release))
+        }
+    })
+)(SapToSegmentAndOrderMappings);
