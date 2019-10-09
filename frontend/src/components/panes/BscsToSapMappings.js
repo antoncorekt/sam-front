@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
-import { Button, Checkbox, Icon, Pagination } from 'antd';
+import {Button, Checkbox, Icon, Pagination, Spin} from 'antd';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
 import type {MainStateType} from "../../reducers";
 import {connect} from "react-redux";
-import {DeleteDictionaryAccountSap, GetDictionaryAccountSap, PostAccount} from "../../api/api-func";
-import {Account, RequestSetAccount} from "../../api/api-models";
+import {
+    DeleteAccountByStatusByReleaseByBscsAccount,
+    DeleteDictionaryAccountSap,
+    GetAccountByStatusByRelease,
+    GetDictionaryAccountSap,
+    PostAccount
+} from "../../api/api-func";
+import {Account, Release, RequestSetAccount, Status15} from "../../api/api-models";
 import {AuthType} from "../../reducers/auth/auth-store-type";
 import {SapAccountStoreType} from "../../reducers/sap-account/sap-account-store-type";
 import {SelectableCell} from "./common/SelectableCell";
 import {getPageSizeOption} from "../../utils/Utils";
+import {
+    AccountMappingType,
+    AddEmptyAccountActionType,
+    DeleteUsersAccountActionType
+} from "../../reducers/bscs-account/bscs-account-store-type";
 
 const data = [
     {
@@ -41,21 +52,21 @@ const data = [
     }
 ]
 
-const columns = (deleteNewAccountHandler, setAccountHandler, loadSapAccountHandler) => (sapAccountsDictionary) => [
+const columns = (deleteNewAccountHandler, setAccountHandler, loadSapAccountHandler) => (sapAccountsDictionary, deleteAccountOperationFetching) => [
     {
-        Cell: item => <Icon onClick={deleteNewAccountHandler} style={{ cursor: "pointer" }} type="delete" />,
+        Cell: item => <Icon onClick={()=>deleteNewAccountHandler(item.original)} style={{ cursor: (deleteAccountOperationFetching === true ? "loading" : "pointer") }} type="delete" />,
         width: 26,
         filterable: false
     },
     {
         Header: 'Konto BSCS',
-        accessor: 'BSCSaccount'
+        accessor: 'bscsAccount'
     },
     {
         Cell: item => <SelectableCell options={sapAccountsDictionary}
                                            value={item.original.ofiSapAccount}
                                            loadDictionaryHandler={loadSapAccountHandler}
-                                           handleCellModification={setAccountHandler}/>,
+                                           handleCellModification={(val)=>setAccountHandler({...item.original, ofiSapAccount:val})}/>,
         Header: 'Konto SAP OFI',
         // accessor: 'ofiSapAccount'
     },
@@ -124,13 +135,15 @@ type BscsToSapMappingsStateType = {
 
 class BscsToSapMappings extends Component<{
     sapOfi: SapAccountStoreType,
-    userInfo: AuthType
+    userInfo: AuthType,
+    accountsStore: AccountMappingType
 }> {
 
     constructor(props) {
         super(props);
-    }
 
+        this.props.getAccountsFromBackend();
+    }
 
     state = {
         pageSize: 10,
@@ -138,38 +151,18 @@ class BscsToSapMappings extends Component<{
         account: null
     };
 
-    addNewAccount = () => {
-        this.setState({
-            account: new Account.Builder()
-                .withEntryOwner(AuthType.getUserData(this.props.userInfo).user)
-                .withOfiSapAccount("enter sap account hear")
-                .withStatus("?")
-                .build()
-        })
-    };
-
-    setAccountHandler = (accountKey) => (field, value) => {
-        this.setState({
-            account: {...this.state.account, [accountKey]: value}
-        })
-    };
-
-    deleteNewAccount = () => {
-        this.setState({
-            account: null
-         })
-    };
+    componentDidUpdate(prevProps: Readonly<{accountsStore: AccountMappingType}>, prevState: Readonly<S>, snapshot: SS): void {
+        if (!AccountMappingType.isDeleteAccountSuccessful(prevProps.accountsStore)
+            && AccountMappingType.isDeleteAccountSuccessful(this.props.accountsStore)) {
+            this.props.getAccountsFromBackend();
+        }
+    }
 
     render() {
-        const {account} = this.state;
-
         const sapAccountDictName = SapAccountStoreType.getSapAccounts(this.props.sapOfi)
             .map(sapAcc => sapAcc.name);
-        const bscsToSAPAccounts = [];
 
-        const data = [account, ...bscsToSAPAccounts]
-            .filter(acc => acc !== null)
-        ;
+        const data = AccountMappingType.getAllAccounts(this.props.accountsStore);
 
         return (
             <div className="bscs-to-sap-mappings">
@@ -177,27 +170,30 @@ class BscsToSapMappings extends Component<{
                     <Button className="right-margin" type="primary" icon="export" onClick={()=>this.props.test(AuthType.getUserData(this.props.userInfo).user)}>
                         Eksportuj wszystkie
                     </Button>
-                    <Button type="primary" icon="plus-circle" onClick={this.addNewAccount}>
+                    <Button type="primary" icon="plus-circle" onClick={() => {this.props.addUserAccount(AuthType.getUserData(this.props.userInfo).user)}}>
                         Dodaj mapowanie
                     </Button>
                 </div >
                 <div className="table-container">
-                    <ReactTable
-                        data={data}
-                        columns={columns(
-                            this.deleteNewAccount,
-                            this.setAccountHandler("ofiSapAccount"),
-                            this.props.getSapOfi
-                        )(
-                            sapAccountDictName
-                        )}
-                        noDataText="Brak danych"
-                        filterable
-                        filtered={this.state.filtered}
-                        showPagination={false}
-                        pageSize={this.state.pageSize}
-                        onFilteredChange={filtered => this.setState({ filtered })}
-                    />
+                    <Spin tip={"Pobieram słownik"} spinning={AccountMappingType.isLoading(this.props.accountsStore)}>
+                        <ReactTable
+                            data={data}
+                            columns={columns(
+                                this.props.deleteAccount,
+                                this.props.modifyAccount,
+                                this.props.getSapOfi
+                            )(
+                                sapAccountDictName,
+                                this.props.accountsStore.deleteAccount.fetching
+                            )}
+                            noDataText="Brak danych"
+                            filterable
+                            filtered={this.state.filtered}
+                            showPagination={false}
+                            pageSize={this.state.pageSize}
+                            onFilteredChange={filtered => this.setState({ filtered })}
+                        />
+                    </Spin>
                 </div>
                 <div className="pagination-container">
                     <Pagination
@@ -216,6 +212,14 @@ class BscsToSapMappings extends Component<{
                         }}
                         pageSizeOptions={getPageSizeOption(data)}
                     />
+                    <Icon
+                        className="pagination-refresh"
+                        type="reload"
+                        onClick={() => {
+                            this.props.getAccountsFromBackend();
+                        }}
+                        spin={this.props.accountsStore.backendAccounts.fetching}
+                    />
                 </div>
             </div>
         );
@@ -224,14 +228,14 @@ class BscsToSapMappings extends Component<{
 
 const mapStateToProps = (state: MainStateType) => ({
     sapOfi: state.sapAccountOfi,
-    userInfo: state.auth
+    userInfo: state.auth,
+    accountsStore: state.accountMapping
 });
 
 export default connect(
     mapStateToProps,
     dispatch => ({
-        postAccount: () => {
-            const account: Account = new Account();
+        postAccount: (account: Account) => {
 
             dispatch(
                 PostAccount(new RequestSetAccount.Builder()
@@ -240,19 +244,43 @@ export default connect(
                 )
             )
         },
-        test: (login) => {
-            dispatch({
-                type: "AddEmptyAccount",
-                action: {
-                    user: login
-                }
-            })
-
+        addUserAccount: (login: string) => {
+          dispatch(
+              AddEmptyAccountActionType.createAction(login)
+          )
         },
-        deleteDict: () => {
+        getAccountsFromBackend: () => {
             dispatch(
-                DeleteDictionaryAccountSap()
+                GetAccountByStatusByRelease(Status15.W, Release.LAST)
             )
+        },
+        deleteAccount: (account: Account) =>{
+            if (AccountMappingType.isAccountFromBackend(account)){
+                console.log("del account from backend", account);
+                dispatch(
+                    DeleteAccountByStatusByReleaseByBscsAccount(account.status, account.releaseId, account.bscsAccount)
+                )
+            }
+            else {
+                console.log("del account from frontend memory", account);
+                dispatch(
+                    DeleteUsersAccountActionType.createAction(account)
+                )
+            }
+        },
+        modifyAccount: (account: Account) => {
+            if (AccountMappingType.isAccountFromBackend(account)){
+                console.log("del account from backend", account);
+                dispatch(
+                    DeleteAccountByStatusByReleaseByBscsAccount(account.status, account.releaseId, account.bscsAccount)
+                )
+            }
+            else {
+                console.log("del account from frontend memory", account);
+                dispatch(
+                    DeleteUsersAccountActionType.createAction(account)
+                )
+            }
         },
         getSapOfi: () => {
             console.log("LOAD DICT ACCOUNT SAP!!!");

@@ -96,45 +96,7 @@ export const PostUserReloginHandler = () => {
 };
 
 
-export const GetAccountByStatusByReleaseHandler = () => {
-    return {
-        GetAccountByStatusByReleaseRequest:(state:any, action:ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>)=>{
-            return {...state, ...action};
-        },
-        GetAccountByStatusByReleaseSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
-            return {...state, ...action};
-        },
-        GetAccountByStatusByReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
-            return {...state, ...action};
-        },
-    }
-};
-export const PutAccountByStatusByReleaseByBscsAccountHandler = () => {
-    return {
-        PutAccountByStatusByReleaseByBscsAccountRequest:(state:any, action:ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
-            return {...state, ...action};
-        },
-        PutAccountByStatusByReleaseByBscsAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
-            return {...state, ...action};
-        },
-        PutAccountByStatusByReleaseByBscsAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
-            return {...state, ...action};
-        },
-    }
-};
-export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
-    return {
-        DeleteAccountByStatusByReleaseByBscsAccountRequest:(state:any, action:ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
-            return {...state, ...action};
-        },
-        DeleteAccountByStatusByReleaseByBscsAccountSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
-            return {...state, ...action};
-        },
-        DeleteAccountByStatusByReleaseByBscsAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
-            return {...state, ...action};
-        },
-    }
-};
+
 export const PostOrderHandler = () => {
     return {
         PostOrderRequest:(state:any, action:ActionRequestData<RequestSetOrder, null>)=>{

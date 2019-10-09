@@ -25,7 +25,7 @@ export const getPageSizeOption = (arr: Array<any>, defaultPageSizes: Array<numbe
         .map(x => "" + x);
 };
 
-export const reduceHandlerToProp = (reduxStoreProp) => handler => (state, action) => ({
+export const reduceHandlerToProp = reduxStoreProp => handler => (state, action) => ({
     ...state,
     [reduxStoreProp]: handler(state[reduxStoreProp], action)
 });
