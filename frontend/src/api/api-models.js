@@ -99,7 +99,7 @@ export class ResultSetAccount {
 }
 
 export class Account {
-    status:string; // => W
+    status:Status15; // => W
     releaseId:string; // => 0
     bscsAccount:string; // set
     ofiSapAccount:string; // set from dict
@@ -114,7 +114,10 @@ export class Account {
     releaseDate:Date; // => empty
     releaseOwner:string; // => empty
 
-    static get Builder() {class Builder { _model: Account = new Account();withStatus(status:string): Builder { this._model.status=status; return this;}withReleaseId(releaseId:number): Builder { this._model.releaseId=releaseId; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withOfiSapAccount(ofiSapAccount:string): Builder { this._model.ofiSapAccount=ofiSapAccount; return this;}withValidFromDate(validFromDate:Date): Builder { this._model.validFromDate=validFromDate; return this;}withVatCodeInd(vatCodeInd:string): Builder { this._model.vatCodeInd=vatCodeInd; return this;}withOfiSapWbsCode(ofiSapWbsCode:string): Builder { this._model.ofiSapWbsCode=ofiSapWbsCode; return this;}withCitMarkerVatFlag(citMarkerVatFlag:number): Builder { this._model.citMarkerVatFlag=citMarkerVatFlag; return this;}withEntryDate(entryDate:Date): Builder { this._model.entryDate=entryDate; return this;}withEntryOwner(entryOwner:string): Builder { this._model.entryOwner=entryOwner; return this;}withUpdateDate(updateDate:Date): Builder { this._model.updateDate=updateDate; return this;}withUpdateOwner(updateOwner:string): Builder { this._model.updateOwner=updateOwner; return this;}withReleaseDate(releaseDate:Date): Builder { this._model.releaseDate=releaseDate; return this;}withReleaseOwner(releaseOwner:string): Builder { this._model.releaseOwner=releaseOwner; return this;}build(){return this._model;}}return Builder;}
+    frontendId:string;
+    modified:false;
+
+    static get Builder() {class Builder { _model: Account = new Account();withFrontendId(frontendId:string): Builder {this._model.frontendId = frontendId; return this;}withStatus(status:string): Builder { this._model.status=status; return this;}withReleaseId(releaseId:number): Builder { this._model.releaseId=releaseId; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withOfiSapAccount(ofiSapAccount:string): Builder { this._model.ofiSapAccount=ofiSapAccount; return this;}withValidFromDate(validFromDate:Date): Builder { this._model.validFromDate=validFromDate; return this;}withVatCodeInd(vatCodeInd:string): Builder { this._model.vatCodeInd=vatCodeInd; return this;}withOfiSapWbsCode(ofiSapWbsCode:string): Builder { this._model.ofiSapWbsCode=ofiSapWbsCode; return this;}withCitMarkerVatFlag(citMarkerVatFlag:number): Builder { this._model.citMarkerVatFlag=citMarkerVatFlag; return this;}withEntryDate(entryDate:Date): Builder { this._model.entryDate=entryDate; return this;}withEntryOwner(entryOwner:string): Builder { this._model.entryOwner=entryOwner; return this;}withUpdateDate(updateDate:Date): Builder { this._model.updateDate=updateDate; return this;}withUpdateOwner(updateOwner:string): Builder { this._model.updateOwner=updateOwner; return this;}withReleaseDate(releaseDate:Date): Builder { this._model.releaseDate=releaseDate; return this;}withReleaseOwner(releaseOwner:string): Builder { this._model.releaseOwner=releaseOwner; return this;}build(){return this._model;}}return Builder;}
 }
 
 export class ResultSetAccounts {
