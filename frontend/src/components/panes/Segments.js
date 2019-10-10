@@ -17,7 +17,7 @@ import {
     handleSegmentPostInRedux,
     unshiftSegmentInRedux
 } from "../../actions/segmentsActions";
-import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty, SegmentsType } from '../../reducers/segments/segments-store-type.js';
+import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type.js';
 
 const DEFAULT_CURRENT_PAGE = 0;
 const DEFAULT_PAGE_SIZE = 30;
@@ -107,13 +107,13 @@ class Segments extends Component<{
         super(props);
 
         this.reactTable = React.createRef();
-
         this.state = {
             currentPage: DEFAULT_CURRENT_PAGE,
             pageSize: DEFAULT_PAGE_SIZE,
             filtered: [],
             filteredCount: DEFAULT_FILTERED_COUNT
         };
+
         this.props.getAllSegments();
     }
 
@@ -192,7 +192,6 @@ class Segments extends Component<{
 
     render() {
         const pageSizeOptions = [
-            2,
             5,
             10,
             50,
@@ -203,7 +202,6 @@ class Segments extends Component<{
             .filter((item, pos, arr) => arr.indexOf(item) === pos)
             .sort((a, b) => a - b)
             .map(x => "" + x);
-        const fc = this.state.filteredCount;
 
         return (
             <div className="segments">
@@ -278,7 +276,7 @@ class Segments extends Component<{
     }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: MainStateType) => ({
     segments: state.segments,
 });
 

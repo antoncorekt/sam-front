@@ -110,19 +110,6 @@ export const PostOrderHandler = () => {
         },
     }
 };
-export const GetOrderByStatusByReleaseHandler = () => {
-    return {
-        GetOrderByStatusByReleaseRequest:(state:any, action:ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>)=>{
-            return {...state, ...action};
-        },
-        GetOrderByStatusByReleaseSuccess:(state:any, action:ActionResponseData<ResultSetOrders,ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>>)=>{
-            return {...state, ...action};
-        },
-        GetOrderByStatusByReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>>)=>{
-            return {...state, ...action};
-        },
-    }
-};
 export const PutOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
     return {
         PutOrderByStatusByReleaseByBscsAccountBySegmentRequest:(state:any, action:ActionRequestData<null, PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>)=>{
