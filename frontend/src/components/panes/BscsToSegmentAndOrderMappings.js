@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
-import { Button, Icon, Input, Pagination, Select } from 'antd';
+import { Button, DatePicker, Icon, Input, Pagination, Select } from 'antd';
+import { EditableCell } from './common/EditableCell.js';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
 import { connect } from "react-redux";
 import { RequestSetOrder } from "../../api/api-models";
 import { GetOrderByStatusByRelease, PostOrder } from "../../api/api-func";
+import {
+    editOrderMappingPropertiesInRedux,
+    unshiftOrderMappingInRedux
+} from "../../actions/orderMappingsActions";
 import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type.js';
 import { AuthType } from "../../reducers/auth/auth-store-type";
 import { Order } from '../../api/api-models.js';
@@ -16,6 +21,7 @@ const DEFAULT_FILTERED_COUNT = 1000000;
 
 const InputGroup = Input.Group;
 const { Option } = Select;
+const { MonthPicker } = DatePicker;
 
 const columns = (that) => [
     {
@@ -25,46 +31,66 @@ const columns = (that) => [
     },
     {
         Header: 'Konto BSCS',
-        accessor: 'bscsAccount'
+        accessor: Order.ObjectProps.bscsAccount
     },
     {
         Header: 'Segment',
-        accessor: 'segmentCode'
+        accessor: Order.ObjectProps.segmentCode
     },
     {
         Header: 'Nr zamówienia',
-        accessor: 'orderNumber'
+        accessor: Order.ObjectProps.orderNumber,
+        Cell: x => (
+            <div>
+                <EditableCell
+                    rowId={x.index}
+                    field_key='orderNumber'
+                    value={x.original.orderNumber}
+                    handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
+                />
+            </div>
+        )
     },
     {
         Header: 'Ważne od',
-        accessor: 'validFromDate'
+        accessor: Order.ObjectProps.validFromDate,
+        width: 172,
+        Cell: x => (
+            <div>
+                <MonthPicker
+                    className="month-picker"
+                    size="small"
+                    format="YYYY-MM-01"
+                    placeholder="Wybierz miesiąc"
+                />
+            </div>
+        )
     },
     {
         Header: 'Status',
-        accessor: 'state',
+        accessor: Order.ObjectProps.status,
         Cell: row => <div className="centered-text">{row.value}</div>
     },
     {
         Header: 'Data utworzenia',
-        accessor: 'entryDate',
+        accessor: Order.ObjectProps.entryDate,
         Cell: x => (renderDateTime(x.original.entryDate))
     },
     {
         Header: 'Utworzył',
-        accessor: 'entryOwner'
+        accessor: Order.ObjectProps.entryOwner
     },
     {
         Header: 'Data modyfikacji',
-        accessor: 'updateDate',
+        accessor: Order.ObjectProps.updateDate,
         Cell: x => (renderDateTime(x.original.updateDate))
     },
     {
         Header: 'Zmodyfikował',
-        accessor: 'updateOwner'
+        accessor: Order.ObjectProps.updateOwner
     },
     {
         Header: 'Akcja',
-        accessor: 'action',
         filterable: false,
         sortable: false
     }
@@ -98,8 +124,6 @@ class BscsToSegmentAndOrderMappings extends Component<{
                 pageSize: DEFAULT_PAGE_SIZE,
                 filtered: []
             });
-
-            console.log(getOrderMappingsResponseReduxProperty(this.props, "GET", "data", []));
         }
 
         if (getOrderMappingsResponseReduxProperty(this.props, "GET", "count", -1)
@@ -108,8 +132,29 @@ class BscsToSegmentAndOrderMappings extends Component<{
         }
     }
 
+    handleRowAddition() {
+        this.setState({
+            currentPage: DEFAULT_CURRENT_PAGE
+        });
+        let orderMappingData = new Order.Builder()
+            .withEntryDate(Date.now())
+            .withEntryOwner(AuthType.getUserData(this.props.auth).user)
+            .build();
+        orderMappingData.modified = true;
+        orderMappingData.newRow = true;
+        this.props.unshiftOrderMappingInRedux(orderMappingData);
+    }
+
+    handleCellModification(rowId, key, value) {
+        let orderMappingData = new Order();
+        orderMappingData[key] = value;
+        orderMappingData.updateDate = Date.now();
+        orderMappingData.updateOwner = AuthType.getUserData(this.props.auth).user;
+        this.props.editOrderMappingPropertiesInRedux(rowId, orderMappingData);
+    }
+
     handleDataExport() {
-        this.props.insertOrderMapping();
+        alert("Not handled.");
     }
 
     render() {
@@ -126,7 +171,7 @@ class BscsToSegmentAndOrderMappings extends Component<{
             .map(x => "" + x);
 
         return (
-            <div className="sap-to-segment-mappings">
+            <div className="bscs-to-segment-and-order-mappings">
                 <div className="flex-end-row">
                     <div className="right-margin">
                         <InputGroup compact>
@@ -139,11 +184,18 @@ class BscsToSegmentAndOrderMappings extends Component<{
                             </Button>
                         </InputGroup>
                     </div>
-                    <Button className="right-margin" type="primary" icon="export" onClick={() => { this.handleDataExport() }}>
-                        Eksportuj wszystkie
+                    <Button
+                        className="right-margin"
+                        type="primary"
+                        icon="export"
+                        onClick={() => { this.handleDataExport() }}
+                    >Eksportuj wszystkie
                     </Button>
-                    <Button type="primary" icon="plus-circle" onClick={null}>
-                        Dodaj mapowanie
+                    <Button
+                        type="primary"
+                        icon="plus-circle"
+                        onClick={() => { this.handleRowAddition() }}
+                    >Dodaj mapowanie
                     </Button>
                 </div >
                 <div className="table-container">
@@ -221,17 +273,15 @@ export default connect(
             dispatch(
                 GetOrderByStatusByRelease(status, release))
         },
-        insertOrderMapping: () => {
+        editOrderMappingPropertiesInRedux: (rowId, orderMappingData: Order) => {
             dispatch(
-                PostOrder(new RequestSetOrder.Builder()
-                    .withData(new Order.Builder()
-                        .withBscsAccount("10100215")  // TODO_TKB
-                        .withSegmentCode("SOHO") // TODO_TKB
-                        .build()
-                    )
-                    .build()
-                )
+                editOrderMappingPropertiesInRedux(rowId, orderMappingData)
             )
-        }
+        },
+        unshiftOrderMappingInRedux: (orderMappingData: Order) => {
+            dispatch(
+                unshiftOrderMappingInRedux(orderMappingData)
+            )
+        },
     })
 )(BscsToSegmentAndOrderMappings);

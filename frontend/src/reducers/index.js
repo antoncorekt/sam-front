@@ -23,6 +23,7 @@ import {
 import { UsersBscsToSapMappings } from "./bscs-account/bscs-account-reducer";
 import {
     GetOrderByStatusByReleaseHandler,
+    OrderMappingPropertiesInReduxHandler,
     PostOrderHandler
 } from "./order-mappings/order-mappings-reducer";
 
@@ -45,6 +46,6 @@ export const mainReducer = combineReducers(
         sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler(), DeleteDictionaryAccountSapHandler()]),
         segments: createReducer(new SegmentsType(), [GetDictionarySegmentHandler(), PostDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
         accountMapping: createReducer(new AccountMappingType(), [UsersBscsToSapMappings()]),
-        orderMappings: createReducer(new OrderMappingsType(), [GetOrderByStatusByReleaseHandler(), PostOrderHandler()])
+        orderMappings: createReducer(new OrderMappingsType(), [GetOrderByStatusByReleaseHandler(), OrderMappingPropertiesInReduxHandler(), PostOrderHandler()])
     }
 );
