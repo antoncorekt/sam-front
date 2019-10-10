@@ -68,7 +68,6 @@ export class AccountMappingType {
     static isLoading(store: AccountMappingType):boolean {
 
         return store.backendAccounts.fetching === true
-            // || store.deleteAccount.fetching  === true
             || store.postAccount.fetching  === true;
     }
 

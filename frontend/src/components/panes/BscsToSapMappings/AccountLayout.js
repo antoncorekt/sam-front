@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import OneTableAccountView from "./OneTableAccountView";
+import DoubleTableAccountView from "./DoubleTableAccountView";
+import {AccountOperationPanel} from "./AccountOperationPanel";
 
 export class ViewMode {
     static get OneTableView() { return "oneTableView"}
@@ -19,7 +21,7 @@ export default class AccountLayout extends Component{
             return <OneTableAccountView {...viewProps}/>
         }
         if (viewMode === ViewMode.DoubleTableView){
-            return <DoubleTableAvvountView {...viewProps}/>
+            return <DoubleTableAccountView {...viewProps}/>
         }
 
         throw new Error("Please, define view mode")

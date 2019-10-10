@@ -31,7 +31,8 @@ export type MainStateType = {
     segments: SegmentsType,
     backendInfo: any,
     sapAccountOfi: SapAccountStoreType,
-    requestPanel: RequestPanelType
+    requestPanel: RequestPanelType,
+    accountMapping: AccountMappingType
 }
 
 export const mainReducer = combineReducers(

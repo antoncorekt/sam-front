@@ -42,7 +42,8 @@ export default class MainScreenBody extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { activeKey: "4" };
+        // TODO FEATURE change activeKey to cookie value
+        this.state = { activeKey: "3" };
     }
 
     onChange = (activeKey) => {

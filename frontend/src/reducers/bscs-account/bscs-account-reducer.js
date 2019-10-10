@@ -101,7 +101,7 @@ export const UsersBscsToSapMappings = () => {
             accounts: [
                 new Account.Builder()
                     .withEntryOwner(action.user)
-                    .withFrontendId(uuidv4())
+                    .withFrontendIdFrontProp(uuidv4())
                     .withEntryDate(new Date())
                     .withStatus("F")
                     .build(),

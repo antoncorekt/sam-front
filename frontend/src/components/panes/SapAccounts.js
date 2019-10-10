@@ -5,7 +5,7 @@ import {renderDateTime} from '../../utils/Utils.js';
 import './style.css';
 import {connect} from "react-redux";
 import {DeleteDictionaryAccountSap, GetDictionaryAccountSap} from "../../api/api-func";
-import {AccountDictSap, ResultSetAccountDictSaps} from "../../api/api-models";
+import {AccountDictSap, ResultSetAccountDictSaps, Role} from "../../api/api-models";
 import type {BackendAction} from "../../api/common-middleware";
 import type {MainStateType} from "../../reducers";
 import AccountSapUploader from "../uploader-panel/AccountSapUploader";
@@ -13,6 +13,7 @@ import {ActionRequestData, ActionResponseData} from "../../api/common-middleware
 import {SapAccountStoreType} from "../../reducers/sap-account/sap-account-store-type";
 import {TestEnvContainer} from "./common/TestEnvContainer";
 import {getPageSizeOption, getPaginationArray} from "../../utils/Utils";
+import SecuredComponent from "./common/SecuredComponent";
 
 const data = [
     {
@@ -114,7 +115,9 @@ class SapAccounts extends Component<{
                     <Checkbox className="checkbox" onChange={null}>
                         Aktualizuj opisy istniejących kont
                     </Checkbox>
-                    <AccountSapUploader fileFetching={this.props.sapOfi.fileUploadStatus.fetching}/>
+                    <SecuredComponent group={Role.CONTROL}>
+                        <AccountSapUploader fileFetching={this.props.sapOfi.fileUploadStatus.fetching}/>
+                    </SecuredComponent>
                 </div>
                 <div className="table-container">
                     <Spin tip={"Pobieram słownik"} spinning={this.props.sapOfi.dict.fetching}>
