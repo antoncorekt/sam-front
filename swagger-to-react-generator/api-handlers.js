@@ -38,9 +38,15 @@ ResultSetCount,
 GetAccountByStatusByReleaseQueryParams,
 PutAccountByStatusByReleaseByBscsAccountQueryParams,
 DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+PatchAccountByStatusByReleaseByBscsAccountQueryParams,
 GetOrderByStatusByReleaseQueryParams,
 PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
-DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams} from './api-models.js'
+DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
+PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
+DeleteReleaseByReleaseQueryParams,
+PutDictionarySegmentByIdQueryParams,
+DeleteDictionarySegmentByIdQueryParams,
+PatchDictionarySegmentByIdQueryParams} from './api-models.js'
 export const GetSystemVersionHandler = () => {
 	return {
 		GetSystemVersionRequest:(state:any, action:ActionRequestData<null, null>)=>{
@@ -132,6 +138,19 @@ export const PostUserInfoHandler = () => {
 		},
 	}
 };
+export const GetAccountHandler = () => {
+	return {
+		GetAccountRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		GetAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		GetAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
 export const PostAccountHandler = () => {
 	return {
 		PostAccountRequest:(state:any, action:ActionRequestData<RequestSetAccount, null>)=>{
@@ -141,6 +160,19 @@ export const PostAccountHandler = () => {
 			 return {...state, ...action};
 		},
 		PostAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccount, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const DeleteAccountHandler = () => {
+	return {
+		DeleteAccountRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		DeleteAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		DeleteAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}
@@ -184,6 +216,32 @@ export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
 		},
 	}
 };
+export const PatchAccountByStatusByReleaseByBscsAccountHandler = () => {
+	return {
+		PatchAccountByStatusByReleaseByBscsAccountRequest:(state:any, action:ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
+			 return {...state, ...action};
+		},
+		PatchAccountByStatusByReleaseByBscsAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+		PatchAccountByStatusByReleaseByBscsAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const GetOrderHandler = () => {
+	return {
+		GetOrderRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		GetOrderSuccess:(state:any, action:ActionResponseData<ResultSetOrders,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		GetOrderFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
 export const PostOrderHandler = () => {
 	return {
 		PostOrderRequest:(state:any, action:ActionRequestData<RequestSetOrder, null>)=>{
@@ -193,6 +251,19 @@ export const PostOrderHandler = () => {
 			 return {...state, ...action};
 		},
 		PostOrderFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetOrder, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const DeleteOrderHandler = () => {
+	return {
+		DeleteOrderRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		DeleteOrderSuccess:(state:any, action:ActionResponseData<ResultSetOrders,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		DeleteOrderFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}
@@ -236,6 +307,19 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
 		},
 	}
 };
+export const PatchOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
+	return {
+		PatchOrderByStatusByReleaseByBscsAccountBySegmentRequest:(state:any, action:ActionRequestData<null, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>)=>{
+			 return {...state, ...action};
+		},
+		PatchOrderByStatusByReleaseByBscsAccountBySegmentSuccess:(state:any, action:ActionResponseData<ResultSetOrders,ActionRequestData<null, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+		PatchOrderByStatusByReleaseByBscsAccountBySegmentFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
 export const PostReleaseHandler = () => {
 	return {
 		PostReleaseRequest:(state:any, action:ActionRequestData<null, null>)=>{
@@ -245,6 +329,19 @@ export const PostReleaseHandler = () => {
 			 return {...state, ...action};
 		},
 		PostReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const DeleteReleaseByReleaseHandler = () => {
+	return {
+		DeleteReleaseByReleaseRequest:(state:any, action:ActionRequestData<null, DeleteReleaseByReleaseQueryParams>)=>{
+			 return {...state, ...action};
+		},
+		DeleteReleaseByReleaseSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, DeleteReleaseByReleaseQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+		DeleteReleaseByReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, DeleteReleaseByReleaseQueryParams>>)=>{
 			 return {...state, ...action};
 		},
 	}
@@ -277,13 +374,13 @@ export const GetDictionaryAccountSapHandler = () => {
 };
 export const PostDictionaryAccountSapHandler = () => {
 	return {
-		PostDictionaryAccountSapRequest:(state:any, action:ActionRequestData<File, null>)=>{
+		PostDictionaryAccountSapRequest:(state:any, action:ActionRequestData<null, null>)=>{
 			 return {...state, ...action};
 		},
-		PostDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<File, null>>)=>{
+		PostDictionaryAccountSapSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
-		PostDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<File, null>>)=>{
+		PostDictionaryAccountSapFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
 			 return {...state, ...action};
 		},
 	}
@@ -336,6 +433,45 @@ export const DeleteDictionarySegmentHandler = () => {
 			 return {...state, ...action};
 		},
 		DeleteDictionarySegmentFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const PutDictionarySegmentByIdHandler = () => {
+	return {
+		PutDictionarySegmentByIdRequest:(state:any, action:ActionRequestData<null, PutDictionarySegmentByIdQueryParams>)=>{
+			 return {...state, ...action};
+		},
+		PutDictionarySegmentByIdSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, PutDictionarySegmentByIdQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+		PutDictionarySegmentByIdFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PutDictionarySegmentByIdQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const DeleteDictionarySegmentByIdHandler = () => {
+	return {
+		DeleteDictionarySegmentByIdRequest:(state:any, action:ActionRequestData<null, DeleteDictionarySegmentByIdQueryParams>)=>{
+			 return {...state, ...action};
+		},
+		DeleteDictionarySegmentByIdSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, DeleteDictionarySegmentByIdQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+		DeleteDictionarySegmentByIdFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, DeleteDictionarySegmentByIdQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const PatchDictionarySegmentByIdHandler = () => {
+	return {
+		PatchDictionarySegmentByIdRequest:(state:any, action:ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>)=>{
+			 return {...state, ...action};
+		},
+		PatchDictionarySegmentByIdSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+		PatchDictionarySegmentByIdFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>>)=>{
 			 return {...state, ...action};
 		},
 	}

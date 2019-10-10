@@ -15,12 +15,15 @@ public class FlowObjectType extends FlowType {
 
     private final FlowObjectInternalBuilder flowObjectInternalBuilder;
 
+    private final FlowObjectPropClassBuilder flowObjectPropClassBuilder;
+
     private List<String> gettersAndSetters = new ArrayList<>();
 
     public FlowObjectType(JsWord name, List<FlowTypeParam> flowClassParams) {
         super(name);
         this.flowClassParams = flowClassParams;
         this.flowObjectInternalBuilder = new FlowObjectInternalBuilder(this);
+        this.flowObjectPropClassBuilder = new FlowObjectPropClassBuilder(this);
     }
 
     public String toCode(){
@@ -40,8 +43,10 @@ public class FlowObjectType extends FlowType {
         }
 
         return (isExported() ? "export " : "") + "class " + name.getJsLexicalWithUpperCase() + " { \n" + params +
-                gettersAndSetters.stream().collect(Collectors.joining("\n")) +
-                 "\n" + flowObjectInternalBuilder.toCode() +"\n } \n";
+                String.join("\n", gettersAndSetters) +
+                 "\n" + flowObjectInternalBuilder.toCode() +"\n" +
+                 flowObjectPropClassBuilder.toCode() +"\n" +
+                "} \n";
     }
 
     public List<FlowTypeParam> getFlowClassParams() {

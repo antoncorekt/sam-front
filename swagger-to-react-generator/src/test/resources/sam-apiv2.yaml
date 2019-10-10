@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
   version: '1.0.0'
-  title: Swagger gosamapi
-  description: "API for management of the mapping of BSCS GL accounts to SAP. The methods provided give access to the following entietis of data model:\n- Account (mapping BSCS GL number to SAP OFI numbers)\n- Order (Number for BSCS GL account per customer segment)\n- Segment (dictionary)\n- Account BSCS numbers (dictionary)\n- Account SAP numbers (dictionary)\n\nThe versioned enties like Account or Order may be processed only in status W like Working. They may be confimed and moved to status C like Confirmed. After that they can be release to status P like Production. Movement from status C to P is a final one in the lifecycle of the account/order mapping. The set of accounts and order released to production can not be modified. It can be only read. \n\nContrary to that, operations on the dictionary tables are bulk ones. I is possible to clean the whole configuarion and reload it bu not to manipulate on single entries. Bulk delete is to be granted to the Admin role only. The Account and Order entities may be modifid in record by record mode using primary key access but only for status W like Work and release 0.\n\nThe release attribute is 0 for the entities in status W like Work and is bigger than 0 for released ones. The api provides key word last for reading the latest release so that it can be processed being stored in status W like Work.\n\nThe release entries are to be validated agains existing versions. For example valid data must be:\n- in the future from the release date\n- rounded to 1st day of the month (in the future)\n- can not everlap with valid date of any prevously released version\n\nThe access rights to API methods, entities and their propertis is besed on the users role being:\n- Booker (may create Acconts and fill up most of the values)\n- Control (may create Order linked to existing Account and update the attribute orderNumber, may do relese, may do promotion of status from W like Working to C like Controlled)\n- Admin (may do everything, especially purge dictionaries and load them)\n\nThe API currently provides 18 business methods and 2 system methods.\n"
+  title: Swagger sam-api
+  description: "API for management of the mapping of BSCS GL accounts to SAP. The methods provided give access to the following entietis of data model:\n- Account (mapping BSCS GL number to SAP OFI numbers)\n- Order (Number for BSCS GL account per customer segment)\n- Segment (dictionary)\n- Account BSCS numbers (dictionary)\n- Account SAP numbers (dictionary)\n\nThe versioned enties like Account or Order may be processed only in status W like Working. They may be confimed and moved to status C like Confirmed. After that they can be release to status P like Production. Movement from status C to P is a final one in the lifecycle of the account/order mapping. The set of accounts and order released to production can not be modified. It can be only read. \n\nContrary to that, operations on the dictionary tables are bulk ones. I is possible to clean the whole configuarion and reload it bu not to manipulate on single entries. Bulk delete is to be granted to the Admin role only. The Account and Order entities may be modifid in record by record mode using primary key access but only for status W like Work and release 0.\n\nThe release attribute is 0 for the entities in status W like Work and is bigger than 0 for released ones. The api provides key word last for reading the latest release so that it can be processed being stored in status W like Work.\n\nThe release entries are to be validated agains existing versions. For example valid data must be:\n- in the future from the release date\n- rounded to 1st day of the month (in the future)\n- can not everlap with valid date of any prevously released version\n\nThe access rights to API methods, entities and their propertis is besed on the users role being:\n- Booker (may create Acconts and fill up most of the values)\n- Control (may create Order linked to existing Account and update the attribute orderNumber, may do relese, may do promotion of status from W like Working to C like Controlled)\nnThe API currently provides 18 business methods and 2 system methods.\n"
   contact:
     email: norbert.bondarczuk@wipro.com
 host: localhost:8000
@@ -228,7 +228,7 @@ paths:
       summary: AccountCreateOne
       tags:
         - account
-      operationId: AccountPost
+      operationId: AccountCreateOne
       deprecated: false
       produces:
         - application/json
@@ -250,6 +250,66 @@ paths:
           description: Successful operation
           schema:
             $ref: '#/definitions/ResultSetAccount'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+    get:
+      description: A set of accouts is read and returned. The recoords are active ones, ie. status W or C for release 0 or status P for max release_id
+      summary: AccountReadActiveAll
+      tags:
+        - account
+      operationId: AccountReadActiveAll
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetAccounts'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+    delete:
+      description: Purges whole resource
+      summary: AccountDeleteAll
+      tags:
+        - account
+      operationId: AccountDeleteAll
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetAccounts'
           headers: {}
         401:
           description: Not authenticated
@@ -310,10 +370,62 @@ paths:
   /account/{status}/{release}/{bscsAccount}:
     put:
       description: "Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Promotion from status value W like Working to C like Controlled may be done only with Controll role.\n\nRequires:\n  \n- Booker role while in W like Work,\n  \n- Control role while in C like Control state and in transition from W like Work to C like Control."
-      summary: AccountReadSome
+      summary: AccountUpdateOne
       tags:
         - account
       operationId: AccountBscsAccountByStatusAndReleasePut
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: status
+          in: path
+          required: true
+          enum:
+            - W
+            - C
+            - P
+          type: string
+          description: status of the package, W for workm P for production
+        - name: release
+          in: path
+          required: true
+          enum:
+            - 0
+            - last
+          type: string
+          description: release sequential number, 0 for work, else production or last for latst version
+        - name: bscsAccount
+          in: path
+          required: true
+          type: string
+          description: BSCS account code
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetAccounts'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+    patch:
+      description: "Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Promotion from status value W like Working to C like Controlled may be done only with Controll role.\n\nRequires:\n  \n- Booker role while in W like Work,\n  \n- Control role while in C like Control state and in transition from W like Work to C like Control."
+      summary: AccountUpdateAttributes
+      tags:
+        - account
+      operationId: AccountUpdateAttributesOne
       deprecated: false
       produces:
         - application/json
@@ -365,7 +477,7 @@ paths:
       summary: AccountDeleteOne
       tags:
         - account
-      operationId: AccountBscsAccountByStatusAndReleaseDelete
+      operationId: AccountDeleteOne
       deprecated: false
       produces:
         - application/json
@@ -454,13 +566,73 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
+    get:
+      description: Set of orders is read and returned. The records are active ones, ie. status W or C for release 0 or status P for max release_id.
+      summary: OrderReadActiveAll
+      tags:
+        - order
+      operationId: OrderReadActiveAll
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetOrders'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+    delete:
+      description: Purges whole resource.
+      summary: OrderDeleteAll
+      tags:
+        - order
+      operationId: OrderDeleteAll
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetOrders'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
   /order/{status}/{release}:
     get:
       description: Set of orders is read and returned. The criteria is per status and version. The varsion must be known a priori. For work version release is always 0.
-      summary: OrderReadSome
+      summary: OrderReadAll
       tags:
         - order
-      operationId: OrderByStatusAndReleaseGet
+      operationId: OrderReadAll
       deprecated: false
       produces:
         - application/json
@@ -560,6 +732,64 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
+    patch:
+      description: Most selective access to single row. The primary key is used. One record is returnd. The status and release must be given a priori. Only records in W like Working status may be manipulatd this way.
+      summary: OrderUpdateAttributesOne
+      tags:
+        - order
+      operationId: OrderUpdateAttributesOne
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: status
+          in: path
+          required: true
+          enum:
+            - W
+            - C
+            - P
+          type: string
+          description: status of the package, W for workm P for production
+        - name: release
+          in: path
+          required: true
+          enum:
+            - 0
+            - last
+          type: string
+          description: release sequential number, 0 for work, else production
+        - name: bscsAccount
+          in: path
+          required: true
+          type: string
+          description: release sequential number, 0 for work, else production
+        - name: segment
+          in: path
+          required: true
+          type: string
+          description: customer segment code
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetOrders'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+
     delete:
       description: "Most selective access to single row. The primary key is used. One record is deleted. Only records in W like Working status may be manipulatd this way. \n\nRequires:\n- Control role."
       summary: OrderDeleteOne
@@ -634,6 +864,55 @@ paths:
           type: string
           format: uuid
           description: ''
+
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetOk'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+  /release/{release}:
+    delete:
+      description: "Revokes a specific release moving it back to initial Work status. A constraint is that there is no clashing entries in Work."
+      summary: ReleaseRevoke
+      tags:
+        - release
+      operationId: ReleaseRevoke
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: status
+          in: path
+          required: true
+          enum:
+            - W
+            - C
+            - P
+          type: string
+          description: status of the package, W for workm P for production
+        - name: release
+          in: path
+          required: true
+          enum:
+            - 0
+            - last
+          type: string
+          description: release sequential number, 0 for work, else production
       responses:
         200:
           description: Successful operation
@@ -681,11 +960,11 @@ paths:
             $ref: '#/definitions/ResultSetError'
   /dictionary/account/sap:
     post:
-      description: "Only one description is created in the configuration. \n\nRequires:\n- Admin role."
+      description: "Only one description is created in the configuration."
       summary: DictionaryAccountSapCreate
       tags:
         - dictionary-account-sap
-      operationId: DictionaryAccountSapPost
+      operationId: DictionaryAccountSapCreate
       deprecated: false
       produces:
         - application/json
@@ -696,50 +975,6 @@ paths:
           type: string
           format: uuid
           description: ''
-        - name: body
-          in: body
-          required: true
-          description: Structure of the objects to be create with all fields to be populated
-          schema:
-            $ref: '#/definitions/RequestSetAccountDictSap'
-      responses:
-        201:
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/ResultSetAccountDictSap'
-          headers: {}
-        401:
-          description: Not authenticated
-          schema:
-            $ref: '#/definitions/ResultSetError'
-        500:
-          description: Server error
-          schema:
-            $ref: '#/definitions/ResultSetError'
-    post:
-      description: "Only one description is created in the configuration. \n\nRequires:\n- Admin role."
-      summary: DictionaryAccountSapCreateExcel
-      tags:
-        - dictionary-account-sap
-      operationId: DictionaryAccountSapCreateExcel
-      deprecated: false
-      consumes:
-        - application/xlsx
-      produces:
-        - application/json
-      parameters:
-        - name: X-Request-ID
-          in: header
-          required: false
-          type: string
-          format: uuid
-          description: ''
-        - name: body
-          in: body
-          required: true
-          description: Structure of the objects to be create with all fields to be populated
-          schema:
-            type: file
       responses:
         201:
           description: Successful operation
@@ -787,10 +1022,6 @@ paths:
     delete:
       description: >-
         Unselective cleanup of the configuration. Used in bulk load.
-
-        Requires:
-
-        - Admin role.
       summary: DictionaryAccountSapDeleteAll
       tags:
         - dictionary-account-sap
@@ -821,7 +1052,7 @@ paths:
             $ref: '#/definitions/ResultSetError'
   /dictionary/segment:
     post:
-      description: "Only one segment is created in the configuration. \n\nRequires:\n- Admin role"
+      description: "Only one segment is created in the configuration."
       summary: DictionarySegmentCreate
       tags:
         - dictionary-segment
@@ -889,10 +1120,6 @@ paths:
     delete:
       description: >-
         Unselective cleanup of the configuration.
-
-        Requires:
-
-        - Admin role.
       summary: DictionarySegmentDeleteAll
       tags:
         - dictionary-segment
@@ -907,6 +1134,112 @@ paths:
           type: string
           format: uuid
           description: ''
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetCount'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+  /dictionary/segment/{id}:
+    delete:
+      description: Removes single segment
+      summary: DictionarySegmentDeleteOne
+      tags:
+        - dictionary-segment
+      operationId: DictionarySegmentDeleteOne
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: id of segment
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetCount'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+    put:
+      description: Changes single segment, all columns
+      summary: DictionarySegmentUpdateOne
+      tags:
+        - dictionary-segment
+      operationId: DictionarySegmentUpdateOne
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: id of segment
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetCount'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+    patch:
+      description: Changes single segment, some columns
+      summary: DictionarySegmentUpdateAttributes
+      tags:
+        - dictionary-segment
+      operationId: DictionarySegmentUpdateAttributes
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: id of segment
       responses:
         200:
           description: Successful operation

@@ -41,10 +41,22 @@ export const PostUserInfoRequest = "PostUserInfoRequest";
 export const PostUserInfoFail = "PostUserInfoFail"
 ;
 
+// actions for GET /account
+export const GetAccountSuccess = "GetAccountSuccess";
+export const GetAccountRequest = "GetAccountRequest";
+export const GetAccountFail = "GetAccountFail"
+;
+
 // actions for POST /account
 export const PostAccountSuccess = "PostAccountSuccess";
 export const PostAccountRequest = "PostAccountRequest";
 export const PostAccountFail = "PostAccountFail"
+;
+
+// actions for DELETE /account
+export const DeleteAccountSuccess = "DeleteAccountSuccess";
+export const DeleteAccountRequest = "DeleteAccountRequest";
+export const DeleteAccountFail = "DeleteAccountFail"
 ;
 
 // actions for GET /account/{status}/{release}
@@ -65,10 +77,28 @@ export const DeleteAccountByStatusByReleaseByBscsAccountRequest = "DeleteAccount
 export const DeleteAccountByStatusByReleaseByBscsAccountFail = "DeleteAccountByStatusByReleaseByBscsAccountFail"
 ;
 
+// actions for PATCH /account/{status}/{release}/{bscsAccount}
+export const PatchAccountByStatusByReleaseByBscsAccountSuccess = "PatchAccountByStatusByReleaseByBscsAccountSuccess";
+export const PatchAccountByStatusByReleaseByBscsAccountRequest = "PatchAccountByStatusByReleaseByBscsAccountRequest";
+export const PatchAccountByStatusByReleaseByBscsAccountFail = "PatchAccountByStatusByReleaseByBscsAccountFail"
+;
+
+// actions for GET /order
+export const GetOrderSuccess = "GetOrderSuccess";
+export const GetOrderRequest = "GetOrderRequest";
+export const GetOrderFail = "GetOrderFail"
+;
+
 // actions for POST /order
 export const PostOrderSuccess = "PostOrderSuccess";
 export const PostOrderRequest = "PostOrderRequest";
 export const PostOrderFail = "PostOrderFail"
+;
+
+// actions for DELETE /order
+export const DeleteOrderSuccess = "DeleteOrderSuccess";
+export const DeleteOrderRequest = "DeleteOrderRequest";
+export const DeleteOrderFail = "DeleteOrderFail"
 ;
 
 // actions for GET /order/{status}/{release}
@@ -89,10 +119,22 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest = "Delete
 export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail = "DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail"
 ;
 
+// actions for PATCH /order/{status}/{release}/{bscsAccount}/{segment}
+export const PatchOrderByStatusByReleaseByBscsAccountBySegmentSuccess = "PatchOrderByStatusByReleaseByBscsAccountBySegmentSuccess";
+export const PatchOrderByStatusByReleaseByBscsAccountBySegmentRequest = "PatchOrderByStatusByReleaseByBscsAccountBySegmentRequest";
+export const PatchOrderByStatusByReleaseByBscsAccountBySegmentFail = "PatchOrderByStatusByReleaseByBscsAccountBySegmentFail"
+;
+
 // actions for POST /release
 export const PostReleaseSuccess = "PostReleaseSuccess";
 export const PostReleaseRequest = "PostReleaseRequest";
 export const PostReleaseFail = "PostReleaseFail"
+;
+
+// actions for DELETE /release/{release}
+export const DeleteReleaseByReleaseSuccess = "DeleteReleaseByReleaseSuccess";
+export const DeleteReleaseByReleaseRequest = "DeleteReleaseByReleaseRequest";
+export const DeleteReleaseByReleaseFail = "DeleteReleaseByReleaseFail"
 ;
 
 // actions for GET /dictionary/account/bscs
@@ -135,4 +177,22 @@ export const PostDictionarySegmentFail = "PostDictionarySegmentFail"
 export const DeleteDictionarySegmentSuccess = "DeleteDictionarySegmentSuccess";
 export const DeleteDictionarySegmentRequest = "DeleteDictionarySegmentRequest";
 export const DeleteDictionarySegmentFail = "DeleteDictionarySegmentFail"
+;
+
+// actions for PUT /dictionary/segment/{id}
+export const PutDictionarySegmentByIdSuccess = "PutDictionarySegmentByIdSuccess";
+export const PutDictionarySegmentByIdRequest = "PutDictionarySegmentByIdRequest";
+export const PutDictionarySegmentByIdFail = "PutDictionarySegmentByIdFail"
+;
+
+// actions for DELETE /dictionary/segment/{id}
+export const DeleteDictionarySegmentByIdSuccess = "DeleteDictionarySegmentByIdSuccess";
+export const DeleteDictionarySegmentByIdRequest = "DeleteDictionarySegmentByIdRequest";
+export const DeleteDictionarySegmentByIdFail = "DeleteDictionarySegmentByIdFail"
+;
+
+// actions for PATCH /dictionary/segment/{id}
+export const PatchDictionarySegmentByIdSuccess = "PatchDictionarySegmentByIdSuccess";
+export const PatchDictionarySegmentByIdRequest = "PatchDictionarySegmentByIdRequest";
+export const PatchDictionarySegmentByIdFail = "PatchDictionarySegmentByIdFail"
 ;

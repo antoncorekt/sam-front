@@ -149,7 +149,7 @@ export const PostRelease = () => {
 };
 
 
-// call DictionaryAccountSapCreateExcel
+// call DictionaryAccountSapCreate
 export const PostDictionaryAccountSap = (body:File) => {
     const settings = {		// set settings data
         url:`/dictionary/account/sap`,
@@ -223,6 +223,22 @@ export const GetSystemHealth = () => {
     return commonCallApi(settings);
 };
 
+
+// call AccountReadActiveAll
+export const GetAccount = () => {
+    const settings = {		// set settings data
+        url:`/account`,
+        contentType:'application/json',
+        httpMethod: 'GET',
+        body:undefined,
+        requestType: ACT.GetAccountRequest,
+        successType: ACT.GetAccountSuccess,
+        failType: ACT.GetAccountFail
+    };
+    return commonCallApi(settings);
+};
+
+
 // call AccountReadAll
 export const GetAccountByStatusByRelease = (status:Status15,release:Release) => {
     const settings = {		// set settings data
@@ -238,7 +254,22 @@ export const GetAccountByStatusByRelease = (status:Status15,release:Release) => 
 };
 
 
-// call OrderReadSome
+// call OrderReadActiveAll
+export const GetOrder = () => {
+    const settings = {		// set settings data
+        url:`/order`,
+        contentType:'application/json',
+        httpMethod: 'GET',
+        body:undefined,
+        requestType: ACT.GetOrderRequest,
+        successType: ACT.GetOrderSuccess,
+        failType: ACT.GetOrderFail
+    };
+    return commonCallApi(settings);
+};
+
+
+// call OrderReadAll
 export const GetOrderByStatusByRelease = (status:Status15,release:Release) => {
     const settings = {		// set settings data
         url:`/order/${status}/${release}`,
@@ -298,7 +329,7 @@ export const GetDictionarySegment = () => {
 };
 
 
-// call AccountReadSome
+// call AccountUpdateOne
 export const PutAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string) => {
     const settings = {		// set settings data
         url:`/account/${status}/${release}/${bscsAccount}`,
@@ -328,6 +359,81 @@ export const PutOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15,
 };
 
 
+// call DictionarySegmentUpdateOne
+export const PutDictionarySegmentById = (id:string) => {
+    const settings = {		// set settings data
+        url:`/dictionary/segment/${id}`,
+        contentType:'application/json',
+        httpMethod: 'PUT',
+        body:undefined,
+        requestType: ACT.PutDictionarySegmentByIdRequest,
+        successType: ACT.PutDictionarySegmentByIdSuccess,
+        failType: ACT.PutDictionarySegmentByIdFail
+    };
+    return commonCallApi(settings);
+};
+
+
+// call AccountUpdateAttributes
+export const PatchAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string) => {
+    const settings = {		// set settings data
+        url:`/account/${status}/${release}/${bscsAccount}`,
+        contentType:'application/json',
+        httpMethod: 'PATCH',
+        body:undefined,
+        requestType: ACT.PatchAccountByStatusByReleaseByBscsAccountRequest,
+        successType: ACT.PatchAccountByStatusByReleaseByBscsAccountSuccess,
+        failType: ACT.PatchAccountByStatusByReleaseByBscsAccountFail
+    };
+    return commonCallApi(settings);
+};
+
+
+// call OrderUpdateAttributesOne
+export const PatchOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15,release:Release,bscsAccount:string,segment:string) => {
+    const settings = {		// set settings data
+        url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
+        contentType:'application/json',
+        httpMethod: 'PATCH',
+        body:undefined,
+        requestType: ACT.PatchOrderByStatusByReleaseByBscsAccountBySegmentRequest,
+        successType: ACT.PatchOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
+        failType: ACT.PatchOrderByStatusByReleaseByBscsAccountBySegmentFail
+    };
+    return commonCallApi(settings);
+};
+
+
+// call DictionarySegmentUpdateAttributes
+export const PatchDictionarySegmentById = (id:string) => {
+    const settings = {		// set settings data
+        url:`/dictionary/segment/${id}`,
+        contentType:'application/json',
+        httpMethod: 'PATCH',
+        body:undefined,
+        requestType: ACT.PatchDictionarySegmentByIdRequest,
+        successType: ACT.PatchDictionarySegmentByIdSuccess,
+        failType: ACT.PatchDictionarySegmentByIdFail
+    };
+    return commonCallApi(settings);
+};
+
+
+// call AccountDeleteAll
+export const DeleteAccount = () => {
+    const settings = {		// set settings data
+        url:`/account`,
+        contentType:'application/json',
+        httpMethod: 'DELETE',
+        body:undefined,
+        requestType: ACT.DeleteAccountRequest,
+        successType: ACT.DeleteAccountSuccess,
+        failType: ACT.DeleteAccountFail
+    };
+    return commonCallApi(settings);
+};
+
+
 // call AccountDeleteOne
 export const DeleteAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string) => {
     const settings = {		// set settings data
@@ -343,6 +449,21 @@ export const DeleteAccountByStatusByReleaseByBscsAccount = (status:Status15,rele
 };
 
 
+// call OrderDeleteAll
+export const DeleteOrder = () => {
+    const settings = {		// set settings data
+        url:`/order`,
+        contentType:'application/json',
+        httpMethod: 'DELETE',
+        body:undefined,
+        requestType: ACT.DeleteOrderRequest,
+        successType: ACT.DeleteOrderSuccess,
+        failType: ACT.DeleteOrderFail
+    };
+    return commonCallApi(settings);
+};
+
+
 // call OrderDeleteOne
 export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15,release:Release,bscsAccount:string,segment:string) => {
     const settings = {		// set settings data
@@ -353,6 +474,21 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status
         requestType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest,
         successType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
         failType: ACT.DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail
+    };
+    return commonCallApi(settings);
+};
+
+
+// call ReleaseRevoke
+export const DeleteReleaseByRelease = (status:Status15,release:Release) => {
+    const settings = {		// set settings data
+        url:`/release/${release}`,
+        contentType:'application/json',
+        httpMethod: 'DELETE',
+        body:undefined,
+        requestType: ACT.DeleteReleaseByReleaseRequest,
+        successType: ACT.DeleteReleaseByReleaseSuccess,
+        failType: ACT.DeleteReleaseByReleaseFail
     };
     return commonCallApi(settings);
 };
@@ -383,6 +519,21 @@ export const DeleteDictionarySegment = () => {
         requestType: ACT.DeleteDictionarySegmentRequest,
         successType: ACT.DeleteDictionarySegmentSuccess,
         failType: ACT.DeleteDictionarySegmentFail
+    };
+    return commonCallApi(settings);
+};
+
+
+// call DictionarySegmentDeleteOne
+export const DeleteDictionarySegmentById = (id:string) => {
+    const settings = {		// set settings data
+        url:`/dictionary/segment/${id}`,
+        contentType:'application/json',
+        httpMethod: 'DELETE',
+        body:undefined,
+        requestType: ACT.DeleteDictionarySegmentByIdRequest,
+        successType: ACT.DeleteDictionarySegmentByIdSuccess,
+        failType: ACT.DeleteDictionarySegmentByIdFail
     };
     return commonCallApi(settings);
 };

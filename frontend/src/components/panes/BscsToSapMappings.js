@@ -23,35 +23,6 @@ import {
     DeleteUsersAccountActionType
 } from "../../reducers/bscs-account/bscs-account-store-type";
 
-const data = [
-    {
-        BSCSaccount: 70140200,
-        SAPaccount: 70130200,
-        vatInd: null,
-        citInd: null,
-        validFromDate: renderDateTime(Date.now() - 100000000),
-        WBScode: 'X-PLA-30000-02',
-        state: 'Roboczy',
-        createdDate: renderDateTime(Date.now() - 100000000),
-        createdBy: 'CGSYSADM',
-        modifiedDate: renderDateTime(Date.now()),
-        modifiedBy: 'CGSYSADM'
-    },
-    {
-        BSCSaccount: 70140200,
-        SAPaccount: 70130200,
-        vatInd: null,
-        citInd: null,
-        validFromDate: renderDateTime(Date.now() - 100000000),
-        WBScode: 'X-PLA-30000-02',
-        state: 'Zatwierdzony',
-        createdDate: renderDateTime(Date.now() - 100000000),
-        createdBy: 'CGSYSADM',
-        modifiedDate: renderDateTime(Date.now()),
-        modifiedBy: 'CGSYSADM'
-    }
-]
-
 const columns = (deleteNewAccountHandler, setAccountHandler, loadSapAccountHandler) => (sapAccountsDictionary, deleteAccountOperationFetching) => [
     {
         Cell: item => <Icon onClick={()=>deleteNewAccountHandler(item.original)} style={{ cursor: (deleteAccountOperationFetching === true ? "loading" : "pointer") }} type="delete" />,
@@ -60,7 +31,7 @@ const columns = (deleteNewAccountHandler, setAccountHandler, loadSapAccountHandl
     },
     {
         Header: 'Konto BSCS',
-        accessor: 'bscsAccount'
+        accessor: Account.ObjectProps.bscsAccount
     },
     {
         Cell: item => <SelectableCell options={sapAccountsDictionary}

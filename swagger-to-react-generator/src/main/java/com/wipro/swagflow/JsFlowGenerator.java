@@ -269,6 +269,11 @@ public class JsFlowGenerator {
 
 
             Map<String,Response> flowTypes = new HashMap<>();
+
+            if (o.getValue().getResponses() == null){
+               throw new IllegalStateException("Please check[ " + o.getKey() + " " + o.getValue().toString() + "]. Can't get entry set for flow Type generator " );
+            }
+
             for (Map.Entry<String, Response> r : o.getValue().getResponses().entrySet()) {
                 flowTypes.put(r.getKey(), r.getValue());
             }
