@@ -64,7 +64,6 @@ export const SegmentPropertiesInReduxHandler = () => {
                             }
                             : content)
                     }
-
                 }
             };
         },

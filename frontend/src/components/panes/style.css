@@ -1,3 +1,5 @@
+/* SAP ACCOUNTS */
+
 .sap-accounts .flex-end-row {
     display: flex;
     justify-content: flex-end;
@@ -37,6 +39,8 @@
 .sap-accounts .pagination-refresh :hover {
     color: lightskyblue;
 }
+
+/* SEGMENTS */
 
 .segments .flex-end-row {
     display: flex;
@@ -81,6 +85,8 @@
 .segments .cancel-button {
     margin: -5px 0px -5px 0px;
 }
+
+/* BSCS TO SAP MAPPINGS */
 
 .bscs-to-sap-mappings .flex-end-row {
     display: flex;
@@ -132,50 +138,56 @@
     color: lightskyblue;
 }
 
-.sap-to-segment-mappings .flex-end-row {
+/* BSCS TO SEGMENT AND ORDER MAPPINGS */
+
+.bscs-to-segment-and-order-mappings .flex-end-row {
     display: flex;
     justify-content: flex-end;
     margin-top: -10px;
 }
 
-.sap-to-segment-mappings .right-margin {
+.bscs-to-segment-and-order-mappings .right-margin {
     margin-right: 6px;
 }
 
-.sap-to-segment-mappings .select {
+.bscs-to-segment-and-order-mappings .select {
     width: 190px;
 }
 
-.sap-to-segment-mappings .table-container {
+.bscs-to-segment-and-order-mappings .table-container {
     margin-top: 4px;
     background-color: white;
 }
 
-.sap-to-segment-mappings .rt-thead {
+.bscs-to-segment-and-order-mappings .rt-thead {
     background-color: steelblue;
     color: white;
     font-weight: bold;
 }
 
-.sap-to-segment-mappings .rt-thead.-filters {
+.bscs-to-segment-and-order-mappings .rt-thead.-filters {
     background-color: lightsteelblue;
     color: black;
 }
 
-.sap-to-segment-mappings .centered-text {
+.bscs-to-segment-and-order-mappings .centered-text {
     text-align: center
 }
 
-.sap-to-segment-mappings .pagination-container {
+.bscs-to-segment-and-order-mappings .pagination-container {
     display: flex;
     flex-direction: row;
     margin: 6px 0px 6px 0px;
 }
 
-.sap-to-segment-mappings .pagination-refresh {
+.bscs-to-segment-and-order-mappings .pagination-refresh {
     margin-top: 5px;
 }
 
-.sap-to-segment-mappings .pagination-refresh :hover {
+.bscs-to-segment-and-order-mappings .pagination-refresh :hover {
     color: lightskyblue;
+}
+
+.bscs-to-segment-and-order-mappings .month-picker {
+    margin: -5px -10px -5px 0px;
 }

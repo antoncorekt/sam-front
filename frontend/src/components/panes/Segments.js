@@ -28,7 +28,7 @@ const DEFAULT_SEGM_CATEGORY = "PRIV";
 const columns = (that) => [
     {
         Header: 'Segment',
-        accessor: 'csTradeRef',
+        accessor: Segment.ObjectProps.csTradeRef,
         Cell: x => (
             <div>
                 <EditableCell
@@ -43,7 +43,7 @@ const columns = (that) => [
     },
     {
         Header: 'Kategoria',
-        accessor: 'segmCategory',
+        accessor: Segment.ObjectProps.segmCategory,
         Cell: x => (
             <div>
                 <SelectableCell
@@ -58,25 +58,24 @@ const columns = (that) => [
     },
     {
         Header: 'Data utworzenia',
-        accessor: 'entryDate',
+        accessor: Segment.ObjectProps.entryDate,
         Cell: x => (renderDateTime(x.original.entryDate))
     },
     {
         Header: 'Utworzył',
-        accessor: 'entryOwner'
+        accessor: Segment.ObjectProps.entryOwner
     },
     {
         Header: 'Data modyfikacji',
-        accessor: 'updateDate',
+        accessor: Segment.ObjectProps.updateDate,
         Cell: x => (renderDateTime(x.original.updateDate))
     },
     {
         Header: 'Zmodyfikował',
-        accessor: 'updateOwner'
+        accessor: Segment.ObjectProps.updateOwner
     },
     {
         Header: 'Akcja',
-        accessor: 'action',
         filterable: false,
         sortable: false,
         Cell: x => (
