@@ -11,3 +11,17 @@ export const GetOrderByStatusByReleaseHandler = () => {
         },
     }
 };
+
+export const PostOrderHandler = () => {
+    return {
+        PostOrderRequest: (state: OrderMappingsType, action: ActionRequestData<RequestSetOrder, null>) => {
+            return { ...state, POST: action };
+        },
+        PostOrderSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetOrder, ActionRequestData<RequestSetOrder, null>>) => {
+            return { ...state, POST: action };
+        },
+        PostOrderFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetOrder, null>>) => {
+            return { ...state, POST: action };
+        },
+    }
+};

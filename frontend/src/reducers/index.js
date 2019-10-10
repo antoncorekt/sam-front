@@ -22,10 +22,9 @@ import {
 } from "./segments/segments-reducer";
 import { UsersBscsToSapMappings } from "./bscs-account/bscs-account-reducer";
 import {
-    GetOrderByStatusByReleaseHandler
+    GetOrderByStatusByReleaseHandler,
+    PostOrderHandler
 } from "./order-mappings/order-mappings-reducer";
-
-import { tabsState } from "./tabReducer";
 
 export type MainStateType = {
     auth: AuthType,
@@ -45,8 +44,6 @@ export const mainReducer = combineReducers(
         sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler(), DeleteDictionaryAccountSapHandler()]),
         segments: createReducer(new SegmentsType(), [GetDictionarySegmentHandler(), PostDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
         accountMapping: createReducer(new AccountMappingType(), [UsersBscsToSapMappings()]),
-        orderMappings: createReducer(new OrderMappingsType(), [GetOrderByStatusByReleaseHandler()]),
-
-        tabsState
+        orderMappings: createReducer(new OrderMappingsType(), [GetOrderByStatusByReleaseHandler(), PostOrderHandler()])
     }
 );
