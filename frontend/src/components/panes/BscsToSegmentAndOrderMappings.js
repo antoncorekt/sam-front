@@ -4,8 +4,11 @@ import { Button, Icon, Input, Pagination, Select } from 'antd';
 import { renderDateTime } from '../../utils/Utils.js';
 import './style.css';
 import { connect } from "react-redux";
-import { GetOrderByStatusByRelease } from "../../api/api-func";
+import { RequestSetOrder } from "../../api/api-models";
+import { GetOrderByStatusByRelease, PostOrder } from "../../api/api-func";
 import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type.js';
+import { AuthType } from "../../reducers/auth/auth-store-type";
+import { Order } from '../../api/api-models.js';
 
 const DEFAULT_CURRENT_PAGE = 0;
 const DEFAULT_PAGE_SIZE = 30;
@@ -21,12 +24,12 @@ const columns = (that) => [
         filterable: false
     },
     {
-        Header: 'Konto SAP OFI',
-        accessor: 'SAPaccount'
+        Header: 'Konto BSCS',
+        accessor: 'bscsAccount'
     },
     {
         Header: 'Segment',
-        accessor: 'segment'
+        accessor: 'segmentCode'
     },
     {
         Header: 'Nr zamówienia',
@@ -43,19 +46,21 @@ const columns = (that) => [
     },
     {
         Header: 'Data utworzenia',
-        accessor: 'createdDate'
+        accessor: 'entryDate',
+        Cell: x => (renderDateTime(x.original.entryDate))
     },
     {
         Header: 'Utworzył',
-        accessor: 'createdBy'
+        accessor: 'entryOwner'
     },
     {
         Header: 'Data modyfikacji',
-        accessor: 'modifiedDate'
+        accessor: 'updateDate',
+        Cell: x => (renderDateTime(x.original.updateDate))
     },
     {
         Header: 'Zmodyfikował',
-        accessor: 'modifiedBy'
+        accessor: 'updateOwner'
     },
     {
         Header: 'Akcja',
@@ -65,7 +70,10 @@ const columns = (that) => [
     }
 ]
 
-class SapToSegmentAndOrderMappings extends Component {
+class BscsToSegmentAndOrderMappings extends Component<{
+    auth: AuthType,
+    orderMappings: OrderMappingsType
+}> {
 
     constructor(props) {
         super(props);
@@ -90,12 +98,18 @@ class SapToSegmentAndOrderMappings extends Component {
                 pageSize: DEFAULT_PAGE_SIZE,
                 filtered: []
             });
+
+            console.log(getOrderMappingsResponseReduxProperty(this.props, "GET", "data", []));
         }
 
         if (getOrderMappingsResponseReduxProperty(this.props, "GET", "count", -1)
             !== getOrderMappingsResponseReduxProperty(prevProps, "GET", "count", -1)) {
             this.setState({ filteredCount: this.reactTable.getResolvedState().sortedData.length });
         }
+    }
+
+    handleDataExport() {
+        this.props.insertOrderMapping();
     }
 
     render() {
@@ -125,7 +139,7 @@ class SapToSegmentAndOrderMappings extends Component {
                             </Button>
                         </InputGroup>
                     </div>
-                    <Button className="right-margin" type="primary" icon="export" onClick={null}>
+                    <Button className="right-margin" type="primary" icon="export" onClick={() => { this.handleDataExport() }}>
                         Eksportuj wszystkie
                     </Button>
                     <Button type="primary" icon="plus-circle" onClick={null}>
@@ -196,7 +210,8 @@ class SapToSegmentAndOrderMappings extends Component {
 }
 
 const mapStateToProps = (state: any) => ({
-    orders: state.orders,
+    auth: state.auth,
+    orderMappings: state.orderMappings,
 });
 
 export default connect(
@@ -205,6 +220,18 @@ export default connect(
         getAllOrders: (status, release) => {
             dispatch(
                 GetOrderByStatusByRelease(status, release))
+        },
+        insertOrderMapping: () => {
+            dispatch(
+                PostOrder(new RequestSetOrder.Builder()
+                    .withData(new Order.Builder()
+                        .withBscsAccount("10100215")  // TODO_TKB
+                        .withSegmentCode("SOHO") // TODO_TKB
+                        .build()
+                    )
+                    .build()
+                )
+            )
         }
     })
-)(SapToSegmentAndOrderMappings);
+)(BscsToSegmentAndOrderMappings);

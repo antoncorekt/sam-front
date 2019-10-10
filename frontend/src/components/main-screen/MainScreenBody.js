@@ -1,53 +1,48 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
-import { initTabPanes, TAB_IDS } from "../../actions/tabActions";
 import BscsToSapMappings from '../panes/BscsToSapMappings';
 import Logs from '../panes/Logs';
 import SapAccounts from '../panes/SapAccounts';
-import SapToSegmentAndOrderMappings from '../panes/SapToSegmentAndOrderMappings';
+import BscsToSegmentAndOrderMappings from '../panes/BscsToSegmentAndOrderMappings';
 import Segments from '../panes/Segments';
 import { Tabs } from 'antd';
 import './style.css';
 
 const TabPane = Tabs.TabPane;
 
-class MainScreenBody extends Component {
+const tabPanes = [
+    {
+        id: 1,
+        title: 'Konta SAP OFI',
+        content: <SapAccounts />
+    },
+    {
+        id: 2,
+        title: 'Segmenty rynku',
+        content: <Segments key="2" />
+    },
+    {
+        id: 3,
+        title: 'Mapowania kont BSCS na konta SAP OFI',
+        content: <BscsToSapMappings />
+    },
+    {
+        id: 4,
+        title: 'Mapowania kont BSCS na segmenty rynku i numery zamówień',
+        content: <BscsToSegmentAndOrderMappings />
+    },
+    {
+        id: 5,
+        title: 'Logi',
+        content: <Logs />
+    }
+];
+
+export default class MainScreenBody extends Component {
 
     constructor(props) {
         super(props);
 
-        const tabPanes = [
-            {
-                id: TAB_IDS.SAP_ACCOUNTS,
-                title: 'Konta SAP OFI',
-                content: <SapAccounts />
-            },
-            {
-                id: TAB_IDS.SEGMENTS,
-                title: 'Segmenty rynku',
-                content: <Segments key="2" />
-            },
-            {
-                id: TAB_IDS.BSCS_TO_SAP_MAPPINGS,
-                title: 'Mapowania kont BSCS na konta SAP OFI',
-                content: <BscsToSapMappings />
-            },
-            {
-                id: TAB_IDS.SAP_TO_SEGMENT_AND_ORDER_MAPPINGS,
-                title: 'Mapowania kont SAP OFI na segmenty rynku i numery zamówień',
-                content: <SapToSegmentAndOrderMappings />
-            },
-            {
-                id: TAB_IDS.LOGS,
-                title: 'Logi',
-                content: <Logs />
-            }];
-
-        this.props.initDefaultTabs(tabPanes);
-
-        this.state = {
-            activeKey: "" + TAB_IDS.SAP_TO_SEGMENT_AND_ORDER_MAPPINGS
-        };
+        this.state = { activeKey: "4" };
     }
 
     onChange = (activeKey) => {
@@ -63,7 +58,7 @@ class MainScreenBody extends Component {
                     onChange={this.onChange}
                 >
                     {
-                        this.props.store.tabsState.map((x) => (
+                        tabPanes.map((x) => (
                             <TabPane
                                 tab={x.title}
                                 key={"" + (x.id)}
@@ -77,16 +72,3 @@ class MainScreenBody extends Component {
         );
     }
 }
-
-export default connect(
-    state => ({
-        store: state
-    }),
-    dispatch => ({
-        initDefaultTabs: tabPanesData => {
-            dispatch(
-                initTabPanes(tabPanesData)
-            )
-        }
-    })
-)(MainScreenBody);

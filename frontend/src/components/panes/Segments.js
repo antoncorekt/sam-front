@@ -17,7 +17,8 @@ import {
     handleSegmentPostInRedux,
     unshiftSegmentInRedux
 } from "../../actions/segmentsActions";
-import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type.js';
+import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
+import { AuthType } from "../../reducers/auth/auth-store-type";
 
 const DEFAULT_CURRENT_PAGE = 0;
 const DEFAULT_PAGE_SIZE = 30;
@@ -100,6 +101,7 @@ const columns = (that) => [
 ];
 
 class Segments extends Component<{
+    auth: AuthType,
     segments: SegmentsType
 }> {
 
@@ -155,9 +157,7 @@ class Segments extends Component<{
             .withCsTradeRef("")
             .withSegmCategory(DEFAULT_SEGM_CATEGORY)
             .withEntryDate(Date.now())
-            .withEntryOwner("TODO_User3")
-            .withUpdateDate(Date.now())
-            .withUpdateOwner("TODO_User3")
+            .withEntryOwner(AuthType.getUserData(this.props.auth).user)
             .build();
         segmentData.modified = true;
         segmentData.newRow = true;
@@ -168,7 +168,7 @@ class Segments extends Component<{
         let segmentData = new Segment();
         segmentData[key] = value;
         segmentData.updateDate = Date.now();
-        segmentData.updateOwner = "TODO_User1";
+        segmentData.updateOwner = AuthType.getUserData(this.props.auth).user;
         this.props.editSegmentPropertiesInRedux(rowId, segmentData);
     }
 
@@ -177,7 +177,7 @@ class Segments extends Component<{
             this.props.insertSegment(rowData.csTradeRef, rowData.segmCategory);
         }
         else {
-            alert("PATCH request has NOT been handled yet!");
+            alert("Not handled.");
         }
     }
 
@@ -186,7 +186,7 @@ class Segments extends Component<{
             this.props.deleteSegmentInRedux(rowId);
         }
         else {
-            this.props.cancelEditionOfSegmentPropertiesInRedux(rowId, Date.now(), "TODO_User2");
+            this.props.cancelEditionOfSegmentPropertiesInRedux(rowId);
         }
     }
 
@@ -277,6 +277,7 @@ class Segments extends Component<{
 }
 
 const mapStateToProps = (state: MainStateType) => ({
+    auth: state.auth,
     segments: state.segments,
 });
 

@@ -95,21 +95,6 @@ export const PostUserReloginHandler = () => {
     }
 };
 
-
-
-export const PostOrderHandler = () => {
-    return {
-        PostOrderRequest:(state:any, action:ActionRequestData<RequestSetOrder, null>)=>{
-            return {...state, ...action};
-        },
-        PostOrderSuccess:(state:any, action:ActionResponseData<ResultSetOrder,ActionRequestData<RequestSetOrder, null>>)=>{
-            return {...state, ...action};
-        },
-        PostOrderFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetOrder, null>>)=>{
-            return {...state, ...action};
-        },
-    }
-};
 export const PutOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
     return {
         PutOrderByStatusByReleaseByBscsAccountBySegmentRequest:(state:any, action:ActionRequestData<null, PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>)=>{
