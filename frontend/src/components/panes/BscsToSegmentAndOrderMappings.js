@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { Button, DatePicker, Icon, Input, Pagination, Select } from 'antd';
-import { EditableCell } from './common/EditableCell.js';
-import { renderDateTime } from '../../utils/Utils.js';
+import { EditableCell } from './common/EditableCell';
+import { SelectableCell } from "./common/SelectableCell";
+import { renderDateTime } from '../../utils/Utils';
 import './style.css';
 import { connect } from "react-redux";
 import { RequestSetOrder } from "../../api/api-models";
 import { GetOrderByStatusByRelease, PostOrder } from "../../api/api-func";
 import {
+    cancelEditionOfOrderMappingPropertiesInRedux,
     editOrderMappingPropertiesInRedux,
     unshiftOrderMappingInRedux
 } from "../../actions/orderMappingsActions";
-import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type.js';
+import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type';
 import { AuthType } from "../../reducers/auth/auth-store-type";
 import { Order } from '../../api/api-models.js';
+import moment from 'moment';
 
 const DEFAULT_CURRENT_PAGE = 0;
 const DEFAULT_PAGE_SIZE = 30;
@@ -31,11 +34,33 @@ const columns = (that) => [
     },
     {
         Header: 'Konto BSCS',
-        accessor: Order.ObjectProps.bscsAccount
+        accessor: Order.ObjectProps.bscsAccount,
+        Cell: x => (
+            <div>
+                <SelectableCell
+                    rowId={x.index}
+                    field_key='bscsAccount'
+                    value={x.original.bscsAccount}
+                    options={["TODO"]}
+                    handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
+                />
+            </div>
+        )
     },
     {
         Header: 'Segment',
-        accessor: Order.ObjectProps.segmentCode
+        accessor: Order.ObjectProps.segmentCode,
+        Cell: x => (
+            <div>
+                <SelectableCell
+                    rowId={x.index}
+                    field_key='segmentCode'
+                    value={x.original.segmentCode}
+                    options={["TODO"]}
+                    handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
+                />
+            </div>
+        )
     },
     {
         Header: 'Nr zamówienia',
@@ -61,7 +86,9 @@ const columns = (that) => [
                     className="month-picker"
                     size="small"
                     format="YYYY-MM-01"
+                    value={moment(x.original.validFromDate)}
                     placeholder="Wybierz miesiąc"
+                    onChange={(date, dateString) => { that.handleCellModification(x.index, "validFromDate", dateString) }}
                 />
             </div>
         )
@@ -92,7 +119,25 @@ const columns = (that) => [
     {
         Header: 'Akcja',
         filterable: false,
-        sortable: false
+        sortable: false,
+        Cell: x => (
+            <div>
+                {x.original.modified === true ?
+                    <div>
+                        <Button
+                            className="save-button"
+                            size="small"
+                            onClick={() => that.handleSaveRowChanges(x.index, x.original)}
+                        >Zapisz</Button>
+                        <Button
+                            className="cancel-button"
+                            size="small"
+                            onClick={() => that.handleCancelRowChanges(x.index)}
+                        >Anuluj</Button>
+                    </div> : null
+                }
+            </div>
+        ),
     }
 ]
 
@@ -137,6 +182,9 @@ class BscsToSegmentAndOrderMappings extends Component<{
             currentPage: DEFAULT_CURRENT_PAGE
         });
         let orderMappingData = new Order.Builder()
+            .withBscsAccount("A")
+            .withSegmentCode("B")
+            .withStatus("W")
             .withEntryDate(Date.now())
             .withEntryOwner(AuthType.getUserData(this.props.auth).user)
             .build();
@@ -151,6 +199,24 @@ class BscsToSegmentAndOrderMappings extends Component<{
         orderMappingData.updateDate = Date.now();
         orderMappingData.updateOwner = AuthType.getUserData(this.props.auth).user;
         this.props.editOrderMappingPropertiesInRedux(rowId, orderMappingData);
+    }
+
+    handleSaveRowChanges(rowId, rowData) {
+        if (getOrderMappingsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
+            alert("Not handled.");
+        }
+        else {
+            alert("Not handled.");
+        }
+    }
+
+    handleCancelRowChanges(rowId) {
+        if (getOrderMappingsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
+            alert("Not handled.");
+        }
+        else {
+            this.props.cancelEditionOfOrderMappingPropertiesInRedux(rowId);
+        }
     }
 
     handleDataExport() {
@@ -276,6 +342,11 @@ export default connect(
         editOrderMappingPropertiesInRedux: (rowId, orderMappingData: Order) => {
             dispatch(
                 editOrderMappingPropertiesInRedux(rowId, orderMappingData)
+            )
+        },
+        cancelEditionOfOrderMappingPropertiesInRedux: (rowId) => {
+            dispatch(
+                cancelEditionOfOrderMappingPropertiesInRedux(rowId)
             )
         },
         unshiftOrderMappingInRedux: (orderMappingData: Order) => {

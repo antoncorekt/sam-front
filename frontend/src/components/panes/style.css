@@ -191,3 +191,11 @@
 .bscs-to-segment-and-order-mappings .month-picker {
     margin: -5px -10px -5px 0px;
 }
+
+.bscs-to-segment-and-order-mappings .save-button {
+    margin: -5px 3px -5px 0px;
+}
+
+.bscs-to-segment-and-order-mappings .cancel-button {
+    margin: -5px 0px -5px 0px;
+}

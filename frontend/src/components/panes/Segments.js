@@ -3,9 +3,9 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { Button, Icon, Modal, Pagination } from 'antd';
-import { EditableCell } from './common/EditableCell.js';
-import { SelectableCell } from './common/SelectableCell.js';
-import { renderDateTime } from '../../utils/Utils.js';
+import { EditableCell } from './common/EditableCell';
+import { SelectableCell } from './common/SelectableCell';
+import { renderDateTime } from '../../utils/Utils';
 import './style.css';
 import { connect } from "react-redux";
 import { RequestSetSegment, Segment } from "../../api/api-models";
@@ -154,7 +154,7 @@ class Segments extends Component<{
         });
         let segmentData = new Segment.Builder()
             .withCsTradeRef("")
-            .withSegmCategory(DEFAULT_SEGM_CATEGORY)
+            .withSegmCategory("")
             .withEntryDate(Date.now())
             .withEntryOwner(AuthType.getUserData(this.props.auth).user)
             .build();

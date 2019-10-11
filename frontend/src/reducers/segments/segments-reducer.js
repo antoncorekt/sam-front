@@ -37,6 +37,14 @@ export const PostDictionarySegmentHandler = () => {
 };
 
 export const SegmentPropertiesInReduxHandler = () => {
+    function getValue(action, content, property) {
+        return action.segmentData[property] !== undefined ? action.segmentData[property] : content[property];
+    }
+
+    function getInitialValue(content, property) {
+        return content.initial !== undefined ? content.initial[property] : content[property];
+    }
+
     return {
         editSegmentPropertiesInRedux: (state, action) => {
             return {
@@ -48,18 +56,16 @@ export const SegmentPropertiesInReduxHandler = () => {
                         data: state.GET.response.data.map((content, index) => index === action.rowId
                             ? {
                                 ...content,
-                                csTradeRef: action.segmentData.csTradeRef !== undefined
-                                    ? action.segmentData.csTradeRef : content.csTradeRef,
-                                segmCategory: action.segmentData.segmCategory !== undefined
-                                    ? action.segmentData.segmCategory : content.segmCategory,
-                                updateDate: action.segmentData.updateDate,
-                                updateOwner: action.segmentData.updateOwner,
-                                originalCsTradeRef: action.segmentData.csTradeRef !== undefined && content.originalCsTradeRef === undefined
-                                    ? content.csTradeRef : content.originalCsTradeRef,
-                                originalSegmCategory: action.segmentData.segmCategory !== undefined && content.originalSegmCategory === undefined
-                                    ? content.segmCategory : content.originalSegmCategory,
-                                originalUpdateDate: content.originalUpdateDate === undefined ? content.updateDate : content.originalUpdateDate,
-                                originalUpdateOwner: content.originalUpdateOwner === undefined ? content.updateOwner : content.originalUpdateOwner,
+                                csTradeRef: getValue(action, content, 'csTradeRef'),
+                                segmCategory: getValue(action, content, 'segmCategory'),
+                                updateDate: getValue(action, content, 'updateDate'),
+                                updateOwner: getValue(action, content, 'updateOwner'),
+                                initial: {
+                                    csTradeRef: getInitialValue(content, 'csTradeRef'),
+                                    segmCategory: getInitialValue(content, 'segmCategory'),
+                                    updateDate: getInitialValue(content, 'updateDate'),
+                                    updateOwner: getInitialValue(content, 'updateOwner')
+                                },
                                 modified: true
                             }
                             : content)
@@ -77,14 +83,11 @@ export const SegmentPropertiesInReduxHandler = () => {
                         data: state.GET.response.data.map((content, index) => index === action.rowId
                             ? {
                                 ...content,
-                                csTradeRef: content.originalCsTradeRef !== undefined ? content.originalCsTradeRef : content.csTradeRef,
-                                segmCategory: content.originalSegmCategory !== undefined ? content.originalSegmCategory : content.segmCategory,
-                                updateDate: content.originalUpdateDate,
-                                updateOwner: content.originalUpdateOwner,
-                                originalCsTradeRef: undefined,
-                                originalSegmCategory: undefined,
-                                originalUpdateDate: undefined,
-                                originalUpdateOwner: undefined,
+                                csTradeRef: content.initial.csTradeRef,
+                                segmCategory: content.initial.segmCategory,
+                                updateDate: content.initial.updateDate,
+                                updateOwner: content.initial.updateOwner,
+                                initial: undefined,
                                 modified: false
                             }
                             : content)
@@ -128,10 +131,7 @@ export const SegmentPropertiesInReduxHandler = () => {
                         data: state.GET.response.data.map((content, index) => content.csTradeRef === action.csTradeRef
                             ? {
                                 ...content,
-                                originalCsTradeRef: undefined,
-                                originalSegmCategory: undefined,
-                                originalUpdateDate: undefined,
-                                originalUpdateOwner: undefined,
+                                initial: undefined,
                                 modified: false,
                                 newRow: undefined
                             }

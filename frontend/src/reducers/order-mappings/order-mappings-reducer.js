@@ -27,6 +27,14 @@ export const PostOrderHandler = () => {
 };
 
 export const OrderMappingPropertiesInReduxHandler = () => {
+    function getValue(action, content, property) {
+        return action.orderMappingData[property] !== undefined ? action.orderMappingData[property] : content[property];
+    }
+
+    function getInitialValue(content, property) {
+        return content.initial !== undefined ? content.initial[property] : content[property];
+    }
+
     return {
         editOrderMappingPropertiesInRedux: (state, action) => {
             return {
@@ -38,27 +46,45 @@ export const OrderMappingPropertiesInReduxHandler = () => {
                         data: state.GET.response.data.map((content, index) => index === action.rowId
                             ? {
                                 ...content,
-                                bscsAccount: action.orderMappingData.bscsAccount !== undefined
-                                    ? action.orderMappingData.bscsAccount : content.bscsAccount,
-                                segmentCode: action.orderMappingData.segmentCode !== undefined
-                                    ? action.orderMappingData.segmentCode : content.segmentCode,
-                                orderNumber: action.orderMappingData.orderNumber !== undefined
-                                    ? action.orderMappingData.orderNumber : content.orderNumber,
-                                validFromDate: action.orderMappingData.validFromDate !== undefined
-                                    ? action.orderMappingData.validFromDate : content.validFromDate,
-                                updateDate: action.orderMappingData.updateDate,
-                                updateOwner: action.orderMappingData.updateOwner,
-                                originalBscsAccount: action.orderMappingData.bscsAccount !== undefined && content.originalBscsAccount === undefined
-                                    ? content.bscsAccount : content.originalBscsAccount,
-                                originalSegmentCode: action.orderMappingData.segmentCode !== undefined && content.originalSegmentCode === undefined
-                                    ? content.segmentCode : content.originalSegmentCode,
-                                originalOrderNumber: action.orderMappingData.orderNumber !== undefined && content.originalOrderNumber === undefined
-                                    ? content.orderNumber : content.originalOrderNumber,
-                                originalValidFromDate: action.orderMappingData.validFromDate !== undefined && content.originalValidFromDate === undefined
-                                    ? content.validFromDate : content.originalValidFromDate,
-                                originalUpdateDate: content.originalUpdateDate === undefined ? content.updateDate : content.originalUpdateDate,
-                                originalUpdateOwner: content.originalUpdateOwner === undefined ? content.updateOwner : content.originalUpdateOwner,
+                                bscsAccount: getValue(action, content, 'bscsAccount'),
+                                segmentCode: getValue(action, content, 'segmentCode'),
+                                orderNumber: getValue(action, content, 'orderNumber'),
+                                validFromDate: getValue(action, content, 'validFromDate'),
+                                updateDate: getValue(action, content, 'updateDate'),
+                                updateOwner: getValue(action, content, 'updateOwner'),
+                                initial: {
+                                    bscsAccount: getInitialValue(content, 'bscsAccount'),
+                                    segmentCode: getInitialValue(content, 'segmentCode'),
+                                    orderNumber: getInitialValue(content, 'orderNumber'),
+                                    validFromDate: getInitialValue(content, 'validFromDate'),
+                                    updateDate: getInitialValue(content, 'updateDate'),
+                                    updateOwner: getInitialValue(content, 'updateOwner')
+                                },
                                 modified: true
+                            }
+                            : content)
+                    }
+                }
+            };
+        },
+        cancelEditionOfOrderMappingPropertiesInRedux: (state, action) => {
+            return {
+                ...state,
+                GET: {
+                    ...state.GET,
+                    response: {
+                        ...state.GET.response,
+                        data: state.GET.response.data.map((content, index) => index === action.rowId
+                            ? {
+                                ...content,
+                                bscsAccount: content.initial.bscsAccount,
+                                segmentCode: content.initial.segmentCode,
+                                orderNumber: content.initial.orderNumber,
+                                validFromDate: content.initial.validFromDate,
+                                updateDate: content.initial.updateDate,
+                                updateOwner: content.initial.updateOwner,
+                                initial: undefined,
+                                modified: false
                             }
                             : content)
                     }
