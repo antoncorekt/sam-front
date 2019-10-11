@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { Icon } from 'antd';
-import './style.css';
+import './style.less';
 
 export const downloadReport = (data) => {
     createAndDownloadFile(data, "Crash_Raport_SAM_" + (Date.now() / 1000 | 0) + ".log");

@@ -27,7 +27,7 @@ class SecuredComponent extends React.Component<{
             }
             else {
                 if (this.props.renderIfAccessDenied === false) {
-                    return undefined;
+                    return "";
                 }
                 divClassName = "secure-denied";
 
