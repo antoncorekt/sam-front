@@ -1,6 +1,28 @@
 import React from "react";
+import {Button} from "antd";
+import SecuredComponent from "../common/SecuredComponent";
+import {Role} from "../../../api/api-models";
 
 
 export class AccountOperationPanel extends React.Component{
+
+    render() {
+
+        const {releaseVersion, userRole} = this.props;
+
+        return <div className="width100 flex space-between">
+            <div>
+                Current release: {releaseVersion}
+            </div>
+            <div className="flex">
+                <Button onClick={()=>{alert("Handler Exportuj wszystkie")}}>Exportuj wszystkie</Button>
+                <Button onClick={this.props.addUserAccount}>Dodaj mapowanie</Button>
+                {/*<Button onClick={()=>{alert("Handler revert release")}}>Revert release</Button>*/}
+                <SecuredComponent group={Role.CONTROL}>
+                    <Button onClick={()=>{alert("Handler revert release")}}>Revert release</Button>
+                </SecuredComponent>
+            </div>
+        </div>;
+    }
 
 }

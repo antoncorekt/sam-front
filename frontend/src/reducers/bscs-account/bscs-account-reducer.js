@@ -50,18 +50,18 @@ export const PostAccountHandler = () => {
     }
 };
 
-export const GetAccountByStatusByReleaseHandler = () => {
+export const GetAccount = () => {
     const ReduxUsersAccountsPropName = "backendAccounts";
     return {
-        GetAccountByStatusByReleaseRequest:reduceHandlerToProp(ReduxUsersAccountsPropName)((state:any, action:ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>)=>{
-            return {...state, ...action};
-        }),
-        GetAccountByStatusByReleaseSuccess:reduceHandlerToProp(ReduxUsersAccountsPropName)((state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
-            return {...state, ...action};
-        }),
-        GetAccountByStatusByReleaseFail:reduceHandlerToProp(ReduxUsersAccountsPropName)((state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
-            return {...state, ...action};
-        }),
+        GetAccountRequest:(state:any, action:ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>)=>{
+            return {...state, backendAccounts: action, backendAccountsOriginal: action};
+        },
+        GetAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
+            return {...state, backendAccounts: action, backendAccountsOriginal: action};
+        },
+        GetAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
+            return {...state, backendAccounts: action, backendAccountsOriginal: {...state.backendAccountsOriginal, fail:true}};
+        },
     }
 };
 export const PutAccountByStatusByReleaseByBscsAccountHandler = () => {
@@ -96,18 +96,23 @@ export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
 export const UsersBscsToSapMappings = () => {
     const ReduxUsersAccountsPropName = "usersAccounts";
     return {
-        AddEmptyAccountAction: reduceHandlerToProp(ReduxUsersAccountsPropName)((state: UserAccountType, action: AddEmptyAccountActionType)=>({
+        AddEmptyAccountAction: reduceHandlerToProp(ReduxUsersAccountsPropName)((state: UserAccountType, action: AddEmptyAccountActionType)=>{
+            const now = new Date();
+            return {
             ...state,
-            accounts: [
+                accounts: [
                 new Account.Builder()
                     .withEntryOwner(action.user)
                     .withFrontendIdFrontProp(uuidv4())
                     .withEntryDate(new Date())
-                    .withStatus("F")
+                    .withStatus("W")
+                    .withReleaseId(0)
+                    .withValidFromDate(new Date(now.getFullYear(), now.getMonth()+2, 1, 0, 0, 0, 0))
                     .build(),
                 ...state.accounts
             ]
-        })),
+            }
+        }),
         DeleteUsersAccountAction: reduceHandlerToProp(ReduxUsersAccountsPropName)((state: UserAccountType, action: DeleteUsersAccountActionType)=>({
             ...state,
             accounts: state.accounts.filter(

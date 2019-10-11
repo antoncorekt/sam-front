@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { Icon, Modal } from 'antd';
-import './style.css';
+import './style.less';
 import type { MainStateType } from "../../reducers";
 import { RequestPanelType } from "../../reducers/request-panel-reducer";
 

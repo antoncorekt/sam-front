@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import BscsToSapMappings from '../panes/BscsToSapMappings';
+import BscsToSapMappings from '../panes/BscsToSapMappings/AccountMappingTab';
 import Logs from '../panes/Logs';
 import SapAccounts from '../panes/SapAccounts';
 import BscsToSegmentAndOrderMappings from '../panes/BscsToSegmentAndOrderMappings';
 import Segments from '../panes/Segments';
 import { Tabs } from 'antd';
-import './style.css';
 
 const TabPane = Tabs.TabPane;
 

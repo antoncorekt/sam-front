@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import RequestQueuePanel from './RequestQueuePanel';
 import Reporter from './Reporter';
 import logo from '../../media/logo_small.jpg';
-import './style.css';
+import './style.less';
 import {connect} from "react-redux";
 import type {MainStateType} from "../../reducers";
 import {GetSystemVersion, PostUserInfo, PostUserLogoff} from "../../api/api-func";

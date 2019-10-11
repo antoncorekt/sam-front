@@ -6,7 +6,7 @@ import {Button, Input, notification, Radio} from "antd";
 import { CookiesProvider } from 'react-cookie';
 import plPL from 'antd/lib/locale-provider/pl_PL';
 import { LocaleProvider } from 'antd';
-import './ngkew.less';
+import './main-style.less';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
