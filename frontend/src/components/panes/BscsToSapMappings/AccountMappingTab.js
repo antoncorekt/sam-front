@@ -4,13 +4,13 @@ import {connect} from "react-redux";
 import {Account, Release, RequestSetAccount, Status15, User} from "../../../api/api-models";
 import {
     DeleteAccountByStatusByReleaseByBscsAccount, GetAccount,
-    GetAccountByStatusByRelease, GetDictionaryAccountSap,
+    GetAccountByStatusByRelease, GetDictionaryAccountSap, PatchAccountByStatusByReleaseByBscsAccount,
     PostAccount
 } from "../../../api/api-func";
 import {
     AccountMappingType,
     AddEmptyAccountActionType,
-    DeleteUsersAccountActionType
+    DeleteUsersAccountActionType, ModifyAccountActionType
 } from "../../../reducers/bscs-account/bscs-account-store-type";
 import {SapAccountStoreType} from "../../../reducers/sap-account/sap-account-store-type";
 import {AuthType} from "../../../reducers/auth/auth-store-type";
@@ -37,6 +37,14 @@ class AccountMappingTab extends Component<{
 
     componentDidMount(): void {
         console.log("AccountMappingTab componentDidMount")
+    }
+
+    componentDidUpdate(prevProps: Readonly<{accountsStore: AccountMappingType}>, prevState: Readonly<S>, snapshot: SS): void {
+        if (!AccountMappingType.isDeleteAccountSuccessful(prevProps.accountsStore)
+            && AccountMappingType.isDeleteAccountSuccessful(this.props.accountsStore)
+        ){
+            this.props.getAccountsFromBackend();
+        }
     }
 
     renderAccountView = (viewMode: ViewMode) => {
@@ -121,18 +129,9 @@ export default connect(
             }
         },
         modifyAccount: (account: Account) => {
-            if (AccountMappingType.isAccountFromBackend(account)){
-                console.log("del account from backend", account);
-                dispatch(
-                    DeleteAccountByStatusByReleaseByBscsAccount(account.status, account.releaseId, account.bscsAccount)
-                )
-            }
-            else {
-                console.log("del account from frontend memory", account);
-                dispatch(
-                    DeleteUsersAccountActionType.createAction(account)
-                )
-            }
+            dispatch(
+                ModifyAccountActionType.createAction(account)
+            )
         },
         getSapOfi: () => {
             console.log("LOAD DICT ACCOUNT SAP!!!");

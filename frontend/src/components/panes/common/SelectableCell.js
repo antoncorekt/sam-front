@@ -65,7 +65,7 @@ export class SelectableCell extends React.Component{
 
 SelectableCell.propTypes = {
     handleCellModification: PropTypes.func.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string,
     options: PropTypes.array.isRequired,
     loadDictionaryHandler: PropTypes.func
 };

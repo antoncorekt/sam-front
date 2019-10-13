@@ -18,8 +18,11 @@ export class AccountOperationPanel extends React.Component{
                 <Button onClick={()=>{alert("Handler Exportuj wszystkie")}}>Exportuj wszystkie</Button>
                 <Button onClick={this.props.addUserAccount}>Dodaj mapowanie</Button>
                 {/*<Button onClick={()=>{alert("Handler revert release")}}>Revert release</Button>*/}
-                <SecuredComponent group={Role.CONTROL}>
+                <SecuredComponent group={Role.CONTROL} renderIfAccessDenied={false}>
                     <Button onClick={()=>{alert("Handler revert release")}}>Revert release</Button>
+                </SecuredComponent>
+                <SecuredComponent group={Role.BOOKER} renderIfAccessDenied={false}>
+                    <Button onClick={()=>{alert("Handler revert release")}}>Wszystko do kontrolingu</Button>
                 </SecuredComponent>
             </div>
         </div>;

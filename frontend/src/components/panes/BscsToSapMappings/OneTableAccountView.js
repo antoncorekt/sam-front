@@ -1,47 +1,76 @@
 import React, { Component } from 'react';
-import {Checkbox, Icon, Pagination, Spin} from "antd";
+import {Button, Checkbox, DatePicker, Icon, Pagination, Spin} from "antd";
 import {AccountMappingType} from "../../../reducers/bscs-account/bscs-account-store-type";
 import ReactTable from "react-table";
 import {getPageSizeOption, renderDateTime} from "../../../utils/Utils";
 import {SapAccountStoreType} from "../../../reducers/sap-account/sap-account-store-type";
 import {AuthType} from "../../../reducers/auth/auth-store-type";
-import {Account} from "../../../api/api-models";
+import {Account, Role, Status, Status15} from "../../../api/api-models";
 import {SelectableCell} from "../common/SelectableCell";
+import {EditableCell} from "../common/EditableCell";
+import SecuredComponent from "../common/SecuredComponent";
+import type {AccountEntry} from "../../../reducers/bscs-account/bscs-account-store-type";
+import moment from "moment";
+const { MonthPicker } = DatePicker;
 
-const columns = (deleteNewAccountHandler, setAccountHandler, loadSapAccountHandler) => (sapAccountsDictionary, deleteAccountOperationFetching) => [
-    {
-        Cell: item => <Icon onClick={()=>deleteNewAccountHandler(item.original)} style={{ cursor: (deleteAccountOperationFetching === true ? "loading" : "pointer") }} type="delete" />,
-        width: 26,
-        filterable: false
-    },
+const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithAccount) =>
+    (sapAccountsDictionary) => [
+    // {
+    //     Cell: item => <Icon onClick={()=>deleteNewAccountHandler(item.original)} style={{ cursor: (deleteAccountOperationFetching === true ? "loading" : "pointer") }} type="delete" />,
+    //     width: 26,
+    //     filterable: false
+    // },
     {
         Header: 'Konto BSCS',
-        accessor: Account.ObjectProps.bscsAccount
+        accessor: Account.ObjectProps.bscsAccount,
+        Cell: item => (
+            <SecuredComponent group={Role.BOOKER}>
+                <EditableCell
+                    rowId={item.index}
+                    field_key={Account.ObjectProps.bscsAccount}
+                    value={item.original.bscsAccount}
+                    upperCased={true}
+                    handleCellModification={(key, value) => { setAccountHandler({...item.original, bscsAccount:value}) }}
+                />
+            </SecuredComponent>
+        )
     },
+
     {
-        Cell: item => <SelectableCell options={sapAccountsDictionary}
-                                      value={item.original.ofiSapAccount}
-                                      loadDictionaryHandler={loadSapAccountHandler}
-                                      handleCellModification={(val)=>setAccountHandler({...item.original, ofiSapAccount:val})}/>,
+        Cell: item => <SecuredComponent group={Role.BOOKER}>
+                    <SelectableCell options={sapAccountsDictionary}
+                                          value={item.original.ofiSapAccount}
+                                          loadDictionaryHandler={loadSapAccountHandler}
+                                          handleCellModification={(val)=>setAccountHandler({...item.original, ofiSapAccount:val})}/>
+                </SecuredComponent>,
         Header: 'Konto SAP OFI',
-        // accessor: 'ofiSapAccount'
+        accessor: Account.ObjectProps.ofiSapAccount
     },
     {
         Header: 'VAT',
-        accessor: 'vatInd',
+        accessor:  Account.ObjectProps.vatCodeInd,
+        width: 26,
         Cell: () => {
             return (
-                <Checkbox className="checkbox" id={null} checked={true} onChange={null} />
+                <SecuredComponent group={Role.BOOKER}>
+                    <Checkbox className="checkbox" id={null} checked={true} onChange={null} />
+                </SecuredComponent>
             )
         },
         filterable: false
     },
     {
         Header: 'CIT',
-        accessor: 'citInd',
-        Cell: () => {
+        accessor: Account.ObjectProps.citMarkerVatFlag,
+        width: 26,
+        Cell: item => {
+
             return (
-                <Checkbox className="checkbox" id={null} checked={true} onChange={null} />
+                <SecuredComponent group={Role.BOOKER}>
+                    <Checkbox className="checkbox" id={null}
+                              checked={item.original.citMarkerVatFlag === "X"}
+                              onChange={(e)=>{setAccountHandler({...item.original, citMarkerVatFlag:e.target.checked === true ? "X" : ""})}} />
+                </SecuredComponent>
             )
         },
         filterable: false
@@ -49,17 +78,38 @@ const columns = (deleteNewAccountHandler, setAccountHandler, loadSapAccountHandl
     {
         Header: 'Ważne od',
         accessor: Account.ObjectProps.validFromDate,
-        Cell: x => (renderDateTime(x.original.validFromDate))
+        Cell: item => (<SecuredComponent group={Role.BOOKER}>
+                <div>
+                    <MonthPicker
+                        className="month-picker"
+                        size="small"
+                        format="YYYY-MM-01"
+                        value={moment(item.original.validFromDate)}
+                        placeholder="Wybierz miesiąc"
+                        onChange={(date, dateString) => { setAccountHandler({...item.original, validFromDate:dateString}) }}
+                    />
+                </div>
+            </SecuredComponent>
+            )
     },
     {
         Header: 'Kod WBS',
-        accessor: 'WBScode'
+        Cell: item => <SecuredComponent group={Role.CONTROL}>
+            <EditableCell
+                rowId={item.index}
+                field_key={Account.ObjectProps.ofiSapWbsCode}
+                value={item.original.ofiSapWbsCode}
+                upperCased={true}
+                handleCellModification={(key, value) => { setAccountHandler({...item.original, ofiSapWbsCode:value}) }}
+            />
+        </SecuredComponent>,
+        accessor: Account.ObjectProps.ofiSapWbsCode
     },
-    {
-        Header: 'Status',
-        accessor: 'state',
-        Cell: row => <div className="centered-text">{row.value}</div>
-    },
+    // {
+    //     Header: 'Status',
+    //     accessor: 'state',
+    //     Cell: row => <div className="centered-text">{row.value}</div>
+    // },
     {
         Header: 'Data utworzenia',
         accessor: 'createdDate'
@@ -78,17 +128,17 @@ const columns = (deleteNewAccountHandler, setAccountHandler, loadSapAccountHandl
     },
     {
         Header: 'Akcja',
-        accessor: 'action',
         filterable: false,
-        sortable: false
+        sortable: false,
+        width: 300,
+        Cell: row => <div>{renderUserActionWithAccount(row.original)}</div>
     }
 ];
 
 
 type BscsToSapMappingsStateType = {
     pageSize: number,
-    filtered: Array<any>,
-    account: Account
+    filtered: Array<any>
 }
 
 function foo(x) { return this.x; }
@@ -100,32 +150,103 @@ export default class OneTableAccountView extends Component<{
     getSapOfi: foo
 }> {
 
-    state = {
+    state: BscsToSapMappingsStateType = {
         pageSize: 10,
-        filtered: [],
-        account: null
+        filtered: []
+    };
+
+    renderUserActionWithAccount = (accountStore: AccountMappingType, userRole: Role, ) => (account: Account) => {
+
+        const renderDeleteButton = () => (
+            <Button size="small"
+                    onClick={()=>this.props.deleteAccount(account)}
+                    loading={this.props.accountsStore.deleteAccount.fetching}
+            >
+                Usun
+            </Button>
+        );
+
+        const renderIfModifiedAccount = (renderFunc) => {
+
+            const originalAccount: AccountEntry = AccountMappingType.getOriginalAccountIfModified(accountStore, account);
+
+            if (originalAccount !== undefined && !AccountMappingType.isAccountsDataDeepEquals(originalAccount.account, account)){
+                return renderFunc(account, originalAccount.account);
+            }
+            return "";
+        };
+
+        const renderCancelButton = (account, originalAccount) => {
+            return (
+                <Button size="small"
+                        onClick={()=>this.props.modifyAccount(originalAccount)}
+                >
+                    Anuluj zmiane
+                </Button>
+            )
+        };
+
+        const renderUpdateAccountButton = (account, originalAccount) => {
+            return (
+                <Button size="small"
+                        onClick={()=>this.props.postAccount(account)}
+                >
+                    Zapisz
+                </Button>
+            )
+        };
+
+        if (!AccountMappingType.isAccountFromBackend(account)){
+            return <div>
+                <Button size="small"
+                        onClick={()=>this.props.postAccount(account)}
+                >
+                    Zapisz
+                </Button>
+                {renderDeleteButton()}
+            </div>
+        }
+
+        if (account.status === Status15.W && userRole === Role.BOOKER){
+
+                return <div className="flex">
+                    {renderDeleteButton()}
+                    {renderIfModifiedAccount(renderUpdateAccountButton)}
+                    {renderIfModifiedAccount(renderCancelButton)}
+
+                </div>
+        }
+
+        if (account.status === Status15.C && userRole === Role.CONTROL){
+            return <div className="flex">
+                <Button size="small">Anuluj</Button>
+                <Button size="small"> Zatwierdz</Button>
+                {renderIfModifiedAccount(renderUpdateAccountButton)}
+                {renderIfModifiedAccount(renderCancelButton())}
+            </div>
+        }
     };
 
     render() {
 
         const sapAccountDictName = SapAccountStoreType.getSapAccounts(this.props.sapOfi)
-            .map(sapAcc => sapAcc.name);
+            .map(sapAcc => sapAcc.sapOfiAccount);
 
         const data = AccountMappingType.getAllAccounts(this.props.accountsStore);
 
 
         return <div className="flex flex-column width100">
             <div className="width100">
-                <Spin tip={"Pobieram słownik"} spinning={AccountMappingType.isLoading(this.props.accountsStore)}>
+                <Spin tip={"Pobieram mapowania"} spinning={AccountMappingType.isLoading(this.props.accountsStore)}>
                     <ReactTable
                         data={data}
                         columns={columns(
-                            this.props.deleteAccount,
                             this.props.modifyAccount,
-                            this.props.getSapOfi
+                            this.props.getSapOfi,
+                            this.renderUserActionWithAccount(this.props.accountsStore, AuthType.getUserData(this.props.userInfo).role)
                         )(
                             sapAccountDictName,
-                            this.props.accountsStore.deleteAccount.fetching
+                            this.props.accountsStore.deleteAccount.fetching,
                         )}
                         noDataText="Brak danych"
                         filterable

@@ -10,11 +10,12 @@ import {AuthType} from "../auth/auth-store-type";
 import {
     AccountMappingType,
     AddEmptyAccountActionType,
-    DeleteUsersAccountActionType, ModifyUsersAccountActionType,
+    DeleteUsersAccountActionType, ModifyAccountActionType,
     UserAccountType
 } from "./bscs-account-store-type";
 import {actionRequest} from "../../actions/connectToBackendActions";
 import {reduceHandlerToProp, uuidv4} from "../../utils/Utils";
+import type {AccountEntry} from "./bscs-account-store-type";
 
 
 export const PostAccountHandler = () => {
@@ -54,13 +55,24 @@ export const GetAccount = () => {
     const ReduxUsersAccountsPropName = "backendAccounts";
     return {
         GetAccountRequest:(state:any, action:ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>)=>{
-            return {...state, backendAccounts: action, backendAccountsOriginal: action};
+            return {...state, backendAccounts: action};
         },
         GetAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
-            return {...state, backendAccounts: action, backendAccountsOriginal: action};
+
+            const actionWithFrontendId = {
+                ...action,
+                response: {
+                    ...action.response,
+                    data: action.response.data.map(
+                        acc => ({...acc, frontendId: uuidv4()})
+                    )
+                }
+            };
+
+            return {...state, backendAccounts: actionWithFrontendId, backendAccountsOriginal: []};
         },
         GetAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
-            return {...state, backendAccounts: action, backendAccountsOriginal: {...state.backendAccountsOriginal, fail:true}};
+            return {...state, backendAccounts: action};
         },
     }
 };
@@ -103,9 +115,10 @@ export const UsersBscsToSapMappings = () => {
                 accounts: [
                 new Account.Builder()
                     .withEntryOwner(action.user)
+                    .withOfiSapAccount("WYBIEZ SAP OFI")
                     .withFrontendIdFrontProp(uuidv4())
                     .withEntryDate(new Date())
-                    .withStatus("W")
+                    .withStatus("F")
                     .withReleaseId(0)
                     .withValidFromDate(new Date(now.getFullYear(), now.getMonth()+2, 1, 0, 0, 0, 0))
                     .build(),
@@ -119,11 +132,40 @@ export const UsersBscsToSapMappings = () => {
                 account => account.frontendId !== action.account.frontendId
             )
         })),
-        ModifyUsersAccountAction: reduceHandlerToProp(ReduxUsersAccountsPropName)((state: UserAccountType, action: ModifyUsersAccountActionType)=>({
+        ModifyUsersAccountAction: reduceHandlerToProp(ReduxUsersAccountsPropName)((state: UserAccountType, action: ModifyAccountActionType)=>({
             ...state,
-            accounts: state.accounts.filter(
-                account => account.frontendId !== action.account.frontendId
+            accounts: state.accounts.map(
+                account => AccountMappingType.isAccountsEquals(account, action.account)
+                    ? action.account
+                    : account
             )
         })),
+        ModifyBackendAccountAction: (state: AccountMappingType, action: ModifyAccountActionType)=>{
+            let originalModifiedAccount: Array<AccountEntry> = state.backendAccountsOriginal;
+
+            const modifiedAccounts = state.backendAccounts.response.data.map(
+                account => {
+                    if (AccountMappingType.isAccountsEquals(account, action.account)){
+                        if (originalModifiedAccount.find(accEntry => accEntry.frontendId === account.frontendId) === undefined) {
+                            originalModifiedAccount = [...originalModifiedAccount, {frontendId:account.frontendId, account: account}]
+                        }
+                        return action.account;
+                    }
+                    return account;
+                }
+            );
+
+            return {
+                ...state,
+                backendAccountsOriginal: originalModifiedAccount,
+                backendAccounts: {
+                    ...state.backendAccounts,
+                    response: {
+                        ...state.backendAccounts.response,
+                        data: modifiedAccounts
+                    }
+                },
+            }
+        },
     }
 };
