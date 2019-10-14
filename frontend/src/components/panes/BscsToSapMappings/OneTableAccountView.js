@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button, Checkbox, DatePicker, Icon, Pagination, Spin} from "antd";
-import {AccountMappingType} from "../../../reducers/bscs-account/bscs-account-store-type";
+import {AccountMappingType} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import ReactTable from "react-table";
 import {getPageSizeOption, renderDateTime} from "../../../utils/Utils";
 import {SapAccountStoreType} from "../../../reducers/sap-account/sap-account-store-type";
@@ -9,7 +9,7 @@ import {Account, Role, Status, Status15} from "../../../api/api-models";
 import {SelectableCell} from "../common/SelectableCell";
 import {EditableCell} from "../common/EditableCell";
 import SecuredComponent from "../common/SecuredComponent";
-import type {AccountEntry} from "../../../reducers/bscs-account/bscs-account-store-type";
+import type {AccountEntry} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import moment from "moment";
 const { MonthPicker } = DatePicker;
 

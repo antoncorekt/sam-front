@@ -11,7 +11,7 @@ import {
     AccountMappingType,
     AddEmptyAccountActionType,
     DeleteUsersAccountActionType, ModifyAccountActionType
-} from "../../../reducers/bscs-account/bscs-account-store-type";
+} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import {SapAccountStoreType} from "../../../reducers/sap-account/sap-account-store-type";
 import {AuthType} from "../../../reducers/auth/auth-store-type";
 import OneTableAccountView from "./OneTableAccountView";

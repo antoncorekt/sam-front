@@ -4,31 +4,32 @@ import RequestQueuePanel from './RequestQueuePanel';
 import Reporter from './Reporter';
 import logo from '../../media/logo_small.jpg';
 import './style.less';
-import {connect} from "react-redux";
-import type {MainStateType} from "../../reducers";
-import {GetSystemVersion, PostUserInfo, PostUserLogoff} from "../../api/api-func";
+import { connect } from "react-redux";
+import type { MainStateType } from "../../reducers";
+import { GetDictionaryAccountBscs, GetDictionarySegment, GetSystemVersion, PostUserInfo, PostUserLogoff } from "../../api/api-func";
 import {
     RequestSetUserLogoff,
     Status,
     UserLogoffConf,
     Version
 } from "../../api/api-models";
-import {globalLoginContext} from "../../api/common-middleware";
-import {AuthType} from "../../reducers/auth/auth-store-type";
+import { globalLoginContext } from "../../api/common-middleware";
+import { AuthType } from "../../reducers/auth/auth-store-type";
 
 class MainScreenHeader extends Component<{
     auth: AuthType,
     backendInfo: Version
 }> {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.props.getBackendVersion();
+        this.props.getSegmentsDictionary();
+        this.props.getBscsAccountsDictionary();
     }
 
     render() {
-
         const userLogin = AuthType.getUserData(this.props.auth).user;
 
         return (
@@ -44,7 +45,7 @@ class MainScreenHeader extends Component<{
                     </div>
                     <div className="user vertical-middle">User: {userLogin} </div>
                     <Button className="logout-button" size="small"
-                            onClick={()=>this.props.logout(userLogin)}>Logout</Button>
+                        onClick={() => this.props.logout(userLogin)}>Logout</Button>
                 </div>
             </div >
         );
@@ -53,13 +54,15 @@ class MainScreenHeader extends Component<{
 
 const mapStateToProps = (state: MainStateType) => ({
     auth: state.auth,
-    backendInfo: state.backendInfo
+    backendInfo: state.backendInfo,
+    segments: state.segments,
+    bscsAccount: state
 });
 
 export default connect(
     mapStateToProps,
     dispatch => ({
-        logout: (user: string)=>{
+        logout: (user: string) => {
             globalLoginContext.bearerToken = null;
             dispatch(
                 PostUserLogoff(new RequestSetUserLogoff.Builder()
@@ -82,6 +85,16 @@ export default connect(
         getUserName: () => {
             dispatch(
                 PostUserInfo()
+            )
+        },
+        getSegmentsDictionary: () => {
+            dispatch(
+                GetDictionarySegment()
+            )
+        },
+        getBscsAccountsDictionary: () => {
+            dispatch(
+                GetDictionaryAccountBscs()
             )
         }
     })

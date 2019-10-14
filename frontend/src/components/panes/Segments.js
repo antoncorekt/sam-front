@@ -114,8 +114,6 @@ class Segments extends Component<{
             filtered: [],
             filteredCount: DEFAULT_FILTERED_COUNT
         };
-
-        this.props.getAllSegments();
     }
 
     componentDidUpdate(prevProps) {
@@ -154,7 +152,7 @@ class Segments extends Component<{
         });
         let segmentData = new Segment.Builder()
             .withCsTradeRef("")
-            .withSegmCategory("")
+            .withSegmCategory(DEFAULT_SEGM_CATEGORY)
             .withEntryDate(Date.now())
             .withEntryOwner(AuthType.getUserData(this.props.auth).user)
             .build();
