@@ -61,7 +61,7 @@ class LoginPage extends React.Component<{
             </div>
             <Radio.Group onChange={(e)=>this.setState({group: e.target.value})} value={this.state.group}>
                 <Radio value={Role.CONTROL}>{Role.CONTROL}</Radio>
-                <Radio value={Role.ADMIN}>{Role.ADMIN}</Radio>
+                {/*<Radio value={Role.ADMIN}>{Role.ADMIN}</Radio>*/}
                 <Radio value={Role.BOOKER}>{Role.BOOKER}</Radio>
             </Radio.Group>
 

@@ -22,26 +22,27 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     // },
     {
         Header: 'Konto BSCS',
-        accessor: Account.ObjectProps.bscsAccount,
+        // accessor: Account.ObjectProps.bscsAccount,
         Cell: item => (
-            <SecuredComponent group={Role.BOOKER}>
+            <SecuredComponent group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
                 <EditableCell
-                    rowId={item.index}
+                    rowId={item.original.frontendId}
                     field_key={Account.ObjectProps.bscsAccount}
                     value={item.original.bscsAccount}
                     upperCased={true}
-                    handleCellModification={(key, value) => { setAccountHandler({...item.original, bscsAccount:value}) }}
+                    handleCellModification={(key, value) => {setAccountHandler({...item.original, bscsAccount:value}) }}
                 />
             </SecuredComponent>
         )
     },
 
     {
-        Cell: item => <SecuredComponent group={Role.BOOKER}>
+        Cell: item => <SecuredComponent group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
                     <SelectableCell options={sapAccountsDictionary}
                                           value={item.original.ofiSapAccount}
                                           loadDictionaryHandler={loadSapAccountHandler}
-                                          handleCellModification={(val)=>setAccountHandler({...item.original, ofiSapAccount:val})}/>
+                                          rowId={item.original.frontendId}
+                                          handleCellModification={(key, val)=>setAccountHandler({...item.original, ofiSapAccount:val})}/>
                 </SecuredComponent>,
         Header: 'Konto SAP OFI',
         accessor: Account.ObjectProps.ofiSapAccount
@@ -84,9 +85,9 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
                         className="month-picker"
                         size="small"
                         format="YYYY-MM-01"
-                        value={moment(item.original.validFromDate)}
+                        value={moment(item.original.validFromDate).startOf('day')}
                         placeholder="Wybierz miesiąc"
-                        onChange={(date, dateString) => { setAccountHandler({...item.original, validFromDate:dateString}) }}
+                        onChange={(date, dateString) => { setAccountHandler({...item.original, validFromDate:dateString+"T00:00:00.000Z"}) }}
                     />
                 </div>
             </SecuredComponent>
@@ -142,6 +143,23 @@ type BscsToSapMappingsStateType = {
 }
 
 function foo(x) { return this.x; }
+
+const getColorTaskByStatus = (status:Status15) => {
+    switch (status) {
+        case Status15.C: return {
+            background: "#ff9548"
+        };
+        case Status15.W:return {
+            background: "#b0ff7c"
+        };
+        case Status15.P: return {
+            background: "#4a49ff"
+        };
+        default: return {
+            background: "#fffdf8"
+        };
+    }
+};
 
 export default class OneTableAccountView extends Component<{
     sapOfi: SapAccountStoreType,
@@ -211,6 +229,7 @@ export default class OneTableAccountView extends Component<{
 
                 return <div className="flex">
                     {renderDeleteButton()}
+                    <Button size="small" onClick={()=>this.props.patchAccountStatus(account, Status15.C)}> Zatwierdz</Button>
                     {renderIfModifiedAccount(renderUpdateAccountButton)}
                     {renderIfModifiedAccount(renderCancelButton)}
 
@@ -219,7 +238,7 @@ export default class OneTableAccountView extends Component<{
 
         if (account.status === Status15.C && userRole === Role.CONTROL){
             return <div className="flex">
-                <Button size="small">Anuluj</Button>
+                <Button size="small" onClick={()=>this.props.patchAccountStatus(account, Status15.W)}>Anuluj</Button>
                 <Button size="small"> Zatwierdz</Button>
                 {renderIfModifiedAccount(renderUpdateAccountButton)}
                 {renderIfModifiedAccount(renderCancelButton())}
@@ -233,7 +252,6 @@ export default class OneTableAccountView extends Component<{
             .map(sapAcc => sapAcc.sapOfiAccount);
 
         const data = AccountMappingType.getAllAccounts(this.props.accountsStore);
-
 
         return <div className="flex flex-column width100">
             <div className="width100">
@@ -254,6 +272,14 @@ export default class OneTableAccountView extends Component<{
                         showPagination={false}
                         pageSize={this.state.pageSize}
                         onFilteredChange={filtered => this.setState({ filtered })}
+                        getTrProps={(state, rowInfo, column, k) => {
+                            if (rowInfo === undefined) {
+                                return { style: { visibility: "hidden" } };
+                            }
+                            return {
+                                style: getColorTaskByStatus(rowInfo.original.status)
+                            };
+                        }}
                     />
                 </Spin>
             </div>

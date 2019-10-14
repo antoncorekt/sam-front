@@ -1,9 +1,14 @@
 import {_, ActionRequestData, ActionResponseData} from "../../api/common-middleware";
 import {
-    Account, DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
-    GetAccountByStatusByReleaseQueryParams, PutAccountByStatusByReleaseByBscsAccountQueryParams,
+    Account,
+    DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+    GetAccountByStatusByReleaseQueryParams,
+    PatchAccountByStatusByReleaseByBscsAccountQueryParams,
+    PutAccountByStatusByReleaseByBscsAccountQueryParams,
     RequestSetAccount,
-    ResultSetAccount, ResultSetAccounts, ResultSetCount,
+    ResultSetAccount,
+    ResultSetAccounts,
+    ResultSetCount,
     ResultSetError
 } from "../../api/api-models";
 import {AuthType} from "../auth/auth-store-type";
@@ -25,21 +30,17 @@ export const PostAccountHandler = () => {
             return {...state, postAccount: action};
         },
         PostAccountSuccess:(state:AccountMappingType, action:ActionResponseData<ResultSetAccount,ActionRequestData<RequestSetAccount, null>>)=>{
+
             return {...state,
                 postAccount:action,
+                usersAccounts: {
+                    accounts:state.usersAccounts.accounts.filter(acc => acc.frontendId !== action.requestAction.body.data.frontendId)
+                },
                 backendAccounts: {
                     ...state.backendAccounts,
                     response: {
                         ...state.backendAccounts.response,
-                        data: AccountMappingType.getBackendAccount(state)
-                            .map(acc => {
-                                if (AccountMappingType.isAccountsEquals(acc, action.response.data)){
-                                    return acc;
-                                }
-                                else {
-                                    return action.response.data;
-                                }
-                            })
+                        data: [{...action.response.data, frontendId: uuidv4()}, ...AccountMappingType.getBackendAccount(state)]
 
                     }
                 }
@@ -55,7 +56,7 @@ export const GetAccount = () => {
     const ReduxUsersAccountsPropName = "backendAccounts";
     return {
         GetAccountRequest:(state:any, action:ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>)=>{
-            return {...state, backendAccounts: action};
+            return {...state, backendAccounts: { ...action,...state.backendAccounts}};
         },
         GetAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
 
@@ -105,6 +106,20 @@ export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
     }
 };
 
+export const PatchAccountByStatusByReleaseByBscsAccountHandler = () => {
+    return {
+        PatchAccountByStatusByReleaseByBscsAccountRequest:(state:any, action:ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
+            return {...state, patchAccount:action};
+        },
+        PatchAccountByStatusByReleaseByBscsAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+            return {...state, patchAccount:action};
+        },
+        PatchAccountByStatusByReleaseByBscsAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+            return {...state, patchAccount:action};
+        },
+    }
+};
+
 export const UsersBscsToSapMappings = () => {
     const ReduxUsersAccountsPropName = "usersAccounts";
     return {
@@ -120,7 +135,7 @@ export const UsersBscsToSapMappings = () => {
                     .withEntryDate(new Date())
                     .withStatus("F")
                     .withReleaseId(0)
-                    .withValidFromDate(new Date(now.getFullYear(), now.getMonth()+2, 1, 0, 0, 0, 0))
+                    .withValidFromDate(new Date(now.getFullYear(), now.getMonth()+2, 1).toISOString())
                     .build(),
                 ...state.accounts
             ]

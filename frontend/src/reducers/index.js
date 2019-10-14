@@ -22,19 +22,17 @@ import {
     SegmentPropertiesInReduxHandler
 } from "./segments/segments-reducer";
 import {
-    GetDictionaryAccountBscsHandler
-} from "./bscs-accounts/bscs-accounts-reducer";
-import {
-    DeleteAccountByStatusByReleaseByBscsAccountHandler,
-    GetAccount,
-    PostAccountHandler,
-    UsersBscsToSapMappings
-} from "./bscs-to-sap-mappings/bscs-to-sap-mappings-reducer";
-import {
     GetOrderByStatusByReleaseHandler,
     OrderMappingPropertiesInReduxHandler,
     PostOrderHandler
 } from "./order-mappings/order-mappings-reducer";
+import {GetDictionaryAccountBscsHandler} from "./bscs-accounts/bscs-accounts-reducer";
+import {
+    DeleteAccountByStatusByReleaseByBscsAccountHandler, PatchAccountByStatusByReleaseByBscsAccountHandler,
+    PostAccountHandler,
+    UsersBscsToSapMappings
+} from "./bscs-to-sap-mappings/bscs-to-sap-mappings-reducer";
+import {GetAccount} from "../api/api-func";
 
 export type MainStateType = {
     auth: AuthType,
@@ -55,7 +53,7 @@ export const mainReducer = combineReducers(
         bscsAccounts: createReducer(new BscsAccountsType(), [GetDictionaryAccountBscsHandler()]),
         sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler(), DeleteDictionaryAccountSapHandler()]),
         segments: createReducer(new SegmentsType(), [GetDictionarySegmentHandler(), PostDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
-        accountMapping: createReducer(new AccountMappingType(), [UsersBscsToSapMappings(), GetAccount(), PostAccountHandler(), DeleteAccountByStatusByReleaseByBscsAccountHandler()]),
+        accountMapping: createReducer(new AccountMappingType(), [UsersBscsToSapMappings(), GetAccount(), PostAccountHandler(), DeleteAccountByStatusByReleaseByBscsAccountHandler(), PatchAccountByStatusByReleaseByBscsAccountHandler()]),
         orderMappings: createReducer(new OrderMappingsType(), [GetOrderByStatusByReleaseHandler(), OrderMappingPropertiesInReduxHandler(), PostOrderHandler()])
     }
 );

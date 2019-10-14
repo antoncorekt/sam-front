@@ -5,6 +5,7 @@ export class Status15 {
     static get C(){ return 'C'; } // to control
     static get P(){ return 'P'; } // prod
     static get W(){ return 'W'; } // work
+    static get F(){ return 'F'; } // frontend
 }
 
 export class Release {

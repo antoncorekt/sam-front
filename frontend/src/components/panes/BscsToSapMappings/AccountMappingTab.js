@@ -40,8 +40,10 @@ class AccountMappingTab extends Component<{
     }
 
     componentDidUpdate(prevProps: Readonly<{accountsStore: AccountMappingType}>, prevState: Readonly<S>, snapshot: SS): void {
-        if (!AccountMappingType.isDeleteAccountSuccessful(prevProps.accountsStore)
-            && AccountMappingType.isDeleteAccountSuccessful(this.props.accountsStore)
+        if ((!AccountMappingType.isDeleteAccountSuccessful(prevProps.accountsStore)
+            && AccountMappingType.isDeleteAccountSuccessful(this.props.accountsStore)) ||
+            (!AccountMappingType.isPatchAccountSuccessful(prevProps.accountsStore)
+                && AccountMappingType.isPatchAccountSuccessful(this.props.accountsStore))
         ){
             this.props.getAccountsFromBackend();
         }
@@ -97,9 +99,16 @@ export default connect(
     dispatch => ({
         postAccount: (account: Account) => {
 
+            let accToBackend: Account = account;
+
+            accToBackend.status = undefined;
+            accToBackend.releaseId = undefined;
+            accToBackend.entryDate = undefined;
+            accToBackend.entryOwner = undefined;
+
             dispatch(
                 PostAccount(new RequestSetAccount.Builder()
-                    .withData(account)
+                    .withData(accToBackend)
                     .build()
                 )
             )
@@ -131,6 +140,28 @@ export default connect(
         modifyAccount: (account: Account) => {
             dispatch(
                 ModifyAccountActionType.createAction(account)
+            )
+        },
+        patchAccount: (account: Account) => {
+            dispatch(
+                PatchAccountByStatusByReleaseByBscsAccount(account.status,
+                    account.releaseId,
+                    account.bscsAccount,
+                    new RequestSetAccount.Builder()
+                        .withData(account)
+                        .build()
+                )
+            )
+        },
+        patchAccountStatus: (account: Account, status: Status15) => {
+            dispatch(
+                PatchAccountByStatusByReleaseByBscsAccount(account.status,
+                    account.releaseId,
+                    account.bscsAccount,
+                    new RequestSetAccount.Builder()
+                        .withData({status: status})
+                        .build()
+                )
             )
         },
         getSapOfi: () => {

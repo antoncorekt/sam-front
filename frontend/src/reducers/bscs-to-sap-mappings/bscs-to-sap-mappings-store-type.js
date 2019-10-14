@@ -2,13 +2,17 @@ import {ActionRequestData, ActionResponseData} from "../../api/common-middleware
 import {
     Account,
     AccountDictSap,
-    DeleteAccountByStatusByReleaseByBscsAccountQueryParams, GetAccountByStatusByReleaseQueryParams,
+    DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+    GetAccountByStatusByReleaseQueryParams,
+    PatchAccountByStatusByReleaseByBscsAccountQueryParams,
     PutAccountByStatusByReleaseByBscsAccountQueryParams,
     RequestSetAccount,
     ResultSetAccount,
     ResultSetAccountDictSaps,
     ResultSetAccounts,
-    ResultSetCount, Status, Status15
+    ResultSetCount,
+    Status,
+    Status15
 } from "../../api/api-models";
 
 export class AddEmptyAccountActionType {
@@ -67,6 +71,7 @@ export class AccountMappingType {
     backendAccountsOriginal: Array<AccountEntry> = [];
     usersAccounts: UserAccountType = new UserAccountType();
     postAccount: ActionResponseData<ResultSetAccount,ActionRequestData<RequestSetAccount, null>> = {};
+    patchAccount: ActionResponseData<ResultSetAccounts,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>> = {};
     deleteAccount: ActionResponseData<ResultSetCount,ActionRequestData<DeleteAccountByStatusByReleaseByBscsAccountQueryParams, null>> = {};
     putAccount: ActionResponseData<ResultSetAccounts,ActionRequestData<PutAccountByStatusByReleaseByBscsAccountQueryParams, null>> = {};
 
@@ -123,9 +128,9 @@ export class AccountMappingType {
             && store.deleteAccount.response.count !== 0;
     }
 
-    static isPutAccountSuccessful(store: AccountMappingType):boolean {
-        return store.putAccount.response !== undefined
-            && store.putAccount.response.status === Status.OK;
+    static isPatchAccountSuccessful(store: AccountMappingType):boolean {
+        return store.patchAccount.response !== undefined
+            && store.patchAccount.response.count !== 0;
     }
 
 }
