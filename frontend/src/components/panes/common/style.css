@@ -1,5 +1,6 @@
 .editable-cell {
     background: aliceblue;
+    height: 14px;
 }
 
 .editable-cell .input {
@@ -7,12 +8,9 @@
     height: 24px;
 }
 
-.editable-cell .label {
-    height: 14px;
-}
-
 .selectable-cell {
     background: aliceblue;
+    height: 14px;
 }
 
 .selectable-cell .select {

@@ -134,16 +134,3 @@ export const PostReleaseHandler = () => {
         },
     }
 };
-export const GetDictionaryAccountBscsHandler = () => {
-    return {
-        GetDictionaryAccountBscsRequest:(state:any, action:ActionRequestData<null, null>)=>{
-            return {...state, ...action};
-        },
-        GetDictionaryAccountBscsSuccess:(state:any, action:ActionResponseData<ResultSetAccountDictBscss,ActionRequestData<null, null>>)=>{
-            return {...state, ...action};
-        },
-        GetDictionaryAccountBscsFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-            return {...state, ...action};
-        },
-    }
-};

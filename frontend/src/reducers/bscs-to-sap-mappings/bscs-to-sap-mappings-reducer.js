@@ -17,10 +17,10 @@ import {
     AddEmptyAccountActionType,
     DeleteUsersAccountActionType, ModifyAccountActionType,
     UserAccountType
-} from "./bscs-account-store-type";
+} from "./bscs-to-sap-mappings-store-type";
 import {actionRequest} from "../../actions/connectToBackendActions";
 import {reduceHandlerToProp, uuidv4} from "../../utils/Utils";
-import type {AccountEntry} from "./bscs-account-store-type";
+import type {AccountEntry} from "./bscs-to-sap-mappings-store-type";
 
 
 export const PostAccountHandler = () => {
@@ -40,7 +40,7 @@ export const PostAccountHandler = () => {
                     ...state.backendAccounts,
                     response: {
                         ...state.backendAccounts.response,
-                        data: [{...action.response.data, frontendId: uuidv4()},...state.backendAccounts.response.data]
+                        data: [{...action.response.data, frontendId: uuidv4()}, ...AccountMappingType.getBackendAccount(state)]
 
                     }
                 }

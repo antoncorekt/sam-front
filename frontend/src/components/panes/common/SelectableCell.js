@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import './style.css';
@@ -11,7 +11,7 @@ type SelectableCellStateType = {
     loadDictionary: false
 }
 
-export class SelectableCell extends React.Component{
+export class SelectableCell extends React.Component {
 
     state: SelectableCellStateType = {
         editable: false,
@@ -29,7 +29,7 @@ export class SelectableCell extends React.Component{
                 className="selectable-cell"
                 onClick={() => {
                     if (!this.state.editable) {
-                        this.setState({editable: true});
+                        this.setState({ editable: true });
                     }
                 }}
             >
@@ -38,6 +38,7 @@ export class SelectableCell extends React.Component{
                         <Select
                             className="select"
                             size="small"
+                            showSearch={true}
                             ref={ref => this.selectRef = ref}
                             value={this.state.value}
                             onChange={(value) => {
@@ -54,9 +55,7 @@ export class SelectableCell extends React.Component{
                             }
                         </Select>
                         :
-                        <div className="label">
-                            {this.props.value}
-                        </div>
+                        this.props.value
                 }
             </div>
         )

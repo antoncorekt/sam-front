@@ -6,15 +6,16 @@ import { SelectableCell } from "./common/SelectableCell";
 import { renderDateTime } from '../../utils/Utils';
 import './style.css';
 import { connect } from "react-redux";
-import { RequestSetOrder } from "../../api/api-models";
-import { GetOrderByStatusByRelease, PostOrder } from "../../api/api-func";
+import { GetOrderByStatusByRelease } from "../../api/api-func";
 import {
     cancelEditionOfOrderMappingPropertiesInRedux,
     editOrderMappingPropertiesInRedux,
     unshiftOrderMappingInRedux
 } from "../../actions/orderMappingsActions";
-import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type';
 import { AuthType } from "../../reducers/auth/auth-store-type";
+import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type';
+import { getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
+import { getbscsAccountsResponseReduxProperty } from '../../reducers/bscs-accounts/bscs-accounts-store-type';
 import { Order } from '../../api/api-models.js';
 import moment from 'moment';
 
@@ -41,7 +42,7 @@ const columns = (that) => [
                     rowId={x.index}
                     field_key='bscsAccount'
                     value={x.original.bscsAccount}
-                    options={["TODO"]}
+                    options={getbscsAccountsResponseReduxProperty(that.props, "GET", "data", []).map(s => s.account).sort()}
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>
@@ -56,7 +57,7 @@ const columns = (that) => [
                     rowId={x.index}
                     field_key='segmentCode'
                     value={x.original.segmentCode}
-                    options={["TODO"]}
+                    options={getSegmentsResponseReduxProperty(that.props, "GET", "data", []).map(s => s.csTradeRef).sort()}
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>
@@ -86,9 +87,11 @@ const columns = (that) => [
                     className="month-picker"
                     size="small"
                     format="YYYY-MM-01"
-                    value={moment(x.original.validFromDate)}
+                    value={x.original.validFromDate !== null && x.original.validFromDate !== undefined ? moment(x.original.validFromDate) : null}
                     placeholder="Wybierz miesiąc"
-                    onChange={(date, dateString) => { that.handleCellModification(x.index, "validFromDate", dateString) }}
+                    onChange={(date, dateString) => {
+                        that.handleCellModification(x.index, "validFromDate", date);
+                    }}
                 />
             </div>
         )
@@ -182,8 +185,8 @@ class BscsToSegmentAndOrderMappings extends Component<{
             currentPage: DEFAULT_CURRENT_PAGE
         });
         let orderMappingData = new Order.Builder()
-            .withBscsAccount("A")
-            .withSegmentCode("B")
+            .withBscsAccount("")
+            .withSegmentCode("")
             .withStatus("W")
             .withEntryDate(Date.now())
             .withEntryOwner(AuthType.getUserData(this.props.auth).user)
@@ -221,6 +224,12 @@ class BscsToSegmentAndOrderMappings extends Component<{
 
     handleDataExport() {
         alert("Not handled.");
+        this.getSegmentOptions();
+    }
+
+    getSegmentOptions() {
+        let segments = getSegmentsResponseReduxProperty(this.props, "GET", "data", []).map(s => s.csTradeRef + " (" + s.segmCategory + ")");
+        console.log(segments);
     }
 
     render() {
@@ -241,7 +250,7 @@ class BscsToSegmentAndOrderMappings extends Component<{
                 <div className="flex-end-row">
                     <div className="right-margin">
                         <InputGroup compact>
-                            <Select className="select" placeholder="Wybierz konto SAP OFI">
+                            <Select className="row-generation-select" placeholder="Wybierz konto SAP OFI">
                                 <Option value="1">Konto SAP OFI 1</Option>
                                 <Option value="2">Konto SAP OFI 2</Option>
                             </Select>
@@ -329,7 +338,9 @@ class BscsToSegmentAndOrderMappings extends Component<{
 
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
+    bscsAccounts: state.bscsAccounts,
     orderMappings: state.orderMappings,
+    segments: state.segments
 });
 
 export default connect(
