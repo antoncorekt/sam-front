@@ -375,12 +375,12 @@ export const PutDictionarySegmentById = (id:string) => {
 
 
 // call AccountUpdateAttributes
-export const PatchAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string) => {
+export const PatchAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string, requestSetAccount:RequestSetAccount) => {
     const settings = {		// set settings data
         url:`/account/${status}/${release}/${bscsAccount}`,
         contentType:'application/json',
         httpMethod: 'PATCH',
-        body:undefined,
+        body:JSON.stringify(requestSetAccount),
         requestType: ACT.PatchAccountByStatusByReleaseByBscsAccountRequest,
         successType: ACT.PatchAccountByStatusByReleaseByBscsAccountSuccess,
         failType: ACT.PatchAccountByStatusByReleaseByBscsAccountFail

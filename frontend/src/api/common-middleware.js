@@ -177,6 +177,11 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
         AddToRequestPanelActionBuilder.REQ_ACTION(idRequest, requestAction)
     );
 
+    const reqActionWithBody = {
+        ...requestAction,
+        body: typeof requestAction.body === "string" ? JSON.parse(requestAction.body) : null
+    }
+
     return fetch(url, settings)
         .then((response:Response) => {
             console.log("typeResolveFunctionBody response", response);
@@ -219,8 +224,11 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
 
             if (callApiContext.responseStatus >= 300){
 
-                if (callApiContext.responseStatus === 403){
+                if (callApiContext.responseStatus === 403 && callApiContext.responseText.includes("Unauthorized") ){
                     // todo call unauthorized
+
+                    console.warn("callApiContext", callApiContext)
+
                     dispatch(
                         {
                             type: UNAUTHORIZED_ACTION
@@ -228,7 +236,7 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
                     )
                 }
                 else {
-                    const responseAction = _.failActionCreatorBackendError(props.failType, response, requestAction, callApiContext.responseText, callApiContext.responseStatus);
+                    const responseAction = _.failActionCreatorBackendError(props.failType, response, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus);
                     dispatch(
                         responseAction
                     );
@@ -239,9 +247,9 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
 
             }
             else {
-                const responseAction =  _.successActionCreator(props.successType, response, requestAction, callApiContext.responseText, callApiContext.responseStatus);
+                const responseAction =  _.successActionCreator(props.successType, response, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus);
                 dispatch(
-                    _.successActionCreator(props.successType, response, requestAction, callApiContext.responseText, callApiContext.responseStatus)
+                    _.successActionCreator(props.successType, response, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus)
                 );
                 dispatch(
                     AddToRequestPanelActionBuilder.SUCCESS_ACTION(idRequest, responseAction)
@@ -260,21 +268,21 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
                     text: callApiContext.responseText
                 };
 
-                const responseAction =  _.successActionCreator(props.successType, resp, requestAction, callApiContext.responseText, callApiContext.responseStatus);
+                const responseAction =  _.successActionCreator(props.successType, resp, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus);
                 dispatch(
-                    _.successActionCreator(props.successType, resp, requestAction, callApiContext.responseText, callApiContext.responseStatus)
+                    _.successActionCreator(props.successType, resp, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus)
                 );
                 dispatch(
                     AddToRequestPanelActionBuilder.SUCCESS_ACTION(idRequest, responseAction)
                 );
             }else {
 
-                const failAction = _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
+                const failAction = _.failActionCreatorNetworkError(props.failType, error, reqActionWithBody, "Network error: ", "404")
                 dispatch(
                     failAction
                 );
                 dispatch(
-                    AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, {requestAction, response: failAction})
+                    AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, {reqActionWithBody, response: failAction})
                 );
             }
 

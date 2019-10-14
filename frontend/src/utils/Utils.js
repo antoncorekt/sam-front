@@ -8,7 +8,7 @@ export function renderDateTime(a) {
     return a === undefined ? ' ' : new Date(a).toLocaleString("pl-PL", optionsRenderDateTime);
 }
 
-export const getPaginationArray = (arr: Array<any>, curPage: number, pageSize: number) =>{
+export const getPaginationArray = (arr: Array<any> = [], curPage: number, pageSize: number) =>{
     --curPage;
     return arr.slice(curPage * pageSize, (curPage + 1) * pageSize);
 };

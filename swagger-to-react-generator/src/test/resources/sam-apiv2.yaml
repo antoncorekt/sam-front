@@ -275,6 +275,15 @@ paths:
           type: string
           format: uuid
           description: ''
+        - name: Content-Type
+          in: header
+          required: true
+          type: string
+          enum:
+            - application/json
+            - application/xmlx
+            - application/csv
+          description: 'Determines response payload format'
       responses:
         200:
           description: Successful operation
@@ -524,6 +533,42 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
+  /account/log:
+    get:
+      description: A set of accout logs is returned
+      summary: AccountReadLog
+      tags:
+        - account
+      operationId: AccountReadLog
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: account
+          in: path
+          required: true
+          type: string
+          description: BSCS account id for which log is produced  by triggersss
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetAccountLogs'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
   /order:
     post:
       description: >-
@@ -582,6 +627,15 @@ paths:
           type: string
           format: uuid
           description: ''
+        - name: Content-Type
+          in: header
+          required: true
+          type: string
+          enum:
+            - application/json
+            - application/xmlx
+            - application/csv
+          description: 'Determines response payload format'
       responses:
         200:
           description: Successful operation
@@ -847,13 +901,13 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/ResultSetError'
-  /release:
-    post:
-      description: "Does a release of version in state C like Controlled to P like Production. The impact is on Account and Order entries. Existence of not controled entries with status W like Working causes failure. Other validation rules are applied as well, for example valid date check: it must be rounded down and in the future and no clash with entries in status P like Production found in Account or Order backednd tables. \n\nRequires:\n- Control role."
-      summary: Release
+  /order/log:
+    get:
+      description: A set of accout order logs is returned
+      summary: OrderReadLog
       tags:
-        - release
-      operationId: ReleasePost
+        - order
+      operationId: OrderReadLog
       deprecated: false
       produces:
         - application/json
@@ -864,7 +918,42 @@ paths:
           type: string
           format: uuid
           description: ''
-
+        - name: account
+          in: path
+          required: true
+          type: string
+          description: BSCS account id for which log is produced by triggers
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetOrderLogs'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
+  /release/new:
+    post:
+      description: "Produces a new release of version in state C like Controlled to P like Production allocating a new release id. The impact is on Account and Order entries. Existence of not controled entries with status W like Working causes failure. Other validation rules are applied as well, for example valid date check: it must be rounded down and in the future and no clash with entries in status P like Production found in Account or Order backednd tables. \n\nRequires:\n- Control role."
+      summary: ReleaseNew
+      tags:
+        - release
+      operationId: ReleaseNew
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
       responses:
         200:
           description: Successful operation
@@ -880,6 +969,44 @@ paths:
           schema:
             $ref: '#/definitions/ResultSetError'
   /release/{release}:
+    post:
+      description: "Does a release of version in state C like Controlled to P like Production augmenting target version. The impact is on Account and Order entries. Existence of not controled entries with status W like Working causes failure. Other validation rules are applied as well, for example valid date check: it must be rounded down and in the future and no clash with entries in status P like Production found in Account or Order backednd tables. \n\nRequires:\n- Control role."
+      summary: ReleaseAppend
+      tags:
+        - release
+      operationId: ReleaseAppend
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: X-Request-ID
+          in: header
+          required: false
+          type: string
+          format: uuid
+          description: ''
+        - name: release
+          in: path
+          required: true
+          enum:
+            - 0
+            - last
+          type: string
+          description: release sequential number, 0 for work or control, else production
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResultSetOk'
+          headers: {}
+        401:
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/ResultSetError'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ResultSetError'
     delete:
       description: "Revokes a specific release moving it back to initial Work status. A constraint is that there is no clashing entries in Work."
       summary: ReleaseRevoke
@@ -896,15 +1023,6 @@ paths:
           type: string
           format: uuid
           description: ''
-        - name: status
-          in: path
-          required: true
-          enum:
-            - W
-            - C
-            - P
-          type: string
-          description: status of the package, W for workm P for production
         - name: release
           in: path
           required: true
@@ -1395,6 +1513,68 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Account'
+  AccountLog:
+    title: AccountLog
+    example:
+      opcode: I
+      opdate: 2017-07-21T17:32:28Z
+      status: W
+      releaseId: 0
+      bscsAccount: BSCSACCOUNT
+      ofiSapAccount: OFISAPACCOUNT
+      validFromDate: 2017-07-21T17:32:28Z
+      vatCodeInd: VATCODEIND
+      ofiSapWbsCode: OFISAPWBSCODE
+      citMarkerVatFlag: 0
+    type: object
+    properties:
+      opcode:
+        type: string
+      opdate:
+        type: string
+        format: date-time
+      bscsAccount:
+        type: string
+      ofiSapAccount:
+        type: string
+      validFromDate:
+        type: string
+        format: date-time
+      vatCodeInd:
+        type: string
+      ofiSapWbsCode:
+        type: string
+      citMarkerVatFlag:
+        type: integer
+        format: int32
+      entryDate:
+        type: string
+        format: date-time
+      entryOwner:
+        type: string
+      updateDate:
+        type: string
+        format: date-time
+      updateOwner:
+        type: string
+      releaseDate:
+        type: string
+        format: date-time
+      releaseOwner:
+        type: string
+  ResultSetAccountLogs:
+    title: ResultSetAccountLogs
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/AccountLog'
   RequestSetOrder:
     title: RequestSetOrder
     type: object
@@ -1449,6 +1629,53 @@ definitions:
         format: date-time
       releaseOwner:
         type: string
+  OrderLog:
+    title: OrderLog
+    example:
+      opcode: I
+      opdate: 2017-07-21T17:32:28Z
+      status: W
+      releaseId: 0
+      bscsAccount: BSCSACCOUNT
+      segmentCode: XXX
+      orderNumber: 123
+      validFromDate: 2017-07-21T17:32:28Z
+    type: object
+    properties:
+      opcode:
+        type: string
+      opdate:
+        type: string
+        format: int32
+      status:
+        type: string
+      releaseId:
+        type: integer
+        format: int32
+      bscsAccount:
+        type: string
+      segmentCode:
+        type: string
+      orderNumber:
+        type: string
+      validFromDate:
+        type: string
+        format: date-time
+      entryDate:
+        type: string
+        format: date-time
+      entryOwner:
+        type: string
+      updateDate:
+        type: string
+        format: date-time
+      updateOwner:
+        type: string
+      releaseDate:
+        type: string
+        format: date-time
+      releaseOwner:
+        type: string
   ResultSetOrders:
     title: ResultSetOrders
     type: object
@@ -1462,6 +1689,19 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Order'
+  ResultSetOrderLogs:
+    title: ResultSetOrderLogs
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+      count:
+        type: integer
+        format: int32
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/OrderLog'
   RequestSetAccountDictSap:
     title: RequestSetAccountDictSap
     type: object

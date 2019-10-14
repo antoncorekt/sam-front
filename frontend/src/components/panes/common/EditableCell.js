@@ -20,6 +20,7 @@ export class EditableCell extends React.Component {
     }
 
     render() {
+        console.log("render", this.props);
         return (
             <div
                 className="editable-cell"
