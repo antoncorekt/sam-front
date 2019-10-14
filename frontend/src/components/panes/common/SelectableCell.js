@@ -38,7 +38,9 @@ export class SelectableCell extends React.Component {
                         <Select
                             className="select"
                             size="small"
-                            showSearch={true}
+                            dropdownMatchSelectWidth={false}
+                            dropdownStyle={this.props.dropdownStyle}
+                            showSearch
                             ref={ref => this.selectRef = ref}
                             value={this.state.value}
                             onChange={(value) => {

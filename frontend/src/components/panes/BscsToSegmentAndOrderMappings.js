@@ -15,7 +15,7 @@ import {
 import { AuthType } from "../../reducers/auth/auth-store-type";
 import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type';
 import { getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
-import { getbscsAccountsResponseReduxProperty } from '../../reducers/bscs-accounts/bscs-accounts-store-type';
+import { getBscsAccountsResponseReduxProperty } from '../../reducers/bscs-accounts/bscs-accounts-store-type';
 import { Order } from '../../api/api-models.js';
 import moment from 'moment';
 
@@ -41,8 +41,14 @@ const columns = (that) => [
                 <SelectableCell
                     rowId={x.index}
                     field_key='bscsAccount'
+                    dropdownStyle={{ width: "400px" }} // TODO_TKB: update this
                     value={x.original.bscsAccount}
-                    options={getbscsAccountsResponseReduxProperty(that.props, "GET", "data", []).map(s => s.account).sort()}
+                    options={
+                        getBscsAccountsResponseReduxProperty(that.props, "GET", "data", [])
+                            .filter(item => item.modified === undefined)
+                            .map(item => item.account)
+                            .sort()
+                    }
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>
@@ -57,7 +63,11 @@ const columns = (that) => [
                     rowId={x.index}
                     field_key='segmentCode'
                     value={x.original.segmentCode}
-                    options={getSegmentsResponseReduxProperty(that.props, "GET", "data", []).map(s => s.csTradeRef).sort()}
+                    options={
+                        getSegmentsResponseReduxProperty(that.props, "GET", "data", [])
+                            .map(item => item.csTradeRef)
+                            .sort()
+                    }
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>
