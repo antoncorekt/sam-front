@@ -1,6 +1,7 @@
 .editable-cell {
-    background: aliceblue;
+    /*background: aliceblue;*/
     height: 14px;
+    cursor: pointer;
 }
 
 .editable-cell .input {
@@ -9,8 +10,9 @@
 }
 
 .selectable-cell {
-    background: aliceblue;
+    /*background: aliceblue;*/
     height: 14px;
+    cursor: pointer;
 }
 
 .selectable-cell .select {
@@ -20,8 +22,11 @@
 
 .secure-denied{
     pointer-events: none;
-    opacity: 0.5;
     cursor: not-allowed !important;
+}
+
+.opacity{
+    opacity: 0.3;
 }
 
 .secure-denied:hover::after {

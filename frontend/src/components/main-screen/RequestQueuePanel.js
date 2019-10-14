@@ -58,7 +58,7 @@ class RequestQueuePanel extends React.Component<{
                     </div>
 
                     <div className="part error-part">
-                        {this.props.requestPanel.failActions.map((el, i) =>
+                        {this.props.requestPanel.failActions.filter(el=>el.payload !== undefined && el.payload.requestAction !== undefined).map((el, i) =>
                             (<div className="el">
                                 <div>{el.payload.requestAction.type}</div>
                                 <div style={{ cursor: "poiner" }} onClick={() =>

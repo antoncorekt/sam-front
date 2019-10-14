@@ -16,8 +16,12 @@ export class AccountOperationPanel extends React.Component{
             </div>
             <div className="flex">
                 <Button onClick={()=>{alert("Handler Exportuj wszystkie")}}>Exportuj wszystkie</Button>
-                <Button onClick={this.props.addUserAccount}>Dodaj mapowanie</Button>
-                {/*<Button onClick={()=>{alert("Handler revert release")}}>Revert release</Button>*/}
+                <SecuredComponent group={Role.BOOKER} renderIfAccessDenied={false}>
+                    <Button onClick={this.props.addUserAccount}>Dodaj mapowanie</Button>
+                </SecuredComponent>
+                <SecuredComponent group={Role.CONTROL} renderIfAccessDenied={false}>
+                    <Button onClick={()=>{this.props.releaseHandle()}}>Zaaceptuj wszystko</Button>
+                </SecuredComponent>
                 <SecuredComponent group={Role.CONTROL} renderIfAccessDenied={false}>
                     <Button onClick={()=>{alert("Handler revert release")}}>Revert release</Button>
                 </SecuredComponent>

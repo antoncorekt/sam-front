@@ -1,3 +1,5 @@
+import {Role, Status15} from "../api/api-models";
+
 const options = { year: 'numeric', month: '2-digit', day: 'numeric' };
 export function renderDate(a) {
     return a === undefined ? ' ' : new Date(a).toLocaleString("pl-PL", options);
@@ -35,3 +37,18 @@ export function uuidv4() {
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }
+
+export const getColorByRole = (role: Role) => {
+    if (Role.CONTROL) return getColor(Status15.C);
+    if (Role.BOOKER) return getColor(Status15.W);
+    return getColor(Status15.F);
+};
+
+export const getColor = (status: Status15) => {
+    switch (status) {
+        case Status15.C: return "#637BAD";
+        case Status15.W: return "#ADB9D3";
+        case Status15.P: return "#008000";
+        default: return "#fffdf8";
+    }
+};

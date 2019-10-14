@@ -22,7 +22,7 @@ class LoginPage extends React.Component<{
     auth: AuthType
 }>{
     state:LoginPageStateType = {
-        group: Role.ADMIN,
+        group: Role.BOOKER,
         user: null,
         password: null
     };
@@ -40,7 +40,12 @@ class LoginPage extends React.Component<{
             && this.props.auth.login.response.data !== undefined){
             this.props.getUserName();
         }
+        if (this.loginRef !== null && this.loginRef !== undefined && this.state.password === null){
+            this.loginRef.focus();
+        }
     }
+
+    loginHandle = ()=>this.props.loginHandle(this.state.user, this.state.password, this.state.group)
 
     loginRender = () => (
         <div className="login-container">
@@ -54,10 +59,10 @@ class LoginPage extends React.Component<{
 
 
             <div className="login-inputs">
-                <Input placeholder="Login" onChange={(e)=>this.setState({user: e.target.value})}/>
+                <Input ref={(ref)=>{this.loginRef=ref}} placeholder="Login" onChange={(e)=>this.setState({user: e.target.value})}/>
             </div>
             <div className="login-inputs">
-                <Input.Password placeholder="Hasło" onChange={(e)=>this.setState({password: e.target.value})}/>
+                <Input.Password placeholder="Hasło" onPressEnter={this.loginHandle} onChange={(e)=>this.setState({password: e.target.value})}/>
             </div>
             <Radio.Group onChange={(e)=>this.setState({group: e.target.value})} value={this.state.group}>
                 <Radio value={Role.CONTROL}>{Role.CONTROL}</Radio>
@@ -68,7 +73,7 @@ class LoginPage extends React.Component<{
             <Button
                 className={"login-button"}
                 loading={this.props.auth.login.fetching}
-                onClick={()=>this.props.loginHandle(this.state.user, this.state.password, this.state.group)}
+                onClick={this.loginHandle}
             >
                 Login
             </Button>

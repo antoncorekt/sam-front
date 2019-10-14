@@ -53,7 +53,6 @@ export const PostAccountHandler = () => {
 };
 
 export const GetAccount = () => {
-    const ReduxUsersAccountsPropName = "backendAccounts";
     return {
         GetAccountRequest:(state:any, action:ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>)=>{
             return {...state, backendAccounts: { ...action,...state.backendAccounts}};
@@ -92,7 +91,6 @@ export const PutAccountByStatusByReleaseByBscsAccountHandler = () => {
     }
 };
 export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
-    const ReduxUsersAccountsPropName = "deleteAccount";
     return {
         DeleteAccountByStatusByReleaseByBscsAccountRequest:(state:any, action:ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
             return {...state, deleteAccount: action};

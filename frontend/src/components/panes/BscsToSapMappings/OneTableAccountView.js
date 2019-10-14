@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Button, Checkbox, DatePicker, Icon, Pagination, Spin} from "antd";
 import {AccountMappingType} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import ReactTable from "react-table";
-import {getPageSizeOption, renderDateTime} from "../../../utils/Utils";
+import {getColor, getPageSizeOption, getPaginationArray, renderDateTime} from "../../../utils/Utils";
 import {SapAccountStoreType} from "../../../reducers/sap-account/sap-account-store-type";
 import {AuthType} from "../../../reducers/auth/auth-store-type";
 import {Account, Role, Status, Status15} from "../../../api/api-models";
@@ -24,7 +24,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
         Header: 'Konto BSCS',
         // accessor: Account.ObjectProps.bscsAccount,
         Cell: item => (
-            <SecuredComponent group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
+            <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
                 <EditableCell
                     rowId={item.original.frontendId}
                     field_key={Account.ObjectProps.bscsAccount}
@@ -37,7 +37,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     },
 
     {
-        Cell: item => <SecuredComponent group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
+        Cell: item => <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
                     <SelectableCell options={sapAccountsDictionary}
                                           value={item.original.ofiSapAccount}
                                           loadDictionaryHandler={loadSapAccountHandler}
@@ -53,7 +53,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
         width: 26,
         Cell: () => {
             return (
-                <SecuredComponent group={Role.BOOKER}>
+                <SecuredComponent opacity={false} group={Role.BOOKER}>
                     <Checkbox className="checkbox" id={null} checked={true} onChange={null} />
                 </SecuredComponent>
             )
@@ -67,7 +67,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
         Cell: item => {
 
             return (
-                <SecuredComponent group={Role.BOOKER}>
+                <SecuredComponent opacity={false} group={Role.BOOKER}>
                     <Checkbox className="checkbox" id={null}
                               checked={item.original.citMarkerVatFlag === "X"}
                               onChange={(e)=>{setAccountHandler({...item.original, citMarkerVatFlag:e.target.checked === true ? "X" : ""})}} />
@@ -79,13 +79,13 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     {
         Header: 'Ważne od',
         accessor: Account.ObjectProps.validFromDate,
-        Cell: item => (<SecuredComponent group={Role.BOOKER}>
+        Cell: item => (<SecuredComponent opacity={false} group={Role.BOOKER}>
                 <div>
                     <MonthPicker
                         className="month-picker"
                         size="small"
                         format="YYYY-MM-01"
-                        value={moment(item.original.validFromDate).startOf('day')}
+                        value={item.original.validFromDate !== null && item.original.validFromDate !== undefined ? moment(item.original.validFromDate) : null}
                         placeholder="Wybierz miesiąc"
                         onChange={(date, dateString) => { setAccountHandler({...item.original, validFromDate:dateString+"T00:00:00.000Z"}) }}
                     />
@@ -95,7 +95,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     },
     {
         Header: 'Kod WBS',
-        Cell: item => <SecuredComponent group={Role.CONTROL}>
+        Cell: item => <SecuredComponent opacity={false} group={Role.CONTROL}>
             <EditableCell
                 rowId={item.index}
                 field_key={Account.ObjectProps.ofiSapWbsCode}
@@ -145,20 +145,9 @@ type BscsToSapMappingsStateType = {
 function foo(x) { return this.x; }
 
 const getColorTaskByStatus = (status:Status15) => {
-    switch (status) {
-        case Status15.C: return {
-            background: "#ff9548"
-        };
-        case Status15.W:return {
-            background: "#b0ff7c"
-        };
-        case Status15.P: return {
-            background: "#4a49ff"
-        };
-        default: return {
-            background: "#fffdf8"
-        };
-    }
+    return {
+        background: getColor(status)
+    };
 };
 
 export default class OneTableAccountView extends Component<{
@@ -170,10 +159,11 @@ export default class OneTableAccountView extends Component<{
 
     state: BscsToSapMappingsStateType = {
         pageSize: 10,
+        page: 1,
         filtered: []
     };
 
-    renderUserActionWithAccount = (accountStore: AccountMappingType, userRole: Role, ) => (account: Account) => {
+    renderUserActionWithAccount = (accountStore: AccountMappingType, userRole: Role, currentRelease: number) => (account: Account) => {
 
         const renderDeleteButton = () => (
             <Button size="small"
@@ -239,7 +229,7 @@ export default class OneTableAccountView extends Component<{
         if (account.status === Status15.C && userRole === Role.CONTROL){
             return <div className="flex">
                 <Button size="small" onClick={()=>this.props.patchAccountStatus(account, Status15.W)}>Anuluj</Button>
-                <Button size="small"> Zatwierdz</Button>
+                <Button size="small" onClick={()=>this.props.patchAccountStatus(account, Status15.P, currentRelease)}> Zatwierdz</Button>
                 {renderIfModifiedAccount(renderUpdateAccountButton)}
                 {renderIfModifiedAccount(renderCancelButton())}
             </div>
@@ -251,23 +241,24 @@ export default class OneTableAccountView extends Component<{
         const sapAccountDictName = SapAccountStoreType.getSapAccounts(this.props.sapOfi)
             .map(sapAcc => sapAcc.sapOfiAccount);
 
-        const data = AccountMappingType.getAllAccounts(this.props.accountsStore);
+        const data = this.props.allAccounts;
+
+        const paginationArray = getPaginationArray(data, this.state.page, this.state.pageSize);
 
         return <div className="flex flex-column width100">
             <div className="width100">
                 <Spin tip={"Pobieram mapowania"} spinning={AccountMappingType.isLoading(this.props.accountsStore)}>
                     <ReactTable
-                        data={data}
+                        data={paginationArray}
                         columns={columns(
                             this.props.modifyAccount,
                             this.props.getSapOfi,
-                            this.renderUserActionWithAccount(this.props.accountsStore, AuthType.getUserData(this.props.userInfo).role)
+                            this.renderUserActionWithAccount(this.props.accountsStore, AuthType.getUserData(this.props.userInfo).role, this.props.currentRelease)
                         )(
                             sapAccountDictName,
                             this.props.accountsStore.deleteAccount.fetching,
                         )}
                         noDataText="Brak danych"
-                        filterable
                         filtered={this.state.filtered}
                         showPagination={false}
                         pageSize={this.state.pageSize}
@@ -286,17 +277,17 @@ export default class OneTableAccountView extends Component<{
             <div className="flex">
                 <Pagination
                     size="small"
-                    total={100}
+                    total={data.length}
                     showQuickJumper
                     showSizeChanger
                     showTotal={() => {
-                        return "Ilość pozycji: " + 0;
+                        return "Ilość pozycji: " + data.length;
                     }}
                     onChange={(page, pageSize) => {
-                        this.setState({ pageSize: pageSize });
+                        this.setState({pageSize: pageSize, page: page});
                     }}
                     onShowSizeChange={(current, size) => {
-                        this.setState({ pageSize: size });
+                        this.setState({pageSize: size});
                     }}
                     pageSizeOptions={getPageSizeOption(data)}
                 />

@@ -114,13 +114,13 @@ export class AccountMappingType {
         && acc1.validFromDate === acc2.validFromDate;
     }
 
-    static getAllAccounts(store: AccountMappingType): Array<Account> {
-        return [...store.usersAccounts.accounts, ...this.getBackendAccount(store)];
+    static getCurrentRelease(arr: Array<Account>): number{
+        const maxRelease =  Math.max(arr.map(acc => acc.releaseId));
+        return isNaN(maxRelease)?0:maxRelease;
     }
 
-    static isPostAccountSuccessful(store: AccountMappingType):boolean {
-        return store.postAccount.response !== undefined
-            && store.postAccount.response.status === Status.OK;
+    static getAllAccounts(store: AccountMappingType): Array<Account> {
+        return [...store.usersAccounts.accounts, ...this.getBackendAccount(store)];
     }
 
     static isDeleteAccountSuccessful(store: AccountMappingType):boolean {

@@ -16,28 +16,26 @@ class SecuredComponent extends React.Component<{
         const userRole = AuthType.getUserData(this.props.auth).role;
 
         let divClassName = "";
-        let title=undefined;
+        let title = this.props.group === Role.BOOKER || this.props.group === Role.CONTROL
+            ?`Dla dostępu zaloguj się jako '${this.props.group}'`
+            : 'Access denied';
 
-        if (Array.isArray(this.props.group) && this.props.group.includes(userRole)){
+
+        if (this.props.group === userRole){
             return this.props.children;
         }
         else {
-            if (this.props.group === userRole){
-                return this.props.children;
+            if (this.props.renderIfAccessDenied === false) {
+                return "";
             }
-            else {
-                if (this.props.renderIfAccessDenied === false) {
-                    return "";
-                }
-                divClassName = "secure-denied";
+            divClassName = `secure-denied ${this.props.opacity === false ? '' : 'opacity'}`;
 
-                return <Popover title={`Dla dostępu zaloguj się jako '${this.props.group}'`}>
-                    <div className={divClassName} title={title}>
-                        {this.props.children}
-                    </div>
-                    <div/>
-                </Popover>
-            }
+            return <Popover title={title}>
+                <div className={divClassName} title={title}>
+                    {this.props.children}
+                </div>
+                <div/>
+            </Popover>
         }
     }
 }

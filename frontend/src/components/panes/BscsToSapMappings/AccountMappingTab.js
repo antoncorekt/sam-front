@@ -5,7 +5,7 @@ import {Account, Release, RequestSetAccount, Status15, User} from "../../../api/
 import {
     DeleteAccountByStatusByReleaseByBscsAccount, GetAccount,
     GetAccountByStatusByRelease, GetDictionaryAccountSap, PatchAccountByStatusByReleaseByBscsAccount,
-    PostAccount
+    PostAccount, PostRelease
 } from "../../../api/api-func";
 import {
     AccountMappingType,
@@ -49,15 +49,15 @@ class AccountMappingTab extends Component<{
         }
     }
 
-    renderAccountView = (viewMode: ViewMode) => {
+    renderAccountView = (viewMode: ViewMode, allAccounts, currentRelease) => {
 
         const viewProps = this.props;
 
         if (viewMode === ViewMode.OneTableView){
-            return <OneTableAccountView {...viewProps}/>
+            return <OneTableAccountView {...viewProps} allAccounts={allAccounts} currentRelease={currentRelease}/>
         }
         if (viewMode === ViewMode.DoubleTableView){
-            return <DoubleTableAccountView {...viewProps}/>
+            return <DoubleTableAccountView {...viewProps} allAccounts={allAccounts} currentRelease={currentRelease}/>
         }
 
         throw new Error("Please, define view mode")
@@ -69,17 +69,22 @@ class AccountMappingTab extends Component<{
 
         const userData: User = AuthType.getUserData(this.props.userInfo);
 
+        const allAccounts = AccountMappingType.getAllAccounts(this.props.accountsStore);
+
+        const currentRelease = AccountMappingType.getCurrentRelease(allAccounts);
+
         return (
             <div className="flex flex-column">
                 <div className="width100">
                     <AccountOperationPanel
-                        releaseVersion=""
+                        releaseVersion={currentRelease}
                         userRole={userData.role}
+                        releaseHandle={this.props.release}
                         addUserAccount={()=>this.props.addUserAccount(userData.user)}
                     />
                 </div>
                 <div className="flex">
-                    {this.renderAccountView(doubleTableViewMode)}
+                    {this.renderAccountView(doubleTableViewMode, allAccounts, currentRelease)}
                 </div>
             </div>
         )
@@ -99,7 +104,7 @@ export default connect(
     dispatch => ({
         postAccount: (account: Account) => {
 
-            let accToBackend: Account = account;
+            let accToBackend: Account = JSON.parse(JSON.stringify(account));
 
             accToBackend.status = undefined;
             accToBackend.releaseId = undefined;
@@ -153,13 +158,13 @@ export default connect(
                 )
             )
         },
-        patchAccountStatus: (account: Account, status: Status15) => {
+        patchAccountStatus: (account: Account, status: Status15, releaseId: number) => {
             dispatch(
                 PatchAccountByStatusByReleaseByBscsAccount(account.status,
                     account.releaseId,
                     account.bscsAccount,
                     new RequestSetAccount.Builder()
-                        .withData({status: status})
+                        .withData({status: status, releaseId:releaseId})
                         .build()
                 )
             )
@@ -170,4 +175,9 @@ export default connect(
                 GetDictionaryAccountSap()
             )
         },
+        release: ()=> {
+            dispatch(
+                PostRelease()
+            )
+        }
     }))(AccountMappingTab)

@@ -115,9 +115,9 @@ class SapAccounts extends Component<{
                     <Checkbox className="checkbox" onChange={null}>
                         Aktualizuj opisy istniejących kont
                     </Checkbox>
-                    <SecuredComponent group={Role.CONTROL}>
-                        <AccountSapUploader fileFetching={this.props.sapOfi.fileUploadStatus.fetching}/>
-                    </SecuredComponent>
+
+                    <AccountSapUploader fileFetching={this.props.sapOfi.fileUploadStatus.fetching}/>
+
                 </div>
                 <div className="table-container">
                     <Spin tip={"Pobieram słownik"} spinning={this.props.sapOfi.dict.fetching}>
