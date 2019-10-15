@@ -96,7 +96,8 @@ class AccountMappingTab extends Component<{
 const mapStateToProps = (state: MainStateType) => ({
     sapOfi: state.sapAccountOfi,
     userInfo: state.auth,
-    accountsStore: state.accountMapping
+    accountsStore: state.accountMapping,
+    bscsAccounts: state.bscsAccounts,
 });
 
 export default connect(
@@ -147,13 +148,16 @@ export default connect(
                 ModifyAccountActionType.createAction(account)
             )
         },
-        patchAccount: (account: Account) => {
+        patchAccount: (store:AccountMappingType, account: Account) => {
+
+            const accountToPatch = AccountMappingType.getModifiedAccountForPatch(store, account);
+
             dispatch(
                 PatchAccountByStatusByReleaseByBscsAccount(account.status,
                     account.releaseId,
                     account.bscsAccount,
                     new RequestSetAccount.Builder()
-                        .withData(account)
+                        .withData(accountToPatch)
                         .build()
                 )
             )

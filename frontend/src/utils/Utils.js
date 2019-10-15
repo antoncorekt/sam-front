@@ -1,4 +1,5 @@
 import {Role, Status15} from "../api/api-models";
+import {func} from "prop-types";
 
 const options = { year: 'numeric', month: '2-digit', day: 'numeric' };
 export function renderDate(a) {
@@ -52,3 +53,45 @@ export const getColor = (status: Status15) => {
         default: return "#fffdf8";
     }
 };
+
+export const getObjectDiff = (obj1:any, obj2:any) => {
+    return Object.keys(obj2).reduce((diff, key) => {
+        if (obj1[key] === obj2[key]) return diff;
+        return {
+            ...diff,
+            [key]: obj2[key]
+        }
+    }, {})
+};
+
+function twoFuncParam(obj1,obj2) {}
+
+export class Filter {
+    orig: string;
+    search: string;
+    compareFunc: twoFuncParam;
+
+    static defaultStringComparator = (orig, search) => {
+        if (orig === null || orig === undefined){
+            return search === null || search === undefined
+        }
+        if (typeof orig === "string" && typeof search === "string"){
+            return orig.includes(search);
+        }
+
+        return true;
+    }
+}
+
+export const getFilteredAndSortedArray = (array:Array<any>, filters: Array<Filter>, sortedBy: string, desc:boolean = true) => {
+
+    return array
+        .filter(arr => filters.reduce(
+            (prev, cur) => cur.compareFunc(arr[cur.orig], cur.search) && prev,
+            true
+            )
+        )
+};
+
+
+

@@ -14,6 +14,7 @@ import {
     Status,
     Status15
 } from "../../api/api-models";
+import {getObjectDiff} from "../../utils/Utils";
 
 export class AddEmptyAccountActionType {
     user: string;
@@ -99,6 +100,12 @@ export class AccountMappingType {
         return store.backendAccountsOriginal.find(accEntry => accEntry.frontendId === account.frontendId)
     }
 
+    static getModifiedAccountForPatch(store: AccountMappingType, account: Account): AccountEntry{
+        const accountEntry:AccountEntry = store.backendAccountsOriginal.find(accEntry => accEntry.frontendId === account.frontendId);
+        if (accountEntry === undefined) return {};
+        return getObjectDiff(accountEntry.account, account);
+    }
+
     static isAccountsDataDeepEquals(acc1:Account, acc2: Account): boolean{
         return JSON.stringify(acc1) === JSON.stringify(acc2);
     }
@@ -115,8 +122,7 @@ export class AccountMappingType {
     }
 
     static getCurrentRelease(arr: Array<Account>): number{
-        const maxRelease =  Math.max(arr.map(acc => acc.releaseId));
-        return isNaN(maxRelease)?0:maxRelease;
+        return Math.max(...arr.map(acc => Number.parseInt(acc.releaseId,10)));
     }
 
     static getAllAccounts(store: AccountMappingType): Array<Account> {

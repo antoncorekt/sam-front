@@ -6,7 +6,14 @@ import logo from '../../media/logo_small.jpg';
 import './style.less';
 import { connect } from "react-redux";
 import type { MainStateType } from "../../reducers";
-import { GetDictionaryAccountBscs, GetDictionarySegment, GetSystemVersion, PostUserInfo, PostUserLogoff } from "../../api/api-func";
+import {
+    GetDictionaryAccountBscs,
+    GetDictionaryAccountSap,
+    GetDictionarySegment,
+    GetSystemVersion,
+    PostUserInfo,
+    PostUserLogoff
+} from "../../api/api-func";
 import {
     RequestSetUserLogoff,
     Status,
@@ -27,6 +34,7 @@ class MainScreenHeader extends Component<{
         this.props.getBackendVersion();
         this.props.getSegmentsDictionary();
         this.props.getBscsAccountsDictionary();
+        this.props.getSapOfiAccountDictionary();
     }
 
     render() {
@@ -95,6 +103,11 @@ export default connect(
         getBscsAccountsDictionary: () => {
             dispatch(
                 GetDictionaryAccountBscs()
+            )
+        },
+        getSapOfiAccountDictionary: () => {
+            dispatch(
+                GetDictionaryAccountSap()
             )
         }
     })

@@ -2,8 +2,15 @@ import React, { Component } from 'react';
 import {Button, Checkbox, DatePicker, Icon, Pagination, Spin} from "antd";
 import {AccountMappingType} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import ReactTable from "react-table";
-import {getColor, getPageSizeOption, getPaginationArray, renderDateTime} from "../../../utils/Utils";
+import {
+    getColor,
+    getFilteredAndSortedArray,
+    getPageSizeOption,
+    getPaginationArray,
+    Filter
+} from "../../../utils/Utils";
 import {SapAccountStoreType} from "../../../reducers/sap-account/sap-account-store-type";
+import {BscsAccountsType} from "../../../reducers/bscs-accounts/bscs-accounts-store-type";
 import {AuthType} from "../../../reducers/auth/auth-store-type";
 import {Account, Role, Status, Status15} from "../../../api/api-models";
 import {SelectableCell} from "../common/SelectableCell";
@@ -11,10 +18,11 @@ import {EditableCell} from "../common/EditableCell";
 import SecuredComponent from "../common/SecuredComponent";
 import type {AccountEntry} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import moment from "moment";
+import {getBscsAccountsResponseReduxProperty} from "../../../reducers/bscs-accounts/bscs-accounts-store-type";
 const { MonthPicker } = DatePicker;
 
 const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithAccount) =>
-    (sapAccountsDictionary) => [
+    (sapAccountsDictionary, bscsAccountDictionary) => [
     // {
     //     Cell: item => <Icon onClick={()=>deleteNewAccountHandler(item.original)} style={{ cursor: (deleteAccountOperationFetching === true ? "loading" : "pointer") }} type="delete" />,
     //     width: 26,
@@ -22,14 +30,17 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     // },
     {
         Header: 'Konto BSCS',
-        // accessor: Account.ObjectProps.bscsAccount,
+        accessor: Account.ObjectProps.bscsAccount,
         Cell: item => (
             <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
-                <EditableCell
+                <SelectableCell
                     rowId={item.original.frontendId}
                     field_key={Account.ObjectProps.bscsAccount}
+                    dropdownStyle={{ width: "400px" }} // TODO_TKB: update this
                     value={item.original.bscsAccount}
-                    upperCased={true}
+                    options={
+                        bscsAccountDictionary
+                    }
                     handleCellModification={(key, value) => {setAccountHandler({...item.original, bscsAccount:value}) }}
                 />
             </SecuredComponent>
@@ -50,11 +61,13 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     {
         Header: 'VAT',
         accessor:  Account.ObjectProps.vatCodeInd,
-        width: 26,
-        Cell: () => {
+        width: 28,
+        Cell: (item) => {
             return (
                 <SecuredComponent opacity={false} group={Role.BOOKER}>
-                    <Checkbox className="checkbox" id={null} checked={true} onChange={null} />
+                    <Checkbox className="checkbox" id={null}
+                              checked={item.original.vatCodeInd === "1"}
+                              onChange={(e)=>{setAccountHandler({...item.original, vatCodeInd:e.target.checked === true ? "1" : "0"})}} />
                 </SecuredComponent>
             )
         },
@@ -68,9 +81,10 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
 
             return (
                 <SecuredComponent opacity={false} group={Role.BOOKER}>
-                    <Checkbox className="checkbox" id={null}
-                              checked={item.original.citMarkerVatFlag === "X"}
-                              onChange={(e)=>{setAccountHandler({...item.original, citMarkerVatFlag:e.target.checked === true ? "X" : ""})}} />
+                    <SelectableCell options={["1", "0", "PUSTE"]}
+                        value={item.original.citMarkerVatFlag}
+                        rowId={item.original.frontendId}
+                        handleCellModification={(key, val)=>setAccountHandler({...item.original, citMarkerVatFlag:val})}/>
                 </SecuredComponent>
             )
         },
@@ -79,6 +93,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     {
         Header: 'Ważne od',
         accessor: Account.ObjectProps.validFromDate,
+        width: 140,
         Cell: item => (<SecuredComponent opacity={false} group={Role.BOOKER}>
                 <div>
                     <MonthPicker
@@ -113,19 +128,19 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     // },
     {
         Header: 'Data utworzenia',
-        accessor: 'createdDate'
+        accessor: Account.ObjectProps.entryDate
     },
     {
         Header: 'Utworzył',
-        accessor: 'entryOwner'
+        accessor: Account.ObjectProps.entryOwner
     },
     {
         Header: 'Data modyfikacji',
-        accessor: 'modifiedDate'
+        accessor:  Account.ObjectProps.updateDate
     },
     {
         Header: 'Zmodyfikował',
-        accessor: 'modifiedBy'
+        accessor: Account.ObjectProps.updateOwner
     },
     {
         Header: 'Akcja',
@@ -160,7 +175,12 @@ export default class OneTableAccountView extends Component<{
     state: BscsToSapMappingsStateType = {
         pageSize: 10,
         page: 1,
-        filtered: []
+        filters: [{
+            orig: Account.ObjectProps.bscsAccount,
+            search: null,
+            compareFunc: Filter.defaultStringComparator
+        }],
+        sortedBy: Account.ObjectProps.updateDate
     };
 
     renderUserActionWithAccount = (accountStore: AccountMappingType, userRole: Role, currentRelease: number) => (account: Account) => {
@@ -197,7 +217,7 @@ export default class OneTableAccountView extends Component<{
         const renderUpdateAccountButton = (account, originalAccount) => {
             return (
                 <Button size="small"
-                        onClick={()=>this.props.postAccount(account)}
+                        onClick={()=>this.props.patchAccount(accountStore, account)}
                 >
                     Zapisz
                 </Button>
@@ -229,9 +249,9 @@ export default class OneTableAccountView extends Component<{
         if (account.status === Status15.C && userRole === Role.CONTROL){
             return <div className="flex">
                 <Button size="small" onClick={()=>this.props.patchAccountStatus(account, Status15.W)}>Anuluj</Button>
-                <Button size="small" onClick={()=>this.props.patchAccountStatus(account, Status15.P, currentRelease)}> Zatwierdz</Button>
+                <Button size="small" onClick={()=>this.props.patchAccountStatus(account, Status15.P, ""+currentRelease)}> Zatwierdz</Button>
                 {renderIfModifiedAccount(renderUpdateAccountButton)}
-                {renderIfModifiedAccount(renderCancelButton())}
+                {renderIfModifiedAccount(renderCancelButton)}
             </div>
         }
     };
@@ -241,9 +261,15 @@ export default class OneTableAccountView extends Component<{
         const sapAccountDictName = SapAccountStoreType.getSapAccounts(this.props.sapOfi)
             .map(sapAcc => sapAcc.sapOfiAccount);
 
-        const data = this.props.allAccounts;
+        const bscsAccountDictName = BscsAccountsType.getBscsAccounts(this.props.bscsAccounts)
+            .filter(acc => acc.active === "A")
+            .map(acc => acc.account);
 
-        const paginationArray = getPaginationArray(data, this.state.page, this.state.pageSize);
+        const fullData = this.props.allAccounts;
+
+        const sortedAndFilteredData = getFilteredAndSortedArray(this.props.allAccounts, this.state.filters, "", true);
+
+        const paginationArray = getPaginationArray(sortedAndFilteredData, this.state.page, this.state.pageSize);
 
         return <div className="flex flex-column width100">
             <div className="width100">
@@ -256,7 +282,7 @@ export default class OneTableAccountView extends Component<{
                             this.renderUserActionWithAccount(this.props.accountsStore, AuthType.getUserData(this.props.userInfo).role, this.props.currentRelease)
                         )(
                             sapAccountDictName,
-                            this.props.accountsStore.deleteAccount.fetching,
+                            bscsAccountDictName,
                         )}
                         noDataText="Brak danych"
                         filtered={this.state.filtered}
@@ -277,11 +303,11 @@ export default class OneTableAccountView extends Component<{
             <div className="flex">
                 <Pagination
                     size="small"
-                    total={data.length}
+                    total={sortedAndFilteredData.length}
                     showQuickJumper
                     showSizeChanger
                     showTotal={() => {
-                        return "Ilość pozycji: " + data.length;
+                        return "Ilość pozycji: " + sortedAndFilteredData.length;
                     }}
                     onChange={(page, pageSize) => {
                         this.setState({pageSize: pageSize, page: page});
@@ -289,7 +315,7 @@ export default class OneTableAccountView extends Component<{
                     onShowSizeChange={(current, size) => {
                         this.setState({pageSize: size});
                     }}
-                    pageSizeOptions={getPageSizeOption(data)}
+                    pageSizeOptions={getPageSizeOption(sortedAndFilteredData)}
                 />
                 <Icon
                     className="pagination-refresh"

@@ -137,7 +137,7 @@ export const PostOrder = (body:RequestSetOrder) => {
 // call Release
 export const PostRelease = () => {
     const settings = {		// set settings data
-        url:`/release`,
+        url:`/release/new`,
         contentType:'application/json',
         httpMethod: 'POST',
         body:undefined,

@@ -1,8 +1,15 @@
 import { ActionRequestData, ActionResponseData } from "../../api/common-middleware";
-import { ResultSetAccountDictBscss } from "../../api/api-models";
+import {AccountDictBscs, ResultSetAccountDictBscss} from "../../api/api-models";
 
 export class BscsAccountsType {
     GET: ActionResponseData<ResultSetAccountDictBscss, ActionRequestData<null, null>>;
+
+    static getBscsAccounts = (store: BscsAccountsType): Array<AccountDictBscs> => {
+        if (store.GET.response === undefined || !Array.isArray(store.GET.response.data))
+            return [];
+        return store.GET.response.data;
+    }
+
 }
 
 export const getBscsAccountsDictReduxProperty = (root, requestType, property, negativeResult) => {
