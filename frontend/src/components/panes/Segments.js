@@ -14,7 +14,7 @@ import {
     cancelEditionOfSegmentPropertiesInRedux,
     deleteSegmentInRedux,
     editSegmentPropertiesInRedux,
-    handleSegmentPostInRedux,
+    handleSegmentPostOrPatchInRedux,
     unshiftSegmentInRedux
 } from "../../actions/segmentsActions";
 import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
@@ -80,7 +80,7 @@ const columns = (that) => [
         sortable: false,
         Cell: x => (
             <div>
-                {x.original.modified === true ?
+                {x.original.newRow === true || x.original.modified === true ?
                     <div>
                         <Button
                             className="save-button"
@@ -135,12 +135,25 @@ class Segments extends Component<{
         if (getSegmentsReduxProperty(this.props, "POST", "fetching", true) === false
             && getSegmentsReduxProperty(prevProps, "POST", "fetching", false) === true) {
             if (getSegmentsReduxProperty(this.props, "POST", "fail", true) !== true) {
-                this.props.handleSegmentPostInRedux(getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).csTradeRef);
+                this.props.handleSegmentPostOrPatchInRedux(getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).csTradeRef);
             }
             else {
                 Modal.error({
                     title: 'Wystąpił błąd przy zapisie segmentu:',
                     content: getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).error,
+                });
+            }
+        }
+
+        if (getSegmentsReduxProperty(this.props, "PATCH", "fetching", true) === false
+            && getSegmentsReduxProperty(prevProps, "PATCH", "fetching", false) === true) {
+            if (getSegmentsReduxProperty(this.props, "PATCH", "fail", true) !== true) {
+                this.props.handleSegmentPostOrPatchInRedux(getSegmentsResponseReduxProperty(this.props, "PATCH", "data", {}).csTradeRef);
+            }
+            else {
+                Modal.error({
+                    title: 'Wystąpił błąd przy aktualizacji danych segmentu:',
+                    content: getSegmentsResponseReduxProperty(this.props, "PATCH", "data", {}).error,
                 });
             }
         }
@@ -156,7 +169,6 @@ class Segments extends Component<{
             .withEntryDate(Date.now())
             .withEntryOwner(AuthType.getUserData(this.props.auth).user)
             .build();
-        segmentData.modified = true;
         segmentData.newRow = true;
         this.props.unshiftSegmentInRedux(segmentData);
     }
@@ -164,8 +176,10 @@ class Segments extends Component<{
     handleCellModification(rowId, key, value) {
         let segmentData = new Segment();
         segmentData[key] = value;
-        segmentData.updateDate = Date.now();
-        segmentData.updateOwner = AuthType.getUserData(this.props.auth).user;
+        if (getSegmentsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow !== true) {
+            segmentData.updateDate = Date.now();
+            segmentData.updateOwner = AuthType.getUserData(this.props.auth).user;
+        }
         this.props.editSegmentPropertiesInRedux(rowId, segmentData);
     }
 
@@ -174,7 +188,8 @@ class Segments extends Component<{
             this.props.insertSegment(rowData.csTradeRef, rowData.segmCategory);
         }
         else {
-            alert("Not handled.");
+            alert("Not handled.");  //TODO_TKB
+            // this.props.patchSegment();
         }
     }
 
@@ -306,9 +321,9 @@ export default connect(
                 deleteSegmentInRedux(rowId)
             )
         },
-        handleSegmentPostInRedux: (csTradeRef) => {
+        handleSegmentPostOrPatchInRedux: (csTradeRef) => {
             dispatch(
-                handleSegmentPostInRedux(csTradeRef)
+                handleSegmentPostOrPatchInRedux(csTradeRef)
             )
         },
         insertSegment: (csTradeRef, segmCategory) => {
@@ -322,6 +337,10 @@ export default connect(
                     .build()
                 )
             )
-        }
+        },
+        // patchSegment: (csTradeRef, segmentData: Segment) => {
+        //     dispatch(
+        //     )
+        // }
     })
 )(Segments);

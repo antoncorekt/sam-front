@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
-import { Button, DatePicker, Icon, Input, Pagination, Select } from 'antd';
+import { Button, DatePicker, Icon, Input, Modal, Pagination, Select } from 'antd';
 import { EditableCell } from './common/EditableCell';
 import { SelectableCell } from "./common/SelectableCell";
 import { renderDateTime } from '../../utils/Utils';
 import './style.css';
 import { connect } from "react-redux";
-import { GetOrderByStatusByRelease } from "../../api/api-func";
+import { RequestSetOrder, Order } from "../../api/api-models";
+import { GetOrder, PostOrder } from "../../api/api-func";
 import {
     cancelEditionOfOrderMappingPropertiesInRedux,
+    deleteOrderMappingInRedux,
     editOrderMappingPropertiesInRedux,
+    handleOrderMappingPostOrPatchInRedux,
     unshiftOrderMappingInRedux
 } from "../../actions/orderMappingsActions";
 import { AuthType } from "../../reducers/auth/auth-store-type";
 import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type';
 import { getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
 import { getBscsAccountsResponseReduxProperty } from '../../reducers/bscs-accounts/bscs-accounts-store-type';
-import { Order } from '../../api/api-models.js';
+import { getSapAccountOfiResponseReduxProperty } from '../../reducers/sap-account/sap-account-store-type';
 import moment from 'moment';
 
 const DEFAULT_CURRENT_PAGE = 0;
@@ -45,7 +48,6 @@ const columns = (that) => [
                     value={x.original.bscsAccount}
                     options={
                         getBscsAccountsResponseReduxProperty(that.props, "GET", "data", [])
-                            .filter(item => item.modified === undefined)
                             .map(item => item.account)
                             .sort()
                     }
@@ -65,7 +67,8 @@ const columns = (that) => [
                     value={x.original.segmentCode}
                     options={
                         getSegmentsResponseReduxProperty(that.props, "GET", "data", [])
-                            .map(item => item.csTradeRef)
+                            .filter(item => item.newRow !== true)
+                            .map(item => item.modified !== undefined ? item.initial.csTradeRef : item.csTradeRef)
                             .sort()
                     }
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
@@ -135,7 +138,7 @@ const columns = (that) => [
         sortable: false,
         Cell: x => (
             <div>
-                {x.original.modified === true ?
+                {x.original.newRow === true || x.original.modified === true ?
                     <div>
                         <Button
                             className="save-button"
@@ -167,10 +170,11 @@ class BscsToSegmentAndOrderMappings extends Component<{
             currentPage: DEFAULT_CURRENT_PAGE,
             pageSize: DEFAULT_PAGE_SIZE,
             filtered: [],
-            filteredCount: DEFAULT_FILTERED_COUNT
+            filteredCount: DEFAULT_FILTERED_COUNT,
+            validFromDateToGenerate: null
         };
 
-        this.props.getAllOrders("W", 0); // TODO_TKB: fix this
+        this.props.getAllOrders();
     }
 
     componentDidUpdate(prevProps) {
@@ -188,6 +192,36 @@ class BscsToSegmentAndOrderMappings extends Component<{
             !== getOrderMappingsResponseReduxProperty(prevProps, "GET", "count", -1)) {
             this.setState({ filteredCount: this.reactTable.getResolvedState().sortedData.length });
         }
+
+        if (getOrderMappingsReduxProperty(this.props, "POST", "fetching", true) === false
+            && getOrderMappingsReduxProperty(prevProps, "POST", "fetching", false) === true) {
+            let data = getOrderMappingsResponseReduxProperty(this.props, "POST", "data", {});
+
+            if (getOrderMappingsReduxProperty(this.props, "POST", "fail", true) !== true) {
+                this.props.handleOrderMappingPostOrPatchInRedux(data.bscsAccount, data.segmCategory);
+            }
+            else {
+                Modal.error({
+                    title: 'Wystąpił błąd przy zapisie mapowania:',
+                    content: data.error,
+                });
+            }
+        }
+
+        if (getOrderMappingsReduxProperty(this.props, "PATCH", "fetching", true) === false
+            && getOrderMappingsReduxProperty(prevProps, "PATCH", "fetching", false) === true) {
+            let data = getOrderMappingsResponseReduxProperty(this.props, "POST", "data", {});
+
+            if (getOrderMappingsReduxProperty(this.props, "PATCH", "fail", true) !== true) {
+                this.props.handleOrderMappingPostOrPatchInRedux(data.bscsAccount, data.segmCategory);
+            }
+            else {
+                Modal.error({
+                    title: 'Wystąpił błąd przy aktualizacji danych mapowania:',
+                    content: data.error,
+                });
+            }
+        }
     }
 
     handleRowAddition() {
@@ -201,7 +235,6 @@ class BscsToSegmentAndOrderMappings extends Component<{
             .withEntryDate(Date.now())
             .withEntryOwner(AuthType.getUserData(this.props.auth).user)
             .build();
-        orderMappingData.modified = true;
         orderMappingData.newRow = true;
         this.props.unshiftOrderMappingInRedux(orderMappingData);
     }
@@ -209,14 +242,16 @@ class BscsToSegmentAndOrderMappings extends Component<{
     handleCellModification(rowId, key, value) {
         let orderMappingData = new Order();
         orderMappingData[key] = value;
-        orderMappingData.updateDate = Date.now();
-        orderMappingData.updateOwner = AuthType.getUserData(this.props.auth).user;
+        if (getOrderMappingsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow !== true) {
+            orderMappingData.updateDate = Date.now();
+            orderMappingData.updateOwner = AuthType.getUserData(this.props.auth).user;
+        }
         this.props.editOrderMappingPropertiesInRedux(rowId, orderMappingData);
     }
 
     handleSaveRowChanges(rowId, rowData) {
         if (getOrderMappingsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
-            alert("Not handled.");
+            this.props.insertOrderMapping(rowData.bscsAccount, rowData.segmentCode, rowData.orderNumber, rowData.validFromDate);
         }
         else {
             alert("Not handled.");
@@ -225,7 +260,7 @@ class BscsToSegmentAndOrderMappings extends Component<{
 
     handleCancelRowChanges(rowId) {
         if (getOrderMappingsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
-            alert("Not handled.");
+            this.props.deleteOrderMappingInRedux(rowId);
         }
         else {
             this.props.cancelEditionOfOrderMappingPropertiesInRedux(rowId);
@@ -234,12 +269,6 @@ class BscsToSegmentAndOrderMappings extends Component<{
 
     handleDataExport() {
         alert("Not handled.");
-        this.getSegmentOptions();
-    }
-
-    getSegmentOptions() {
-        let segments = getSegmentsResponseReduxProperty(this.props, "GET", "data", []).map(s => s.csTradeRef + " (" + s.segmCategory + ")");
-        console.log(segments);
     }
 
     render() {
@@ -261,9 +290,17 @@ class BscsToSegmentAndOrderMappings extends Component<{
                     <div className="right-margin">
                         <InputGroup compact>
                             <Select className="row-generation-select" placeholder="Wybierz konto SAP OFI">
-                                <Option value="1">Konto SAP OFI 1</Option>
-                                <Option value="2">Konto SAP OFI 2</Option>
+                                {
+                                    getSapAccountOfiResponseReduxProperty(this.props, "GET", "data", [])
+                                        .map(item => { return <Option key={item.sapOfiAccount} value={item.sapOfiAccount}> {item.sapOfiAccount} </Option> })
+                                }
                             </Select>
+                            <MonthPicker
+                                format="YYYY-MM-01"
+                                value={this.state.validFromDateToGenerate}
+                                placeholder="Wybierz miesiąc"
+                                onChange={(date, dateString) => { this.setState({ validFromDateToGenerate: date }) }}
+                            />
                             <Button type="primary" onClick={null}>
                                 Generuj wiersze
                             </Button>
@@ -336,7 +373,7 @@ class BscsToSegmentAndOrderMappings extends Component<{
                             this.setState({
                                 filteredCount: DEFAULT_FILTERED_COUNT
                             });
-                            this.props.getAllOrders("W", 0); // TODO_TKB: fix this
+                            this.props.getAllOrders();
                         }}
                         spin={getOrderMappingsReduxProperty(this.props, "GET", "fetching", false)}
                     />
@@ -350,15 +387,17 @@ const mapStateToProps = (state: any) => ({
     auth: state.auth,
     bscsAccounts: state.bscsAccounts,
     orderMappings: state.orderMappings,
-    segments: state.segments
+    segments: state.segments,
+    sapAccountOfi: state.sapAccountOfi
 });
 
 export default connect(
     mapStateToProps,
     dispatch => ({
-        getAllOrders: (status, release) => {
+        getAllOrders: () => {
             dispatch(
-                GetOrderByStatusByRelease(status, release))
+                GetOrder()
+            )
         },
         editOrderMappingPropertiesInRedux: (rowId, orderMappingData: Order) => {
             dispatch(
@@ -375,5 +414,29 @@ export default connect(
                 unshiftOrderMappingInRedux(orderMappingData)
             )
         },
+        deleteOrderMappingInRedux: (rowId) => {
+            dispatch(
+                deleteOrderMappingInRedux(rowId)
+            )
+        },
+        handleOrderMappingPostOrPatchInRedux: (bscsAccount, segmCategory) => {
+            dispatch(
+                handleOrderMappingPostOrPatchInRedux(bscsAccount, segmCategory)
+            )
+        },
+        insertOrderMapping: (bscsAccount, segmentCode, orderNumber, validFromDate) => {
+            dispatch(
+                PostOrder(new RequestSetOrder.Builder()
+                    .withData(new Order.Builder()
+                        .withBscsAccount(bscsAccount)
+                        .withSegmentCode(segmentCode)
+                        .withOrderNumber(orderNumber)
+                        .withValidFromDate(validFromDate)
+                        .build()
+                    )
+                    .build()
+                )
+            )
+        }
     })
 )(BscsToSegmentAndOrderMappings);

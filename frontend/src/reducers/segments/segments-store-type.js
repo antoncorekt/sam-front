@@ -4,6 +4,7 @@ import { RequestSetSegment, ResultSetSegment, ResultSetSegments } from "../../ap
 export class SegmentsType {
     GET: ActionResponseData<ResultSetSegments, ActionRequestData<RequestSetSegment, null>>;
     POST: ActionResponseData<ResultSetSegment, ActionRequestData<RequestSetSegment, null>>;
+    PATCH: ActionResponseData<ResultSetCount, ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>>
 }
 
 export const getSegmentsReduxProperty = (root, requestType, property, negativeResult) => {

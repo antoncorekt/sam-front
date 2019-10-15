@@ -6,14 +6,7 @@ import logo from '../../media/logo_small.jpg';
 import './style.less';
 import { connect } from "react-redux";
 import type { MainStateType } from "../../reducers";
-import {
-    GetDictionaryAccountBscs,
-    GetDictionaryAccountSap,
-    GetDictionarySegment,
-    GetSystemVersion,
-    PostUserInfo,
-    PostUserLogoff
-} from "../../api/api-func";
+
 import {
     RequestSetUserLogoff,
     Status,
@@ -22,6 +15,12 @@ import {
 } from "../../api/api-models";
 import { globalLoginContext } from "../../api/common-middleware";
 import { AuthType } from "../../reducers/auth/auth-store-type";
+import {
+    GetDictionaryAccountBscs,
+    GetDictionaryAccountSap,
+    GetDictionarySegment, GetSystemVersion,
+    PostUserInfo, PostUserLogoff
+} from "../../api/api-func";
 
 class MainScreenHeader extends Component<{
     auth: AuthType,
@@ -62,9 +61,7 @@ class MainScreenHeader extends Component<{
 
 const mapStateToProps = (state: MainStateType) => ({
     auth: state.auth,
-    backendInfo: state.backendInfo,
-    segments: state.segments,
-    bscsAccount: state
+    backendInfo: state.backendInfo
 });
 
 export default connect(

@@ -1,12 +1,26 @@
-export const GetOrderByStatusByReleaseHandler = () => {
+export const GetOrderHandler = () => {
     return {
-        GetOrderByStatusByReleaseRequest: (state: OrderMappingsType, action: ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>) => {
+        GetOrderRequest: (state: any, action: ActionRequestData<null, null>) => {
             return { ...state, GET: action };
         },
-        GetOrderByStatusByReleaseSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetOrders, ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>>) => {
+        GetOrderSuccess: (state: any, action: ActionResponseData<ResultSetOrders, ActionRequestData<null, null>>) => {
+            action.response.data.sort(function (a, b) {
+                if (a.bscsAccount > b.bscsAccount) {
+                    return 1;
+                }
+                else if (a.bscsAccount === b.bscsAccount) {
+                    if (a.segmentCode > b.segmentCode)
+                        return 1;
+                    else
+                        return -1;
+                }
+                else
+                    return -1;
+            });
+
             return { ...state, GET: action };
         },
-        GetOrderByStatusByReleaseFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<null, GetOrderByStatusByReleaseQueryParams>>) => {
+        GetOrderFail: (state: any, action: ActionResponseData<ResultSetError, ActionRequestData<null, null>>) => {
             return { ...state, GET: action };
         },
     }
@@ -100,6 +114,38 @@ export const OrderMappingPropertiesInReduxHandler = () => {
                         ...state.GET.response,
                         data: [action.orderMappingData, ...state.GET.response.data],
                         count: state.GET.response.count + 1
+                    }
+                }
+            };
+        },
+        deleteOrderMappingInRedux: (state, action) => {
+            return {
+                ...state,
+                GET: {
+                    ...state.GET,
+                    response: {
+                        ...state.GET.response,
+                        data: state.GET.response.data.filter((item, index) => index !== action.rowId),
+                        count: state.GET.response.count - 1
+                    }
+                }
+            };
+        },
+        handleOrderMappingPostOrPatchInRedux: (state, action) => {
+            return {
+                ...state,
+                GET: {
+                    ...state.GET,
+                    response: {
+                        ...state.GET.response,
+                        data: state.GET.response.data.map((content, index) => content.bscsAccount === action.bscsAccount && content.segmentCode === action.segmentCode
+                            ? {
+                                ...content,
+                                initial: undefined,
+                                modified: false,
+                                newRow: undefined
+                            }
+                            : content)
                     }
                 }
             };
