@@ -14,6 +14,7 @@ export const GetDictionarySegmentHandler = () => {
                 else
                     return -1;
             });
+
             return { ...state, GET: action };
         },
         GetDictionarySegmentFail: (state: SegmentsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetSegment, null>>) => {
@@ -32,6 +33,20 @@ export const PostDictionarySegmentHandler = () => {
         },
         PostDictionarySegmentFail: (state: SegmentsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetSegment, null>>) => {
             return { ...state, POST: action };
+        },
+    }
+};
+
+export const PatchDictionarySegmentByIdHandler = () => {
+    return {
+        PatchDictionarySegmentByIdRequest: (state: SegmentsType, action: ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>) => {
+            return { ...state, PATCH: action };
+        },
+        PatchDictionarySegmentByIdSuccess: (state: SegmentsType, action: ActionResponseData<ResultSetCount, ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>>) => {
+            return { ...state, PATCH: action };
+        },
+        PatchDictionarySegmentByIdFail: (state: SegmentsType, action: ActionResponseData<ResultSetError, ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>>) => {
+            return { ...state, PATCH: action };
         },
     }
 };
@@ -121,7 +136,7 @@ export const SegmentPropertiesInReduxHandler = () => {
                 }
             };
         },
-        handleSegmentPostInRedux: (state, action) => {
+        handleSegmentPostOrPatchInRedux: (state, action) => {
             return {
                 ...state,
                 GET: {

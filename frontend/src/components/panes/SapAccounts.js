@@ -94,8 +94,8 @@ class SapAccounts extends Component<{
             this.props.getSapOfi();
         }
 
-        if (prevProps.sapOfi.deleteDict.fetching === true &&
-            this.props.sapOfi.deleteDict.fetching === false
+        if (prevProps.sapOfi.DELETE.fetching === true &&
+            this.props.sapOfi.DELETE.fetching === false
         ) {
             this.props.getSapOfi();
         }
@@ -110,7 +110,7 @@ class SapAccounts extends Component<{
             <div className="sap-accounts">
                 <div className="flex-end-row">
                     <TestEnvContainer>
-                        <Button style={{margin:"0px 10px 0px 10px"}} onClick={()=>this.props.deleteDict()} loading={this.props.sapOfi.deleteDict.fetching}>Remove All</Button>
+                        <Button style={{margin:"0px 10px 0px 10px"}} onClick={()=>this.props.deleteDict()} loading={this.props.sapOfi.DELETE.fetching}>Remove All</Button>
                     </TestEnvContainer>
                     <Checkbox className="checkbox" onChange={null}>
                         Aktualizuj opisy istniejących kont
@@ -120,7 +120,7 @@ class SapAccounts extends Component<{
 
                 </div>
                 <div className="table-container">
-                    <Spin tip={"Pobieram słownik"} spinning={this.props.sapOfi.dict.fetching}>
+                    <Spin tip={"Pobieram słownik"} spinning={this.props.sapOfi.GET.fetching}>
                         <ReactTable
                             data={getPaginationArray(data, this.state.page, this.state.pageSize)}
                             columns={columns}

@@ -5,7 +5,7 @@ import {Account, Release, RequestSetAccount, Status15, User} from "../../../api/
 import {
     DeleteAccountByStatusByReleaseByBscsAccount, GetAccount,
     GetAccountByStatusByRelease, GetDictionaryAccountSap, PatchAccountByStatusByReleaseByBscsAccount,
-    PostAccount, PostRelease
+    PostAccount, PostReleaseNew
 } from "../../../api/api-func";
 import {
     AccountMappingType,
@@ -177,7 +177,7 @@ export default connect(
         },
         release: ()=> {
             dispatch(
-                PostRelease()
+                PostReleaseNew()
             )
         }
     }))(AccountMappingTab)

@@ -18,11 +18,12 @@ import {
 } from "./sap-account/sap-account-reducer";
 import {
     GetDictionarySegmentHandler,
+    PatchDictionarySegmentByIdHandler,
     PostDictionarySegmentHandler,
     SegmentPropertiesInReduxHandler
 } from "./segments/segments-reducer";
 import {
-    GetOrderByStatusByReleaseHandler,
+    GetOrderHandler,
     OrderMappingPropertiesInReduxHandler,
     PostOrderHandler
 } from "./order-mappings/order-mappings-reducer";
@@ -39,7 +40,8 @@ export type MainStateType = {
     backendInfo: any,
     sapAccountOfi: SapAccountStoreType,
     requestPanel: RequestPanelType,
-    accountMapping: AccountMappingType
+    accountMapping: AccountMappingType,
+    bscsAccounts: BscsAccountsType
 }
 
 export const mainReducer = combineReducers(
@@ -51,8 +53,8 @@ export const mainReducer = combineReducers(
 
         bscsAccounts: createReducer(new BscsAccountsType(), [GetDictionaryAccountBscsHandler()]),
         sapAccountOfi: createReducer(new SapAccountStoreType(), [GetDictionaryAccountSapHandler(), PostDictionaryAccountSapHandler(), DeleteDictionaryAccountSapHandler()]),
-        segments: createReducer(new SegmentsType(), [GetDictionarySegmentHandler(), PostDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
+        segments: createReducer(new SegmentsType(), [GetDictionarySegmentHandler(), PatchDictionarySegmentByIdHandler(), PostDictionarySegmentHandler(), SegmentPropertiesInReduxHandler()]),
         accountMapping: createReducer(new AccountMappingType(), [UsersBscsToSapMappings(), GetAccount(), PostAccountHandler(), DeleteAccountByStatusByReleaseByBscsAccountHandler(), PatchAccountByStatusByReleaseByBscsAccountHandler()]),
-        orderMappings: createReducer(new OrderMappingsType(), [GetOrderByStatusByReleaseHandler(), OrderMappingPropertiesInReduxHandler(), PostOrderHandler()])
+        orderMappings: createReducer(new OrderMappingsType(), [GetOrderHandler(), OrderMappingPropertiesInReduxHandler(), PostOrderHandler()])
     }
 );
