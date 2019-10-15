@@ -12,10 +12,14 @@ RequestSetAccount,
 ResultSetAccount,
 Account,
 ResultSetAccounts,
+AccountLog,
+ResultSetAccountLogs,
 RequestSetOrder,
 ResultSetOrder,
 Order,
+OrderLog,
 ResultSetOrders,
+ResultSetOrderLogs,
 RequestSetAccountDictSap,
 AccountDictSap,
 ResultSetAccountDictSap,
@@ -39,10 +43,13 @@ GetAccountByStatusByReleaseQueryParams,
 PutAccountByStatusByReleaseByBscsAccountQueryParams,
 DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
 PatchAccountByStatusByReleaseByBscsAccountQueryParams,
+GetAccountLogQueryParams,
 GetOrderByStatusByReleaseQueryParams,
 PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
 DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
 PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
+GetOrderLogQueryParams,
+PostReleaseByReleaseQueryParams,
 DeleteReleaseByReleaseQueryParams,
 PutDictionarySegmentByIdQueryParams,
 DeleteDictionarySegmentByIdQueryParams,
@@ -229,6 +236,19 @@ export const PatchAccountByStatusByReleaseByBscsAccountHandler = () => {
 		},
 	}
 };
+export const GetAccountLogHandler = () => {
+	return {
+		GetAccountLogRequest:(state:any, action:ActionRequestData<null, GetAccountLogQueryParams>)=>{
+			 return {...state, ...action};
+		},
+		GetAccountLogSuccess:(state:any, action:ActionResponseData<ResultSetAccountLogs,ActionRequestData<null, GetAccountLogQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+		GetAccountLogFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetAccountLogQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
 export const GetOrderHandler = () => {
 	return {
 		GetOrderRequest:(state:any, action:ActionRequestData<null, null>)=>{
@@ -320,15 +340,41 @@ export const PatchOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
 		},
 	}
 };
-export const PostReleaseHandler = () => {
+export const GetOrderLogHandler = () => {
 	return {
-		PostReleaseRequest:(state:any, action:ActionRequestData<null, null>)=>{
+		GetOrderLogRequest:(state:any, action:ActionRequestData<null, GetOrderLogQueryParams>)=>{
 			 return {...state, ...action};
 		},
-		PostReleaseSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, null>>)=>{
+		GetOrderLogSuccess:(state:any, action:ActionResponseData<ResultSetOrderLogs,ActionRequestData<null, GetOrderLogQueryParams>>)=>{
 			 return {...state, ...action};
 		},
-		PostReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+		GetOrderLogFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetOrderLogQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const PostReleaseNewHandler = () => {
+	return {
+		PostReleaseNewRequest:(state:any, action:ActionRequestData<null, null>)=>{
+			 return {...state, ...action};
+		},
+		PostReleaseNewSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+		PostReleaseNewFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+			 return {...state, ...action};
+		},
+	}
+};
+export const PostReleaseByReleaseHandler = () => {
+	return {
+		PostReleaseByReleaseRequest:(state:any, action:ActionRequestData<null, PostReleaseByReleaseQueryParams>)=>{
+			 return {...state, ...action};
+		},
+		PostReleaseByReleaseSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, PostReleaseByReleaseQueryParams>>)=>{
+			 return {...state, ...action};
+		},
+		PostReleaseByReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PostReleaseByReleaseQueryParams>>)=>{
 			 return {...state, ...action};
 		},
 	}

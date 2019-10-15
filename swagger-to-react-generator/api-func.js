@@ -12,10 +12,14 @@ RequestSetAccount,
 ResultSetAccount,
 Account,
 ResultSetAccounts,
+AccountLog,
+ResultSetAccountLogs,
 RequestSetOrder,
 ResultSetOrder,
 Order,
+OrderLog,
 ResultSetOrders,
+ResultSetOrderLogs,
 RequestSetAccountDictSap,
 AccountDictSap,
 ResultSetAccountDictSap,
@@ -39,10 +43,13 @@ GetAccountByStatusByReleaseQueryParams,
 PutAccountByStatusByReleaseByBscsAccountQueryParams,
 DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
 PatchAccountByStatusByReleaseByBscsAccountQueryParams,
+GetAccountLogQueryParams,
 GetOrderByStatusByReleaseQueryParams,
 PutOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
 DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
 PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams,
+GetOrderLogQueryParams,
+PostReleaseByReleaseQueryParams,
 DeleteReleaseByReleaseQueryParams,
 PutDictionarySegmentByIdQueryParams,
 DeleteDictionarySegmentByIdQueryParams,
@@ -137,33 +144,48 @@ export const PostOrder = (body:RequestSetOrder) => {
 };
 
 
-// call Release
-export const PostRelease = () => {
+// call ReleaseNew
+export const PostReleaseNew = () => {
 	const settings = {		// set settings data
-		url:`/release`,
+		url:`/release/new`,
 		contentType:'application/json',
 		httpMethod: 'POST',
 		body:undefined,
-		requestType: ACT.PostReleaseRequest,
-		successType: ACT.PostReleaseSuccess,
-		failType: ACT.PostReleaseFail
+		requestType: ACT.PostReleaseNewRequest,
+		successType: ACT.PostReleaseNewSuccess,
+		failType: ACT.PostReleaseNewFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call ReleaseAppend
+export const PostReleaseByRelease = (release:Release) => {
+	const settings = {		// set settings data
+		url:`/release/${release}`,
+		contentType:'application/json',
+		httpMethod: 'POST',
+		body:undefined,
+		requestType: ACT.PostReleaseByReleaseRequest,
+		successType: ACT.PostReleaseByReleaseSuccess,
+		failType: ACT.PostReleaseByReleaseFail
 	};
 	return commonCallApi(settings); 
 };
 
 
 // call DictionaryAccountSapCreate
-export const PostDictionaryAccountSap = (body:File) => {
+export const PostDictionaryAccountSap = () => {
 	const settings = {		// set settings data
 		url:`/dictionary/account/sap`,
-		contentType:'application/xlsx',
+		contentType:'application/json',
 		httpMethod: 'POST',
-		body:body,
+		body:undefined,
 		requestType: ACT.PostDictionaryAccountSapRequest,
 		successType: ACT.PostDictionaryAccountSapSuccess,
 		failType: ACT.PostDictionaryAccountSapFail
 	};
-	return commonCallApi(settings);
+	return commonCallApi(settings); 
 };
 
 
@@ -257,6 +279,21 @@ export const GetAccountByStatusByRelease = (status:Status15,release:Release) => 
 };
 
 
+// call AccountReadLog
+export const GetAccountLog = (account:string) => {
+	const settings = {		// set settings data
+		url:`/account/log`,
+		contentType:'application/json',
+		httpMethod: 'GET',
+		body:undefined,
+		requestType: ACT.GetAccountLogRequest,
+		successType: ACT.GetAccountLogSuccess,
+		failType: ACT.GetAccountLogFail
+	};
+	return commonCallApi(settings); 
+};
+
+
 // call OrderReadActiveAll
 export const GetOrder = () => {
 	const settings = {		// set settings data
@@ -282,6 +319,21 @@ export const GetOrderByStatusByRelease = (status:Status15,release:Release) => {
 		requestType: ACT.GetOrderByStatusByReleaseRequest,
 		successType: ACT.GetOrderByStatusByReleaseSuccess,
 		failType: ACT.GetOrderByStatusByReleaseFail
+	};
+	return commonCallApi(settings); 
+};
+
+
+// call OrderReadLog
+export const GetOrderLog = (account:string) => {
+	const settings = {		// set settings data
+		url:`/order/log`,
+		contentType:'application/json',
+		httpMethod: 'GET',
+		body:undefined,
+		requestType: ACT.GetOrderLogRequest,
+		successType: ACT.GetOrderLogSuccess,
+		failType: ACT.GetOrderLogFail
 	};
 	return commonCallApi(settings); 
 };
@@ -483,7 +535,7 @@ export const DeleteOrderByStatusByReleaseByBscsAccountBySegment = (status:Status
 
 
 // call ReleaseRevoke
-export const DeleteReleaseByRelease = (status:Status15,release:Release) => {
+export const DeleteReleaseByRelease = (release:Release) => {
 	const settings = {		// set settings data
 		url:`/release/${release}`,
 		contentType:'application/json',

@@ -83,6 +83,12 @@ export const PatchAccountByStatusByReleaseByBscsAccountRequest = "PatchAccountBy
 export const PatchAccountByStatusByReleaseByBscsAccountFail = "PatchAccountByStatusByReleaseByBscsAccountFail"
 ;
 
+// actions for GET /account/log
+export const GetAccountLogSuccess = "GetAccountLogSuccess";
+export const GetAccountLogRequest = "GetAccountLogRequest";
+export const GetAccountLogFail = "GetAccountLogFail"
+;
+
 // actions for GET /order
 export const GetOrderSuccess = "GetOrderSuccess";
 export const GetOrderRequest = "GetOrderRequest";
@@ -125,10 +131,22 @@ export const PatchOrderByStatusByReleaseByBscsAccountBySegmentRequest = "PatchOr
 export const PatchOrderByStatusByReleaseByBscsAccountBySegmentFail = "PatchOrderByStatusByReleaseByBscsAccountBySegmentFail"
 ;
 
-// actions for POST /release
-export const PostReleaseSuccess = "PostReleaseSuccess";
-export const PostReleaseRequest = "PostReleaseRequest";
-export const PostReleaseFail = "PostReleaseFail"
+// actions for GET /order/log
+export const GetOrderLogSuccess = "GetOrderLogSuccess";
+export const GetOrderLogRequest = "GetOrderLogRequest";
+export const GetOrderLogFail = "GetOrderLogFail"
+;
+
+// actions for POST /release/new
+export const PostReleaseNewSuccess = "PostReleaseNewSuccess";
+export const PostReleaseNewRequest = "PostReleaseNewRequest";
+export const PostReleaseNewFail = "PostReleaseNewFail"
+;
+
+// actions for POST /release/{release}
+export const PostReleaseByReleaseSuccess = "PostReleaseByReleaseSuccess";
+export const PostReleaseByReleaseRequest = "PostReleaseByReleaseRequest";
+export const PostReleaseByReleaseFail = "PostReleaseByReleaseFail"
 ;
 
 // actions for DELETE /release/{release}
