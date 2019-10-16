@@ -32,3 +32,25 @@
 .secure-denied:hover::after {
     content: attr(data-title);
 }
+
+.pane {
+    margin: 15px 15px 15px 15px;
+    border: solid 1px #c6bcb8;
+    border-radius: 5px;
+    overflow: hidden
+}
+
+.pane-title {
+    background: #192c3e;
+    height: 46px;
+    color: white;
+    font-size: 18px;
+}
+
+.pane-body {
+    background: white;
+}
+
+.padding-left {
+    padding-left: 35px;
+}

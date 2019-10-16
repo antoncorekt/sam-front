@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import type {MainStateType} from "../../../reducers";
 import {connect} from "react-redux";
-import {Account, Release, RequestSetAccount, Status15, User} from "../../../api/api-models";
+import {Account, Release, RequestSetAccount, Role, Status15, User} from "../../../api/api-models";
 import {
     DeleteAccountByStatusByReleaseByBscsAccount, GetAccount,
     GetAccountByStatusByRelease, GetDictionaryAccountSap, PatchAccountByStatusByReleaseByBscsAccount,
@@ -17,6 +17,9 @@ import {AuthType} from "../../../reducers/auth/auth-store-type";
 import OneTableAccountView from "./OneTableAccountView";
 import DoubleTableAccountView from "./DoubleTableAccountView";
 import {AccountOperationPanel} from "./AccountOperationPanel";
+import {Pane} from "../common/Pane";
+import {Button} from "antd";
+import SecuredComponent from "../common/SecuredComponent";
 
 export class ViewMode {
     static get OneTableView() { return "oneTableView"}
@@ -63,6 +66,27 @@ class AccountMappingTab extends Component<{
         throw new Error("Please, define view mode")
     };
 
+    renderOperations = (userData) => () => {
+
+        return (
+            <div className="flex" style={{marginTop: "-3px"}}>
+                <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{alert("Handler Exportuj wszystkie")}}>Exportuj wszystkie</Button>
+                <SecuredComponent group={Role.BOOKER} renderIfAccessDenied={false}>
+                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>this.props.addUserAccount(userData.user)}>Dodaj mapowanie</Button>
+                </SecuredComponent>
+                <SecuredComponent group={Role.CONTROL} renderIfAccessDenied={false}>
+                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.release()}}>Zaaceptuj wszystko</Button>
+                </SecuredComponent>
+                <SecuredComponent group={Role.CONTROL} renderIfAccessDenied={false}>
+                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{alert("Handler revert release")}}>Revert release</Button>
+                </SecuredComponent>
+                <SecuredComponent group={Role.BOOKER} renderIfAccessDenied={false}>
+                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{alert("Handler revert release")}}>Wszystko do kontrolingu</Button>
+                </SecuredComponent>
+            </div>
+        )
+    };
+
     render(){
 
         const doubleTableViewMode = ViewMode.OneTableView;
@@ -75,17 +99,19 @@ class AccountMappingTab extends Component<{
 
         return (
             <div className="flex flex-column">
-                <div className="width100">
-                    <AccountOperationPanel
-                        releaseVersion={currentRelease}
-                        userRole={userData.role}
-                        releaseHandle={this.props.release}
-                        addUserAccount={()=>this.props.addUserAccount(userData.user)}
-                    />
-                </div>
-                <div className="flex">
+                {/*<div className="width100">*/}
+                {/*    <Pane>*/}
+                {/*        <AccountOperationPanel*/}
+                {/*            releaseVersion={currentRelease}*/}
+                {/*            userRole={userData.role}*/}
+                {/*            releaseHandle={this.props.release}*/}
+                {/*            addUserAccount={()=>this.props.addUserAccount(userData.user)}*/}
+                {/*        />*/}
+                {/*    </Pane>*/}
+                {/*</div>*/}
+                <Pane title={"Title"} icon={"add"} buttonsTitle={this.renderOperations(userData)}>
                     {this.renderAccountView(doubleTableViewMode, allAccounts, currentRelease)}
-                </div>
+                </Pane>
             </div>
         )
     }
