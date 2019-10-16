@@ -7,7 +7,7 @@ import {
     getFilteredAndSortedArray,
     getPageSizeOption,
     getPaginationArray,
-    Filter
+    Filter, renderDateTime
 } from "../../../utils/Utils";
 import {SapAccountStoreType} from "../../../reducers/sap-account/sap-account-store-type";
 import {BscsAccountsType} from "../../../reducers/bscs-accounts/bscs-accounts-store-type";
@@ -128,7 +128,8 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     // },
     {
         Header: 'Data utworzenia',
-        accessor: Account.ObjectProps.entryDate
+        accessor: Account.ObjectProps.entryDate,
+        Cell: item => renderDateTime(item.original.entryDate)
     },
     {
         Header: 'Utworzył',
@@ -136,7 +137,8 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     },
     {
         Header: 'Data modyfikacji',
-        accessor:  Account.ObjectProps.updateDate
+        accessor:  Account.ObjectProps.updateDate,
+        Cell: item => renderDateTime(item.original.updateDate)
     },
     {
         Header: 'Zmodyfikował',

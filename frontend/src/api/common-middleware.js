@@ -224,7 +224,7 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
 
             if (callApiContext.responseStatus >= 300){
 
-                if (callApiContext.responseStatus === 403 && callApiContext.responseText.includes("Unauthorized") ){
+                if (callApiContext.responseStatus === 403 && callApiContext.responseText.includes("Unauthorized") || callApiContext.responseStatus === 401  ){
                     // todo call unauthorized
 
                     console.warn("callApiContext", callApiContext)
@@ -282,7 +282,7 @@ export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A
                     failAction
                 );
                 dispatch(
-                    AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, {reqActionWithBody, response: failAction})
+                    AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, {requestAction: reqActionWithBody, response: failAction})
                 );
             }
 

@@ -511,7 +511,7 @@ export const DeleteDictionarySegmentByIdHandler = () => {
 };
 export const PatchDictionarySegmentByIdHandler = () => {
 	return {
-		PatchDictionarySegmentByIdRequest:(state:any, action:ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>)=>{
+		PatchDictionarySegmentByIdRequest:(state:any, action:ActionRequestData<Segment, PatchDictionarySegmentByIdQueryParams>)=>{
 			 return {...state, ...action};
 		},
 		PatchDictionarySegmentByIdSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>>)=>{
