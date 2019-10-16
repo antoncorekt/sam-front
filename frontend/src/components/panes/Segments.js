@@ -9,12 +9,16 @@ import { renderDateTime } from '../../utils/Utils';
 import './style.css';
 import { connect } from "react-redux";
 import { RequestSetSegment, Segment } from "../../api/api-models";
-import { GetDictionarySegment, PostDictionarySegment } from "../../api/api-func";
+import {
+    DeleteDictionarySegmentById,
+    GetDictionarySegment,
+    PatchDictionarySegmentById,
+    PostDictionarySegment
+} from "../../api/api-func";
 import {
     cancelEditionOfSegmentPropertiesInRedux,
     deleteSegmentInRedux,
     editSegmentPropertiesInRedux,
-    handleSegmentPostOrPatchInRedux,
     unshiftSegmentInRedux
 } from "../../actions/segmentsActions";
 import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
@@ -26,6 +30,16 @@ const DEFAULT_FILTERED_COUNT = 1000000;
 const DEFAULT_SEGM_CATEGORY = "PRIV";
 
 const columns = (that) => [
+    {
+        width: 26,
+        filterable: false,
+        Cell: x =>
+            <Icon
+                onClick={() => that.handleRowDeletion(x.index, x.original)}
+                style={{ cursor: "pointer" }}
+                type="delete"
+            />,
+    },
     {
         Header: 'Segment',
         accessor: Segment.ObjectProps.csTradeRef,
@@ -133,29 +147,39 @@ class Segments extends Component<{
         }
 
         if (getSegmentsReduxProperty(this.props, "POST", "fetching", true) === false
-            && getSegmentsReduxProperty(prevProps, "POST", "fetching", false) === true) {
-            if (getSegmentsReduxProperty(this.props, "POST", "fail", true) !== true) {
-                this.props.handleSegmentPostOrPatchInRedux(getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).csTradeRef);
-            }
-            else {
-                Modal.error({
-                    title: 'Wystąpił błąd przy zapisie segmentu:',
-                    content: getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).error,
-                });
-            }
+            && getSegmentsReduxProperty(prevProps, "POST", "fetching", false) === true
+            && getSegmentsReduxProperty(this.props, "POST", "fail", true) === true) {
+            Modal.error({
+                title: 'Wystąpił błąd przy zapisie segmentu:',
+                content: getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).error,
+            });
         }
 
         if (getSegmentsReduxProperty(this.props, "PATCH", "fetching", true) === false
-            && getSegmentsReduxProperty(prevProps, "PATCH", "fetching", false) === true) {
-            if (getSegmentsReduxProperty(this.props, "PATCH", "fail", true) !== true) {
-                this.props.handleSegmentPostOrPatchInRedux(getSegmentsResponseReduxProperty(this.props, "PATCH", "data", {}).csTradeRef);
-            }
-            else {
-                Modal.error({
-                    title: 'Wystąpił błąd przy aktualizacji danych segmentu:',
-                    content: getSegmentsResponseReduxProperty(this.props, "PATCH", "data", {}).error,
-                });
-            }
+            && getSegmentsReduxProperty(prevProps, "PATCH", "fetching", false) === true
+            && getSegmentsReduxProperty(this.props, "PATCH", "fail", true) === true) {
+            Modal.error({
+                title: 'Wystąpił błąd przy aktualizacji danych segmentu:',
+                content: getSegmentsResponseReduxProperty(this.props, "PATCH", "data", {}).error,
+            });
+        }
+
+        if (getSegmentsReduxProperty(this.props, "DELETE", "fetching", true) === false
+            && getSegmentsReduxProperty(prevProps, "DELETE", "fetching", false) === true
+            && getSegmentsReduxProperty(this.props, "DELETE", "fail", true) === true) {
+            Modal.error({
+                title: 'Wystąpił błąd przy kasowaniu segmentu:',
+                content: getSegmentsResponseReduxProperty(this.props, "DELETE", "data", {}).error,
+            });
+        }
+    }
+
+    handleRowDeletion(rowId, rowData) {
+        if (getSegmentsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
+            this.props.deleteSegmentInRedux(rowId);
+        }
+        else {
+            this.props.deleteSegment(rowData.initial !== undefined ? rowData.initial.csTradeRef : rowData.csTradeRef);
         }
     }
 
@@ -184,12 +208,14 @@ class Segments extends Component<{
     }
 
     handleSaveRowChanges(rowId, rowData) {
+        let segmentData = new Segment();
+        segmentData.csTradeRef = rowData.csTradeRef;
+        segmentData.segmCategory = rowData.segmCategory;
         if (getSegmentsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
-            this.props.insertSegment(rowData.csTradeRef, rowData.segmCategory);
+            this.props.insertSegment(segmentData);
         }
         else {
-            alert("Not handled.");  //TODO_TKB
-            // this.props.patchSegment();
+            this.props.patchSegment(rowData.initial.csTradeRef, segmentData);
         }
     }
 
@@ -321,26 +347,26 @@ export default connect(
                 deleteSegmentInRedux(rowId)
             )
         },
-        handleSegmentPostOrPatchInRedux: (csTradeRef) => {
-            dispatch(
-                handleSegmentPostOrPatchInRedux(csTradeRef)
-            )
-        },
-        insertSegment: (csTradeRef, segmCategory) => {
+        insertSegment: (segmentData: Segment) => {
             dispatch(
                 PostDictionarySegment(new RequestSetSegment.Builder()
-                    .withData(new Segment.Builder()
-                        .withCsTradeRef(csTradeRef)
-                        .withSegmCategory(segmCategory)
-                        .build()
-                    )
+                    .withData(segmentData)
                     .build()
                 )
             )
         },
-        // patchSegment: (csTradeRef, segmentData: Segment) => {
-        //     dispatch(
-        //     )
-        // }
+        patchSegment: (oldCsTradeRef, segmentData: Segment) => {
+            dispatch(
+                PatchDictionarySegmentById(oldCsTradeRef, new RequestSetSegment.Builder()
+                    .withData(segmentData)
+                    .build()
+                )
+            )
+        },
+        deleteSegment: (csTradeRef) => {
+            dispatch(
+                DeleteDictionarySegmentById(csTradeRef)
+            )
+        }
     })
 )(Segments);

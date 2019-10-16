@@ -464,12 +464,12 @@ export const PatchOrderByStatusByReleaseByBscsAccountBySegment = (status:Status1
 
 
 // call DictionarySegmentUpdateAttributes
-export const PatchDictionarySegmentById = (id:string) => {
+export const PatchDictionarySegmentById = (id:string, body:RequestSetSegment) => {
 	const settings = {		// set settings data
 		url:`/dictionary/segment/${id}`,
 		contentType:'application/json',
 		httpMethod: 'PATCH',
-		body:undefined,
+		body:JSON.stringify(body),
 		requestType: ACT.PatchDictionarySegmentByIdRequest,
 		successType: ACT.PatchDictionarySegmentByIdSuccess,
 		failType: ACT.PatchDictionarySegmentByIdFail
