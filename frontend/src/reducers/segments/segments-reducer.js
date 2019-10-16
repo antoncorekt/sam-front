@@ -4,7 +4,7 @@ export const GetDictionarySegmentHandler = () => {
             return { ...state, GET: action };
         },
         GetDictionarySegmentSuccess: (state: SegmentsType, action: ActionResponseData<ResultSetSegments, ActionRequestData<RequestSetSegment, null>>) => {
-            action.response.data.sort(function (a, b) {
+            action.response.data.sort((a, b) => {
                 if (a.csTradeRef > b.csTradeRef) {
                     return 1;
                 }
@@ -29,7 +29,26 @@ export const PostDictionarySegmentHandler = () => {
             return { ...state, POST: action };
         },
         PostDictionarySegmentSuccess: (state: SegmentsType, action: ActionResponseData<ResultSetSegment, ActionRequestData<RequestSetSegment, null>>) => {
-            return { ...state, POST: action };
+            return {
+                ...state,
+                GET: {
+                    ...state.GET,
+                    response: {
+                        ...state.GET.response,
+                        data: state.GET.response.data.map((content, index) => content.csTradeRef === action.response.data.csTradeRef
+                            ? {
+                                ...content,
+                                entryDate: action.response.data.entryDate,
+                                entryOwner: action.response.data.entryOwner,
+                                initial: undefined,
+                                modified: undefined,
+                                newRow: undefined
+                            }
+                            : content)
+                    }
+                },
+                POST: action
+            };
         },
         PostDictionarySegmentFail: (state: SegmentsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetSegment, null>>) => {
             return { ...state, POST: action };
@@ -39,14 +58,28 @@ export const PostDictionarySegmentHandler = () => {
 
 export const PatchDictionarySegmentByIdHandler = () => {
     return {
-        PatchDictionarySegmentByIdRequest: (state: SegmentsType, action: ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>) => {
+        PatchDictionarySegmentByIdRequest: (state: SegmentsType, action: ActionRequestData<RequestSetSegment, PatchDictionarySegmentByIdQueryParams>) => {
             return { ...state, PATCH: action };
         },
-        PatchDictionarySegmentByIdSuccess: (state: SegmentsType, action: ActionResponseData<ResultSetCount, ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>>) => {
+        PatchDictionarySegmentByIdSuccess: (state: SegmentsType, action: ActionResponseData<ResultSetCount, ActionRequestData<RequestSetSegment, PatchDictionarySegmentByIdQueryParams>>) => {
             return { ...state, PATCH: action };
         },
-        PatchDictionarySegmentByIdFail: (state: SegmentsType, action: ActionResponseData<ResultSetError, ActionRequestData<null, PatchDictionarySegmentByIdQueryParams>>) => {
+        PatchDictionarySegmentByIdFail: (state: SegmentsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetSegment, PatchDictionarySegmentByIdQueryParams>>) => {
             return { ...state, PATCH: action };
+        },
+    }
+};
+
+export const DeleteDictionarySegmentByIdHandler = () => {
+    return {
+        DeleteDictionarySegmentByIdRequest: (state: SegmentsType, action: ActionRequestData<null, DeleteDictionarySegmentByIdQueryParams>) => {
+            return { ...state, DELETE: action };
+        },
+        DeleteDictionarySegmentByIdSuccess: (state: SegmentsType, action: ActionResponseData<ResultSetCount, ActionRequestData<null, DeleteDictionarySegmentByIdQueryParams>>) => {
+            return { ...state, DELETE: action };
+        },
+        DeleteDictionarySegmentByIdFail: (state: SegmentsType, action: ActionResponseData<ResultSetError, ActionRequestData<null, DeleteDictionarySegmentByIdQueryParams>>) => {
+            return { ...state, DELETE: action };
         },
     }
 };
@@ -103,7 +136,7 @@ export const SegmentPropertiesInReduxHandler = () => {
                                 updateDate: content.initial.updateDate,
                                 updateOwner: content.initial.updateOwner,
                                 initial: undefined,
-                                modified: false
+                                modified: undefined
                             }
                             : content)
                     }
@@ -132,25 +165,6 @@ export const SegmentPropertiesInReduxHandler = () => {
                         ...state.GET.response,
                         data: state.GET.response.data.filter((item, index) => index !== action.rowId),
                         count: state.GET.response.count - 1
-                    }
-                }
-            };
-        },
-        handleSegmentPostOrPatchInRedux: (state, action) => {
-            return {
-                ...state,
-                GET: {
-                    ...state.GET,
-                    response: {
-                        ...state.GET.response,
-                        data: state.GET.response.data.map((content, index) => content.csTradeRef === action.csTradeRef
-                            ? {
-                                ...content,
-                                initial: undefined,
-                                modified: false,
-                                newRow: undefined
-                            }
-                            : content)
                     }
                 }
             };

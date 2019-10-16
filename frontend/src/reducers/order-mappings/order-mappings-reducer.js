@@ -1,10 +1,10 @@
 export const GetOrderHandler = () => {
     return {
-        GetOrderRequest: (state: any, action: ActionRequestData<null, null>) => {
+        GetOrderRequest: (state: OrderMappingsType, action: ActionRequestData<null, null>) => {
             return { ...state, GET: action };
         },
-        GetOrderSuccess: (state: any, action: ActionResponseData<ResultSetOrders, ActionRequestData<null, null>>) => {
-            action.response.data.sort(function (a, b) {
+        GetOrderSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetOrders, ActionRequestData<null, null>>) => {
+            action.response.data.sort((a, b) => {
                 if (a.bscsAccount > b.bscsAccount) {
                     return 1;
                 }
@@ -20,7 +20,7 @@ export const GetOrderHandler = () => {
 
             return { ...state, GET: action };
         },
-        GetOrderFail: (state: any, action: ActionResponseData<ResultSetError, ActionRequestData<null, null>>) => {
+        GetOrderFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<null, null>>) => {
             return { ...state, GET: action };
         },
     }
@@ -36,6 +36,34 @@ export const PostOrderHandler = () => {
         },
         PostOrderFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetOrder, null>>) => {
             return { ...state, POST: action };
+        },
+    }
+};
+
+export const PatchOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
+    return {
+        PatchOrderByStatusByReleaseByBscsAccountBySegmentRequest: (state: OrderMappingsType, action: ActionRequestData<RequestSetOrder, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>) => {
+            return { ...state, PATCH: action };
+        },
+        PatchOrderByStatusByReleaseByBscsAccountBySegmentSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetOrders, ActionRequestData<RequestSetOrder, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>) => {
+            return { ...state, PATCH: action };
+        },
+        PatchOrderByStatusByReleaseByBscsAccountBySegmentFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetOrder, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>) => {
+            return { ...state, PATCH: action };
+        },
+    }
+};
+
+export const DeleteOrderHandler = () => {
+    return {
+        DeleteOrderRequest: (state: OrderMappingsType, action: ActionRequestData<null, null>) => {
+            return { ...state, DELETE: action };
+        },
+        DeleteOrderSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetOrders, ActionRequestData<null, null>>) => {
+            return { ...state, DELETE: action };
+        },
+        DeleteOrderFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<null, null>>) => {
+            return { ...state, DELETE: action };
         },
     }
 };
@@ -98,7 +126,7 @@ export const OrderMappingPropertiesInReduxHandler = () => {
                                 updateDate: content.initial.updateDate,
                                 updateOwner: content.initial.updateOwner,
                                 initial: undefined,
-                                modified: false
+                                modified: undefined
                             }
                             : content)
                     }
@@ -127,25 +155,6 @@ export const OrderMappingPropertiesInReduxHandler = () => {
                         ...state.GET.response,
                         data: state.GET.response.data.filter((item, index) => index !== action.rowId),
                         count: state.GET.response.count - 1
-                    }
-                }
-            };
-        },
-        handleOrderMappingPostOrPatchInRedux: (state, action) => {
-            return {
-                ...state,
-                GET: {
-                    ...state.GET,
-                    response: {
-                        ...state.GET.response,
-                        data: state.GET.response.data.map((content, index) => content.bscsAccount === action.bscsAccount && content.segmentCode === action.segmentCode
-                            ? {
-                                ...content,
-                                initial: undefined,
-                                modified: false,
-                                newRow: undefined
-                            }
-                            : content)
                     }
                 }
             };

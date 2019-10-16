@@ -3,6 +3,9 @@ import { GetOrderByStatusByReleaseQueryParams, ResultSetOrders } from "../../api
 
 export class OrderMappingsType {
     GET: ActionResponseData<ResultSetOrders, ActionRequestData<GetOrderByStatusByReleaseQueryParams, null>>;
+    POST: ActionResponseData<ResultSetOrder, ActionRequestData<RequestSetOrder, null>>;
+    PATCH: ActionResponseData<ResultSetOrders, ActionRequestData<RequestSetOrder, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>;
+    DELETE: ActionResponseData<ResultSetOrders, ActionRequestData<null, null>>
 }
 
 export const getOrderMappingsReduxProperty = (root, requestType, property, negativeResult) => {
