@@ -47,9 +47,9 @@ export const getColorByRole = (role: Role) => {
 
 export const getColor = (status: Status15) => {
     switch (status) {
-        case Status15.C: return "#637BAD";
-        case Status15.W: return "#ADB9D3";
-        case Status15.P: return "#008000";
+        case Status15.C: return "rgba(254,149,71,0.68)";
+        case Status15.W: return "rgba(255,252,29,0.5)";
+        case Status15.P: return "#94b578";
         default: return "#fffdf8";
     }
 };

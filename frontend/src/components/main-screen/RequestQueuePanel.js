@@ -56,9 +56,9 @@ class RequestQueuePanel extends React.Component<{
                             (<div className="el" key={"" + i}><div>{el.payload.type}</div><div>{millisToMinutesAndSeconds(el.payload.timeDiff)}</div></div>)
                         )}
                     </div>
-
+                    {console.warn("this.props.requestPanel", this.props.requestPanel)}
                     <div className="part error-part">
-                        {this.props.requestPanel.failActions.filter(el=>el.payload !== undefined && el.payload.requestAction !== undefined).map((el, i) =>
+                        {this.props.requestPanel.failActions.map((el, i) =>
                             (<div className="el">
                                 <div>{el.payload.requestAction.type}</div>
                                 <div style={{ cursor: "poiner" }} onClick={() =>
