@@ -108,11 +108,13 @@ const columns = (that) => [
                 <MonthPicker
                     className="month-picker"
                     size="small"
-                    format="YYYY-MM-01"
+                    format="YYYY-MM-DD"
                     value={x.original.validFromDate !== null && x.original.validFromDate !== undefined ? moment(x.original.validFromDate) : null}
                     placeholder="Wybierz miesiąc"
                     onChange={(date, dateString) => {
-                        that.handleCellModification(x.index, "validFromDate", moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString());
+                        that.handleCellModification(x.index, "validFromDate", date === null
+                            ? null
+                            : moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString());
                     }}
                 />
             </div>
@@ -328,9 +330,9 @@ class BscsToSegmentAndOrderMappings extends Component<{
                                 value={this.state.rowGeneration.sapOfiAccount}
                                 placeholder="Wybierz konto SAP OFI"
                                 onChange={(value, option) => {
-                                    this.setState(prevState => ({
+                                    this.setState(state => ({
                                         rowGeneration: {
-                                            ...prevState.rowGeneration,
+                                            ...state.rowGeneration,
                                             sapOfiAccount: value
                                         }
                                     }))
@@ -355,14 +357,23 @@ class BscsToSegmentAndOrderMappings extends Component<{
                                 }
                             </Select>
                             <MonthPicker
-                                format="YYYY-MM-01"
-                                value={this.state.rowGeneration.validFromDate}
+                                format="YYYY-MM-DD"
+                                value={this.state.rowGeneration.validFromDate !== null && this.state.rowGeneration.validFromDate !== undefined
+                                    ? moment(this.state.rowGeneration.validFromDate)
+                                    : null
+                                }
                                 placeholder="Wybierz miesiąc"
                                 onChange={(date, dateString) => {
-                                    this.setState(prevState => ({
+
+                                    console.log(moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString());
+
+                                    this.setState((state, props) => ({
+                                        ...state,
                                         rowGeneration: {
-                                            ...prevState.rowGeneration,
-                                            validFromDate: moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString()
+                                            ...state.rowGeneration,
+                                            validFromDate: date === null
+                                                ? null
+                                                : moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString()
                                         }
                                     }))
                                 }}

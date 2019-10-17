@@ -32,7 +32,29 @@ export const PostOrderHandler = () => {
             return { ...state, POST: action };
         },
         PostOrderSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetOrder, ActionRequestData<RequestSetOrder, null>>) => {
-            return { ...state, POST: action };
+            return {
+                ...state,
+                GET: {
+                    ...state.GET,
+                    response: {
+                        ...state.GET.response,
+                        data: state.GET.response.data.map((content, index) => content.bscsAccount === action.response.data.bscsAccount
+                            && content.segmentCode === action.response.data.segmentCode
+                            ? {
+                                ...content,
+                                status: action.response.data.status,
+                                releaseId: action.response.data.releaseId,
+                                entryDate: action.response.data.entryDate,
+                                entryOwner: action.response.data.entryOwner,
+                                initial: undefined,
+                                modified: undefined,
+                                newRow: undefined
+                            }
+                            : content)
+                    }
+                },
+                POST: action
+            };
         },
         PostOrderFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetOrder, null>>) => {
             return { ...state, POST: action };
