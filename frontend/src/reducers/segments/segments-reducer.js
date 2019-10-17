@@ -95,6 +95,10 @@ export const PatchDictionarySegmentByIdHandler = () => {
 };
 
 export const DeleteDictionarySegmentByIdHandler = () => {
+    function getInitialValue(content, property) {
+        return content.initial !== undefined ? content.initial[property] : content[property];
+    }
+
     return {
         DeleteDictionarySegmentByIdRequest: (state: SegmentsType, action: ActionRequestData<null, DeleteDictionarySegmentByIdQueryParams>) => {
             return { ...state, DELETE: action };
@@ -107,7 +111,7 @@ export const DeleteDictionarySegmentByIdHandler = () => {
                     ...state.GET,
                     response: {
                         ...state.GET.response,
-                        data: state.GET.response.data.filter((content, index) => content.csTradeRef !== action.response.data[0].csTradeRef),
+                        data: state.GET.response.data.filter((content, index) => getInitialValue(content, 'csTradeRef') !== action.response.data[0].csTradeRef),
                         count: state.GET.response.count - 1
                     }
                 }

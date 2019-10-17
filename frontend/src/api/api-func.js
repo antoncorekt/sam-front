@@ -449,12 +449,12 @@ export const PatchAccountByStatusByReleaseByBscsAccount = (status:Status15,relea
 
 
 // call OrderUpdateAttributesOne
-export const PatchOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15,release:Release,bscsAccount:string,segment:string) => {
+export const PatchOrderByStatusByReleaseByBscsAccountBySegment = (status:Status15, release:Release, bscsAccount:string, segment:string, body:RequestSetOrder) => {
 	const settings = {		// set settings data
 		url:`/order/${status}/${release}/${bscsAccount}/${segment}`,
 		contentType:'application/json',
 		httpMethod: 'PATCH',
-		body:undefined,
+		body:JSON.stringify(body),
 		requestType: ACT.PatchOrderByStatusByReleaseByBscsAccountBySegmentRequest,
 		successType: ACT.PatchOrderByStatusByReleaseByBscsAccountBySegmentSuccess,
 		failType: ACT.PatchOrderByStatusByReleaseByBscsAccountBySegmentFail

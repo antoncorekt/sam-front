@@ -24,7 +24,7 @@ import {
     SegmentPropertiesInReduxHandler
 } from "./segments/segments-reducer";
 import {
-    DeleteOrderHandler,
+    DeleteOrderByStatusByReleaseByBscsAccountBySegmentHandler,
     GetOrderHandler,
     OrderMappingPropertiesInReduxHandler,
     PatchOrderByStatusByReleaseByBscsAccountBySegmentHandler,
@@ -84,7 +84,7 @@ export const mainReducer = combineReducers(
             ]),
         orderMappings: createReducer(new OrderMappingsType(),
             [
-                DeleteOrderHandler(),
+                DeleteOrderByStatusByReleaseByBscsAccountBySegmentHandler(),
                 GetOrderHandler(),
                 PatchOrderByStatusByReleaseByBscsAccountBySegmentHandler(),
                 PostOrderHandler(),

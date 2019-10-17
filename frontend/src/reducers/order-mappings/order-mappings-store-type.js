@@ -5,7 +5,7 @@ export class OrderMappingsType {
     GET: ActionResponseData<ResultSetOrders, ActionRequestData<GetOrderByStatusByReleaseQueryParams, null>>;
     POST: ActionResponseData<ResultSetOrder, ActionRequestData<RequestSetOrder, null>>;
     PATCH: ActionResponseData<ResultSetOrders, ActionRequestData<RequestSetOrder, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>;
-    DELETE: ActionResponseData<ResultSetOrders, ActionRequestData<null, null>>
+    DELETE: ActionResponseData<ResultSetCount,ActionRequestData<null, DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>
 }
 
 export const getOrderMappingsReduxProperty = (root, requestType, property, negativeResult) => {

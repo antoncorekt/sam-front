@@ -63,12 +63,40 @@ export const PostOrderHandler = () => {
 };
 
 export const PatchOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
+    function getValue(action, content, property) {
+        return action.response.data[0][property] !== undefined ? action.response.data[0][property] : content[property];
+    }
+
     return {
         PatchOrderByStatusByReleaseByBscsAccountBySegmentRequest: (state: OrderMappingsType, action: ActionRequestData<RequestSetOrder, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>) => {
             return { ...state, PATCH: action };
         },
         PatchOrderByStatusByReleaseByBscsAccountBySegmentSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetOrders, ActionRequestData<RequestSetOrder, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>) => {
-            return { ...state, PATCH: action };
+            return {
+                ...state,
+                GET: {
+                    ...state.GET,
+                    response: {
+                        ...state.GET.response,
+                        data: state.GET.response.data.map((content, index) => index === action.rowId
+                            ? {
+                                ...content,
+                                status: getValue(action, content, 'status'),
+                                releaseId: getValue(action, content, 'releaseId'),
+                                bscsAccount: getValue(action, content, 'bscsAccount'),
+                                segmentCode: getValue(action, content, 'segmentCode'),
+                                orderNumber: getValue(action, content, 'orderNumber'),
+                                validFromDate: getValue(action, content, 'validFromDate'),
+                                updateDate: action.response.data.updateDate,
+                                updateOwner: action.response.data.updateOwner,
+                                initial: undefined,
+                                modified: undefined
+                            }
+                            : content)
+                    }
+                },
+                PATCH: action
+            };
         },
         PatchOrderByStatusByReleaseByBscsAccountBySegmentFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<RequestSetOrder, PatchOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>) => {
             return { ...state, PATCH: action };
@@ -76,15 +104,34 @@ export const PatchOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
     }
 };
 
-export const DeleteOrderHandler = () => {
+export const DeleteOrderByStatusByReleaseByBscsAccountBySegmentHandler = () => {
+    function getInitialValue(content, property) {
+        return content.initial !== undefined ? content.initial[property] : content[property];
+    }
+
     return {
-        DeleteOrderRequest: (state: OrderMappingsType, action: ActionRequestData<null, null>) => {
+        DeleteOrderByStatusByReleaseByBscsAccountBySegmentRequest: (state: OrderMappingsType, action: ActionRequestData<null, DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>) => {
             return { ...state, DELETE: action };
         },
-        DeleteOrderSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetOrders, ActionRequestData<null, null>>) => {
-            return { ...state, DELETE: action };
+        DeleteOrderByStatusByReleaseByBscsAccountBySegmentSuccess: (state: OrderMappingsType, action: ActionResponseData<ResultSetCount, ActionRequestData<null, DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>) => {
+            return {
+                ...state,
+                DELETE: action,
+                GET: {
+                    ...state.GET,
+                    response: {
+                        ...state.GET.response,
+                        data: state.GET.response.data.filter((content, index) =>
+                            getInitialValue(content, 'status') !== action.response.data[0].status
+                            || getInitialValue(content, 'releaseId') !== action.response.data[0].releaseId
+                            || getInitialValue(content, 'bscsAccount') !== action.response.data[0].bscsAccount
+                            || getInitialValue(content, 'segmentCode') !== action.response.data[0].segmentCode),
+                        count: state.GET.response.count - 1
+                    }
+                }
+            };
         },
-        DeleteOrderFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<null, null>>) => {
+        DeleteOrderByStatusByReleaseByBscsAccountBySegmentFail: (state: OrderMappingsType, action: ActionResponseData<ResultSetError, ActionRequestData<null, DeleteOrderByStatusByReleaseByBscsAccountBySegmentQueryParams>>) => {
             return { ...state, DELETE: action };
         },
     }
@@ -175,7 +222,7 @@ export const OrderMappingPropertiesInReduxHandler = () => {
                     ...state.GET,
                     response: {
                         ...state.GET.response,
-                        data: state.GET.response.data.filter((item, index) => index !== action.rowId),
+                        data: state.GET.response.data.filter((content, index) => index !== action.rowId),
                         count: state.GET.response.count - 1
                     }
                 }

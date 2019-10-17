@@ -46,7 +46,6 @@ const columns = (that) => [
         Cell: x => (
             <div>
                 <EditableCell
-                    rowId={x.index}
                     field_key='csTradeRef'
                     value={x.original.csTradeRef}
                     upperCased={true}
@@ -61,7 +60,6 @@ const columns = (that) => [
         Cell: x => (
             <div>
                 <SelectableCell
-                    rowId={x.index}
                     field_key='segmCategory'
                     value={x.original.segmCategory}
                     options={["PRIV", "BIZ"]}
@@ -355,9 +353,9 @@ export default connect(
                 )
             )
         },
-        patchSegment: (oldCsTradeRef, segmentData: Segment) => {
+        patchSegment: (initialCsTradeRef, segmentData: Segment) => {
             dispatch(
-                PatchDictionarySegmentById(oldCsTradeRef, new RequestSetSegment.Builder()
+                PatchDictionarySegmentById(initialCsTradeRef, new RequestSetSegment.Builder()
                     .withData(segmentData)
                     .build()
                 )
