@@ -20,10 +20,9 @@ import {
     unshiftOrderMappingInRedux
 } from "../../actions/orderMappingsActions";
 import { AuthType } from "../../reducers/auth/auth-store-type";
-import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type';
+import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty, handleApiError } from '../../reducers/order-mappings/order-mappings-store-type';
 import { getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
 import { getBscsAccountsResponseReduxProperty } from '../../reducers/bscs-accounts/bscs-accounts-store-type';
-import { getSapAccountOfiResponseReduxProperty } from '../../reducers/sap-account/sap-account-store-type';
 import moment from 'moment';
 
 const DEFAULT_CURRENT_PAGE = 0;
@@ -51,9 +50,8 @@ const columns = (that) => [
         Cell: x => (
             <div>
                 <SelectableCell
-                    rowId={x.index}
                     field_key='bscsAccount'
-                    dropdownStyle={{ width: "400px" }} // TODO_TKB: update this
+                    dropdownStyle={{ width: "480px" }}
                     value={x.original.bscsAccount}
                     options={
                         getBscsAccountsResponseReduxProperty(that.props, "GET", "data", [])
@@ -71,7 +69,6 @@ const columns = (that) => [
         Cell: x => (
             <div>
                 <SelectableCell
-                    rowId={x.index}
                     field_key='segmentCode'
                     value={x.original.segmentCode}
                     options={
@@ -91,7 +88,6 @@ const columns = (that) => [
         Cell: x => (
             <div>
                 <EditableCell
-                    rowId={x.index}
                     field_key='orderNumber'
                     value={x.original.orderNumber}
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
@@ -108,11 +104,14 @@ const columns = (that) => [
                 <MonthPicker
                     className="month-picker"
                     size="small"
-                    format="YYYY-MM-01"
+                    format="YYYY-MM-DD"
                     value={x.original.validFromDate !== null && x.original.validFromDate !== undefined ? moment(x.original.validFromDate) : null}
                     placeholder="Wybierz miesiąc"
                     onChange={(date, dateString) => {
-                        that.handleCellModification(x.index, "validFromDate", moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString());
+                        that.handleCellModification(x.index, "validFromDate", date === null
+                            ? null
+                            : moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString());
+                        moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString()
                     }}
                 />
             </div>
@@ -181,7 +180,8 @@ class BscsToSegmentAndOrderMappings extends Component<{
             filtered: [],
             filteredCount: DEFAULT_FILTERED_COUNT,
             rowGeneration: {
-                sapOfiAccount: undefined,
+                selectMode: false,
+                bscsAccount: undefined,
                 validFromDate: null
             }
         };
@@ -205,32 +205,9 @@ class BscsToSegmentAndOrderMappings extends Component<{
             this.setState({ filteredCount: this.reactTable.getResolvedState().sortedData.length });
         }
 
-        if (getOrderMappingsReduxProperty(this.props, "POST", "fetching", true) === false
-            && getOrderMappingsReduxProperty(prevProps, "POST", "fetching", false) === true
-            && getOrderMappingsReduxProperty(this.props, "POST", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy zapisie mapowania:',
-                content: getOrderMappingsResponseReduxProperty(this.props, "POST", "data", {}).error,
-            });
-        }
-
-        if (getOrderMappingsReduxProperty(this.props, "PATCH", "fetching", true) === false
-            && getOrderMappingsReduxProperty(prevProps, "PATCH", "fetching", false) === true
-            && getOrderMappingsReduxProperty(this.props, "PATCH", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy aktualizacji danych mapowania:',
-                content: getOrderMappingsResponseReduxProperty(this.props, "PATCH", "data", {}).error,
-            });
-        }
-
-        if (getOrderMappingsReduxProperty(this.props, "DELETE", "fetching", true) === false
-            && getOrderMappingsReduxProperty(prevProps, "DELETE", "fetching", false) === true
-            && getOrderMappingsReduxProperty(this.props, "DELETE", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy kasowaniu mapowania:',
-                content: getOrderMappingsResponseReduxProperty(this.props, "DELETE", "data", {}).error,
-            });
-        }
+        handleApiError("POST", prevProps, this.props);
+        handleApiError("PATCH", prevProps, this.props);
+        handleApiError("DELETE", prevProps, this.props);
     }
 
     handleRowDeletion(rowId, rowData) {
@@ -238,7 +215,12 @@ class BscsToSegmentAndOrderMappings extends Component<{
             this.props.deleteOrderMappingInRedux(rowId);
         }
         else {
-            // TODO_TKB: this.props.deleteOrderMapping(rowData.initial !== undefined ? rowData.initial.csTradeRef : rowData.csTradeRef);
+            this.props.deleteOrderMapping(
+                rowData.status,
+                rowData.releaseId,
+                rowData.initial !== undefined ? rowData.initial.bscsAccount : rowData.bscsAccount,
+                rowData.initial !== undefined ? rowData.initial.segmentCode : rowData.segmentCode
+            );
         }
     }
 
@@ -267,15 +249,21 @@ class BscsToSegmentAndOrderMappings extends Component<{
 
     handleSaveRowChanges(rowId, rowData) {
         let orderMappingData = new Order();
+        orderMappingData.bscsAccount = rowData.bscsAccount;
+        orderMappingData.segmentCode = rowData.segmentCode;
+        orderMappingData.orderNumber = rowData.orderNumber;
+        orderMappingData.validFromDate = rowData.validFromDate;
         if (getOrderMappingsResponseReduxProperty(this.props, "GET", "data", [])[rowId].newRow === true) {
-            orderMappingData.bscsAccount = rowData.bscsAccount;
-            orderMappingData.segmentCode = rowData.segmentCode;
-            orderMappingData.orderNumber = rowData.orderNumber;
-            orderMappingData.validFromDate = rowData.validFromDate;
             this.props.insertOrderMapping(orderMappingData);
         }
         else {
-            // TODO_TKB: this.props.patchOrderMapping(rowData.initial.bscsAccount, orderMappingData); 
+            this.props.patchOrderMapping(
+                rowData.status,
+                rowData.releaseId,
+                rowData.initial.bscsAccount,
+                rowData.initial.segmentCode,
+                orderMappingData
+            );
         }
     }
 
@@ -291,7 +279,7 @@ class BscsToSegmentAndOrderMappings extends Component<{
     handleRowGeneration() {
         this.setState({
             rowGeneration: {
-                sapOfiAccount: undefined,
+                bscsAccount: undefined,
                 validFromDate: null
             }
         });
@@ -299,6 +287,24 @@ class BscsToSegmentAndOrderMappings extends Component<{
 
     handleDataExport() {
         alert("Not handled.");
+    }
+
+    getBscsAccountsOptions() {
+        return getBscsAccountsResponseReduxProperty(this.props, "GET", "data", [])
+            .slice()
+            .sort((a, b) => {
+                if (a.account > b.account) {
+                    return 1;
+                }
+                else if (a.account === b.account) {
+                    return 0;
+                }
+                else
+                    return -1;
+            })
+            .map(item => {
+                return <Option key={item.account} value={item.account}> {item.account + " - " + item.name} </Option>
+            });
     }
 
     render() {
@@ -319,50 +325,67 @@ class BscsToSegmentAndOrderMappings extends Component<{
                 <div className="flex-end-row">
                     <div className="right-margin">
                         <InputGroup compact>
-                            <Select
-                                className="row-generation-select"
-                                dropdownMatchSelectWidth={false}
-                                dropdownStyle={{ width: "720px" }}
-                                showSearch
-                                allowClear
-                                value={this.state.rowGeneration.sapOfiAccount}
-                                placeholder="Wybierz konto SAP OFI"
-                                onChange={(value, option) => {
-                                    this.setState(prevState => ({
-                                        rowGeneration: {
-                                            ...prevState.rowGeneration,
-                                            sapOfiAccount: value
+                            {
+                                this.state.rowGeneration.selectMode ?
+                                    <Select
+                                        className="row-generation-select"
+                                        dropdownMatchSelectWidth={false}
+                                        dropdownStyle={{ width: "480px" }}
+                                        showSearch
+                                        defaultOpen
+                                        placeholder={this.state.rowGeneration.bscsAccount !== undefined
+                                            ? this.state.rowGeneration.bscsAccount
+                                            : "Wybierz konto BSCS"}
+                                        onChange={(value, option) => {
+                                            this.setState(state => ({
+                                                rowGeneration: {
+                                                    ...state.rowGeneration,
+                                                    bscsAccount: value,
+                                                    selectMode: !state.rowGeneration.selectMode
+                                                }
+                                            }))
+                                        }}
+                                        onBlur={() => {
+                                            this.setState(state => ({
+                                                rowGeneration: {
+                                                    ...state.rowGeneration,
+                                                    selectMode: !state.rowGeneration.selectMode
+                                                }
+                                            }))
+                                        }}
+                                    >
+                                        {this.getBscsAccountsOptions()}
+                                    </Select>
+                                    :
+                                    <Input
+                                        className="row-generation-input"
+                                        placeholder="Wybierz konto BSCS"
+                                        value={this.state.rowGeneration.bscsAccount}
+                                        onClick={(state) => this.setState((state, props) => ({
+                                            ...state,
+                                            rowGeneration: {
+                                                ...state.rowGeneration,
+                                                selectMode: !state.rowGeneration.selectMode
+                                            }
+                                        }))
                                         }
-                                    }))
-                                }}
-                            >
-                                {
-                                    getSapAccountOfiResponseReduxProperty(this.props, "GET", "data", [])
-                                        .slice()
-                                        .sort((a, b) => {
-                                            if (a.sapOfiAccount > b.sapOfiAccount) {
-                                                return 1;
-                                            }
-                                            else if (a.sapOfiAccount === b.sapOfiAccount) {
-                                                return 0;
-                                            }
-                                            else
-                                                return -1;
-                                        })
-                                        .map(item => {
-                                            return <Option key={item.sapOfiAccount} value={item.sapOfiAccount}> {item.sapOfiAccount + " - " + item.name} </Option>
-                                        })
-                                }
-                            </Select>
+                                    />
+                            }
                             <MonthPicker
-                                format="YYYY-MM-01"
-                                value={this.state.rowGeneration.validFromDate}
+                                format="YYYY-MM-DD"
+                                value={this.state.rowGeneration.validFromDate !== null && this.state.rowGeneration.validFromDate !== undefined
+                                    ? moment(this.state.rowGeneration.validFromDate)
+                                    : null
+                                }
                                 placeholder="Wybierz miesiąc"
                                 onChange={(date, dateString) => {
-                                    this.setState(prevState => ({
+                                    this.setState((state, props) => ({
+                                        ...state,
                                         rowGeneration: {
-                                            ...prevState.rowGeneration,
-                                            validFromDate: moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString()
+                                            ...state.rowGeneration,
+                                            validFromDate: date === null
+                                                ? null
+                                                : moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString()
                                         }
                                     }))
                                 }}
@@ -453,8 +476,7 @@ const mapStateToProps = (state: any) => ({
     auth: state.auth,
     bscsAccounts: state.bscsAccounts,
     orderMappings: state.orderMappings,
-    segments: state.segments,
-    sapAccountOfi: state.sapAccountOfi
+    segments: state.segments
 });
 
 export default connect(
@@ -491,6 +513,20 @@ export default connect(
                     .withData(orderMappingData)
                     .build()
                 )
+            )
+        },
+        patchOrderMapping: (status, releaseId, bscsAccount, segmentCode, orderMappingData: Order) => {
+            dispatch(
+                PatchOrderByStatusByReleaseByBscsAccountBySegment(status, releaseId, bscsAccount, segmentCode,
+                    new RequestSetOrder.Builder()
+                        .withData(orderMappingData)
+                        .build()
+                )
+            )
+        },
+        deleteOrderMapping: (status, releaseId, bscsAccount, segmentCode) => {
+            dispatch(
+                DeleteOrderByStatusByReleaseByBscsAccountBySegment(status, releaseId, bscsAccount, segmentCode)
             )
         }
     })

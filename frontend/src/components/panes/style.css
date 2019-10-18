@@ -150,8 +150,12 @@
     margin-right: 6px;
 }
 
+.bscs-to-segment-and-order-mappings .row-generation-input {
+    width: 180px;
+}
+
 .bscs-to-segment-and-order-mappings .row-generation-select {
-    width: 240px;
+    width: 180px;
 }
 
 .bscs-to-segment-and-order-mappings .table-container {

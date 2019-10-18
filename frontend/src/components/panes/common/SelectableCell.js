@@ -40,6 +40,7 @@ export class SelectableCell extends React.Component {
                             size="small"
                             dropdownMatchSelectWidth={false}
                             dropdownStyle={this.props.dropdownStyle}
+                            defaultOpen
                             showSearch
                             ref={ref => this.selectRef = ref}
                             value={this.state.value}
