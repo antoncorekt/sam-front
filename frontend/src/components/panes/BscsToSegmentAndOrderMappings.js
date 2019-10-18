@@ -20,7 +20,7 @@ import {
     unshiftOrderMappingInRedux
 } from "../../actions/orderMappingsActions";
 import { AuthType } from "../../reducers/auth/auth-store-type";
-import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty } from '../../reducers/order-mappings/order-mappings-store-type';
+import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty, handleApiError } from '../../reducers/order-mappings/order-mappings-store-type';
 import { getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
 import { getBscsAccountsResponseReduxProperty } from '../../reducers/bscs-accounts/bscs-accounts-store-type';
 import moment from 'moment';
@@ -205,32 +205,9 @@ class BscsToSegmentAndOrderMappings extends Component<{
             this.setState({ filteredCount: this.reactTable.getResolvedState().sortedData.length });
         }
 
-        if (getOrderMappingsReduxProperty(this.props, "POST", "fetching", true) === false
-            && getOrderMappingsReduxProperty(prevProps, "POST", "fetching", false) === true
-            && getOrderMappingsReduxProperty(this.props, "POST", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy zapisie mapowania:',
-                content: getOrderMappingsResponseReduxProperty(this.props, "POST", "data", {}).error,
-            });
-        }
-
-        if (getOrderMappingsReduxProperty(this.props, "PATCH", "fetching", true) === false
-            && getOrderMappingsReduxProperty(prevProps, "PATCH", "fetching", false) === true
-            && getOrderMappingsReduxProperty(this.props, "PATCH", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy aktualizacji danych mapowania:',
-                content: getOrderMappingsResponseReduxProperty(this.props, "PATCH", "data", {}).error,
-            });
-        }
-
-        if (getOrderMappingsReduxProperty(this.props, "DELETE", "fetching", true) === false
-            && getOrderMappingsReduxProperty(prevProps, "DELETE", "fetching", false) === true
-            && getOrderMappingsReduxProperty(this.props, "DELETE", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy kasowaniu mapowania:',
-                content: getOrderMappingsResponseReduxProperty(this.props, "DELETE", "data", {}).error,
-            });
-        }
+        handleApiError("POST", prevProps, this.props);
+        handleApiError("PATCH", prevProps, this.props);
+        handleApiError("DELETE", prevProps, this.props);
     }
 
     handleRowDeletion(rowId, rowData) {

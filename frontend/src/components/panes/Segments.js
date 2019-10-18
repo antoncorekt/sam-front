@@ -21,7 +21,7 @@ import {
     editSegmentPropertiesInRedux,
     unshiftSegmentInRedux
 } from "../../actions/segmentsActions";
-import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
+import { getSegmentsReduxProperty, getSegmentsResponseReduxProperty, handleApiError } from '../../reducers/segments/segments-store-type';
 import { AuthType } from "../../reducers/auth/auth-store-type";
 
 const DEFAULT_CURRENT_PAGE = 0;
@@ -144,32 +144,9 @@ class Segments extends Component<{
             this.setState({ filteredCount: this.reactTable.getResolvedState().sortedData.length });
         }
 
-        if (getSegmentsReduxProperty(this.props, "POST", "fetching", true) === false
-            && getSegmentsReduxProperty(prevProps, "POST", "fetching", false) === true
-            && getSegmentsReduxProperty(this.props, "POST", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy zapisie segmentu:',
-                content: getSegmentsResponseReduxProperty(this.props, "POST", "data", {}).error,
-            });
-        }
-
-        if (getSegmentsReduxProperty(this.props, "PATCH", "fetching", true) === false
-            && getSegmentsReduxProperty(prevProps, "PATCH", "fetching", false) === true
-            && getSegmentsReduxProperty(this.props, "PATCH", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy aktualizacji danych segmentu:',
-                content: getSegmentsResponseReduxProperty(this.props, "PATCH", "data", {}).error,
-            });
-        }
-
-        if (getSegmentsReduxProperty(this.props, "DELETE", "fetching", true) === false
-            && getSegmentsReduxProperty(prevProps, "DELETE", "fetching", false) === true
-            && getSegmentsReduxProperty(this.props, "DELETE", "fail", true) === true) {
-            Modal.error({
-                title: 'Wystąpił błąd przy kasowaniu segmentu:',
-                content: getSegmentsResponseReduxProperty(this.props, "DELETE", "data", {}).error,
-            });
-        }
+        handleApiError("POST", prevProps, this.props);
+        handleApiError("PATCH", prevProps, this.props);
+        handleApiError("DELETE", prevProps, this.props);
     }
 
     handleRowDeletion(rowId, rowData) {
