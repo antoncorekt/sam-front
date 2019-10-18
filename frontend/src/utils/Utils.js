@@ -1,5 +1,4 @@
 import {Role, Status15} from "../api/api-models";
-import {func} from "prop-types";
 
 const options = { year: 'numeric', month: '2-digit', day: 'numeric' };
 export function renderDate(a) {
@@ -47,9 +46,9 @@ export const getColorByRole = (role: Role) => {
 
 export const getColor = (status: Status15) => {
     switch (status) {
-        case Status15.C: return "rgba(254,149,71,0.68)";
-        case Status15.W: return "rgba(255,252,29,0.5)";
-        case Status15.P: return "#94b578";
+        case Status15.C: return "rgba(254,149,71,0.34)";
+        case Status15.W: return "rgba(255,252,29,0.27)";
+        case Status15.P: return "rgba(148,181,120,0.49)";
         default: return "#fffdf8";
     }
 };

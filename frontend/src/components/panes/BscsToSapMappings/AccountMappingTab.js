@@ -3,8 +3,8 @@ import type {MainStateType} from "../../../reducers";
 import {connect} from "react-redux";
 import {Account, Release, RequestSetAccount, Role, Status15, User} from "../../../api/api-models";
 import {
-    DeleteAccountByStatusByReleaseByBscsAccount, GetAccount,
-    GetAccountByStatusByRelease, GetDictionaryAccountSap, PatchAccountByStatusByReleaseByBscsAccount,
+    DeleteAccountByStatusByReleaseByBscsAccount, DeleteReleaseByRelease, GetAccount, GetAccountLog,
+    GetDictionaryAccountSap, PatchAccountByStatusByReleaseByBscsAccount,
     PostAccount, PostReleaseNew
 } from "../../../api/api-func";
 import {
@@ -15,16 +15,9 @@ import {
 import {SapAccountStoreType} from "../../../reducers/sap-account/sap-account-store-type";
 import {AuthType} from "../../../reducers/auth/auth-store-type";
 import OneTableAccountView from "./OneTableAccountView";
-import DoubleTableAccountView from "./DoubleTableAccountView";
-import {AccountOperationPanel} from "./AccountOperationPanel";
 import {Pane} from "../common/Pane";
 import {Button} from "antd";
 import SecuredComponent from "../common/SecuredComponent";
-
-export class ViewMode {
-    static get OneTableView() { return "oneTableView"}
-    static get DoubleTableView() { return "doubleTableView"}
-}
 
 class AccountMappingTab extends Component<{
     sapOfi: SapAccountStoreType,
@@ -52,45 +45,29 @@ class AccountMappingTab extends Component<{
         }
     }
 
-    renderAccountView = (viewMode: ViewMode, allAccounts, currentRelease) => {
-
-        const viewProps = this.props;
-
-        if (viewMode === ViewMode.OneTableView){
-            return <OneTableAccountView {...viewProps} allAccounts={allAccounts} currentRelease={currentRelease}/>
-        }
-        if (viewMode === ViewMode.DoubleTableView){
-            return <DoubleTableAccountView {...viewProps} allAccounts={allAccounts} currentRelease={currentRelease}/>
-        }
-
-        throw new Error("Please, define view mode")
-    };
-
-    renderOperations = (userData) => () => {
+    renderOperations = (userData, currentRelease) => () => {
 
         return (
             <div className="flex" style={{marginTop: "-3px"}}>
+                <div  style={{color: "white", fontSize: "10px"}}>Wersia konfiguracji: {currentRelease}</div>
                 <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{alert("Handler Exportuj wszystkie")}}>Exportuj wszystkie</Button>
                 <SecuredComponent group={Role.BOOKER} renderIfAccessDenied={false}>
                     <Button style={{marginLeft: "10px"}} size="small" onClick={()=>this.props.addUserAccount(userData.user)}>Dodaj mapowanie</Button>
                 </SecuredComponent>
                 <SecuredComponent group={Role.CONTROL} renderIfAccessDenied={false}>
-                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.release()}}>Zaaceptuj wszystko</Button>
+                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.release()}}>Zaakceptuj wszystko</Button>
                 </SecuredComponent>
                 <SecuredComponent group={Role.CONTROL} renderIfAccessDenied={false}>
-                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{alert("Handler revert release")}}>Revert release</Button>
+                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.revertLastRelease()}}>Revert release</Button>
                 </SecuredComponent>
                 <SecuredComponent group={Role.BOOKER} renderIfAccessDenied={false}>
-                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{alert("Handler revert release")}}>Wszystko do kontrolingu</Button>
+                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.release()}}>Wszystko do kontrolingu</Button>
                 </SecuredComponent>
             </div>
         )
     };
 
     render(){
-
-        const doubleTableViewMode = ViewMode.OneTableView;
-
         const userData: User = AuthType.getUserData(this.props.userInfo);
 
         const allAccounts = AccountMappingType.getAllAccounts(this.props.accountsStore);
@@ -99,18 +76,9 @@ class AccountMappingTab extends Component<{
 
         return (
             <div className="flex flex-column">
-                {/*<div className="width100">*/}
-                {/*    <Pane>*/}
-                {/*        <AccountOperationPanel*/}
-                {/*            releaseVersion={currentRelease}*/}
-                {/*            userRole={userData.role}*/}
-                {/*            releaseHandle={this.props.release}*/}
-                {/*            addUserAccount={()=>this.props.addUserAccount(userData.user)}*/}
-                {/*        />*/}
-                {/*    </Pane>*/}
-                {/*</div>*/}
-                <Pane title={"Title"} icon={"add"} buttonsTitle={this.renderOperations(userData)}>
-                    {this.renderAccountView(doubleTableViewMode, allAccounts, currentRelease)}
+
+                <Pane title={"Title"} icon={"add"} buttonsTitle={this.renderOperations(userData, currentRelease)}>
+                    <OneTableAccountView {...this.props} allAccounts={allAccounts} currentRelease={currentRelease}/>
                 </Pane>
             </div>
         )
@@ -124,6 +92,7 @@ const mapStateToProps = (state: MainStateType) => ({
     userInfo: state.auth,
     accountsStore: state.accountMapping,
     bscsAccounts: state.bscsAccounts,
+    accountLog: state.accountMapping.accountLog,
 });
 
 export default connect(
@@ -177,11 +146,12 @@ export default connect(
         patchAccount: (store:AccountMappingType, account: Account) => {
 
             const accountToPatch = AccountMappingType.getModifiedAccountForPatch(store, account);
+            const originalAccount = AccountMappingType.getOriginalAccountIfModified(store, account);
 
             dispatch(
                 PatchAccountByStatusByReleaseByBscsAccount(account.status,
                     account.releaseId,
-                    account.bscsAccount,
+                    originalAccount.bscsAccount,
                     new RequestSetAccount.Builder()
                         .withData(accountToPatch)
                         .build()
@@ -208,6 +178,16 @@ export default connect(
         release: ()=> {
             dispatch(
                 PostReleaseNew()
+            )
+        },
+        getAccountHistory: (bascAccount: string)=> {
+            dispatch(
+                GetAccountLog(bascAccount)
+            )
+        },
+        revertLastRelease: () => {
+            dispatch(
+                DeleteReleaseByRelease(Release.LAST)
             )
         }
     }))(AccountMappingTab)

@@ -286,7 +286,7 @@ export const GetAccountByStatusByRelease = (status:Status15,release:Release) => 
 // call AccountReadLog
 export const GetAccountLog = (account:string) => {
 	const settings = {		// set settings data
-		url:`/account/log`,
+		url:`/account/log/${account}`,
 		contentType:'application/json',
 		httpMethod: 'GET',
 		body:undefined,
@@ -434,12 +434,12 @@ export const PutDictionarySegmentById = (id:string) => {
 
 
 // call AccountUpdateAttributes
-export const PatchAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string) => {
+export const PatchAccountByStatusByReleaseByBscsAccount = (status:Status15,release:Release,bscsAccount:string, requestSetAccount: RequestSetAccount) => {
 	const settings = {		// set settings data
 		url:`/account/${status}/${release}/${bscsAccount}`,
 		contentType:'application/json',
 		httpMethod: 'PATCH',
-		body:undefined,
+		body:JSON.stringify(requestSetAccount),
 		requestType: ACT.PatchAccountByStatusByReleaseByBscsAccountRequest,
 		successType: ACT.PatchAccountByStatusByReleaseByBscsAccountSuccess,
 		failType: ACT.PatchAccountByStatusByReleaseByBscsAccountFail
