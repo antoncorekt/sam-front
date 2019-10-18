@@ -19,6 +19,7 @@ import SecuredComponent from "../common/SecuredComponent";
 import type {AccountEntry} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import moment from "moment";
 import {getBscsAccountsResponseReduxProperty} from "../../../reducers/bscs-accounts/bscs-accounts-store-type";
+import SearchColumn from "../common/searches/SearchColumn";
 const { MonthPicker } = DatePicker;
 
 const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithAccount) =>
@@ -30,6 +31,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     // },
     {
         Header: 'Konto BSCS',
+        // Header: <SearchColumn/>,
         accessor: Account.ObjectProps.bscsAccount,
         Cell: item => (
             <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>

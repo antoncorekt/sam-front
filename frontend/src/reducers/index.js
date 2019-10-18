@@ -32,7 +32,10 @@ import {
 } from "./order-mappings/order-mappings-reducer";
 import { GetDictionaryAccountBscsHandler } from "./bscs-accounts/bscs-accounts-reducer";
 import {
-    DeleteAccountByStatusByReleaseByBscsAccountHandler, GetAccount, PatchAccountByStatusByReleaseByBscsAccountHandler,
+    DeleteAccountByStatusByReleaseByBscsAccountHandler,
+    DeleteReleaseByReleaseHandler,
+    GetAccount,
+    PatchAccountByStatusByReleaseByBscsAccountHandler,
     PostAccountHandler,
     UsersBscsToSapMappings
 } from "./bscs-to-sap-mappings/bscs-to-sap-mappings-reducer";
@@ -80,7 +83,8 @@ export const mainReducer = combineReducers(
                 GetAccount(),
                 PostAccountHandler(),
                 DeleteAccountByStatusByReleaseByBscsAccountHandler(),
-                PatchAccountByStatusByReleaseByBscsAccountHandler()
+                PatchAccountByStatusByReleaseByBscsAccountHandler(),
+                DeleteReleaseByReleaseHandler()
             ]),
         orderMappings: createReducer(new OrderMappingsType(),
             [

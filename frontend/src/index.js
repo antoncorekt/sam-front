@@ -140,7 +140,7 @@ class Logger {
             message: param.message,
             description: param.description,
         });
-        this._dispatch(param.message, param.description, "Error");
+        //this._dispatch(param.message, param.description, "Error");
     };
 }
 

@@ -1,7 +1,7 @@
 import {_, ActionRequestData, ActionResponseData} from "../../api/common-middleware";
 import {
     Account,
-    DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+    DeleteAccountByStatusByReleaseByBscsAccountQueryParams, DeleteReleaseByReleaseQueryParams,
     GetAccountByStatusByReleaseQueryParams,
     PatchAccountByStatusByReleaseByBscsAccountQueryParams,
     PutAccountByStatusByReleaseByBscsAccountQueryParams,
@@ -9,7 +9,7 @@ import {
     ResultSetAccount,
     ResultSetAccounts,
     ResultSetCount,
-    ResultSetError
+    ResultSetError, ResultSetOk
 } from "../../api/api-models";
 import {AuthType} from "../auth/auth-store-type";
 import {
@@ -21,7 +21,25 @@ import {
 import {actionRequest} from "../../actions/connectToBackendActions";
 import {reduceHandlerToProp, uuidv4} from "../../utils/Utils";
 import type {AccountEntry} from "./bscs-to-sap-mappings-store-type";
+import {Log} from '../../index';
+import {Modal, message} from 'antd';
 
+export const showErrorModal = (title:string, action:ActionResponseData) => {
+    let description = action.msg;
+
+    if (action.response !== undefined && action.response.data !== undefined && action.response.data.message !== undefined){
+        description = action.response.data.message;
+    }
+
+    Modal.error({
+        title: title,
+        content: description,
+    });
+};
+
+export const showOk = (title:string) => {
+    message.success(title);
+};
 
 export const PostAccountHandler = () => {
     const ReduxUsersAccountsPropName = "postAccount";
@@ -30,7 +48,7 @@ export const PostAccountHandler = () => {
             return {...state, postAccount: action};
         },
         PostAccountSuccess:(state:AccountMappingType, action:ActionResponseData<ResultSetAccount,ActionRequestData<RequestSetAccount, null>>)=>{
-
+            showOk("Mapowanie zostało dodane");
             return {...state,
                 postAccount:action,
                 usersAccounts: {
@@ -47,6 +65,7 @@ export const PostAccountHandler = () => {
             };
         },
         PostAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<RequestSetAccount, null>>)=>{
+            showErrorModal("Błąd przy przywróceniu releaseId", action);
             return {...state, postAccount: action};
         },
     }
@@ -55,7 +74,7 @@ export const PostAccountHandler = () => {
 export const GetAccount = () => {
     return {
         GetAccountRequest:(state:any, action:ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>)=>{
-            return {...state, backendAccounts: { ...action,...state.backendAccounts}};
+            return {...state, backendAccounts: { ...action,...state.backendAccounts, fetching: action.fetching}};
         },
         GetAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, GetAccountByStatusByReleaseQueryParams>>)=>{
 
@@ -76,29 +95,18 @@ export const GetAccount = () => {
         },
     }
 };
-export const PutAccountByStatusByReleaseByBscsAccountHandler = () => {
-    const ReduxUsersAccountsPropName = "putAccount";
-    return {
-        PutAccountByStatusByReleaseByBscsAccountRequest:reduceHandlerToProp(ReduxUsersAccountsPropName)((state:any, action:ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
-            return {...state, ...action};
-        }),
-        PutAccountByStatusByReleaseByBscsAccountSuccess:reduceHandlerToProp(ReduxUsersAccountsPropName)((state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
-            return {...state, ...action};
-        }),
-        PutAccountByStatusByReleaseByBscsAccountFail:reduceHandlerToProp(ReduxUsersAccountsPropName)((state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PutAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
-            return {...state, ...action};
-        }),
-    }
-};
+
 export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
     return {
         DeleteAccountByStatusByReleaseByBscsAccountRequest:(state:any, action:ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>)=>{
             return {...state, deleteAccount: action};
         },
         DeleteAccountByStatusByReleaseByBscsAccountSuccess:(state:any, action:ActionResponseData<ResultSetCount,ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+            showOk("Mapowanie zostało usunięte");
             return {...state, deleteAccount: action};
         },
         DeleteAccountByStatusByReleaseByBscsAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+            showErrorModal("Nie udało się usunąć mapowanie", action);
             return {...state, deleteAccount: action};
         },
     }
@@ -110,10 +118,32 @@ export const PatchAccountByStatusByReleaseByBscsAccountHandler = () => {
             return {...state, patchAccount:action};
         },
         PatchAccountByStatusByReleaseByBscsAccountSuccess:(state:any, action:ActionResponseData<ResultSetAccounts,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+            showOk("Mapowanie zostało zmodywikowane");
             return {...state, patchAccount:action};
         },
         PatchAccountByStatusByReleaseByBscsAccountFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>>)=>{
+            showErrorModal("Nie udało się zmodywikować mapowania", action);
             return {...state, patchAccount:action};
+        },
+    }
+};
+
+export const DeleteReleaseByReleaseHandler = () => {
+    return {
+        DeleteReleaseByReleaseRequest:(state:any, action:ActionRequestData<null, DeleteReleaseByReleaseQueryParams>)=>{
+            return {...state, revertRelease: action};
+        },
+        DeleteReleaseByReleaseSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, DeleteReleaseByReleaseQueryParams>>)=>{
+            showOk("Konfiguracia zosła przywrócona");
+            return {...state, revertRelease: action};
+        },
+        DeleteReleaseByReleaseFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, DeleteReleaseByReleaseQueryParams>>)=>{
+            Log.error({
+                message: "Błąd przy przywróceniu release",
+                description: action.msg,
+            });
+            showErrorModal("Błąd przy przywróceniu releaseId", action);
+            return {...state, revertRelease: action};
         },
     }
 };
