@@ -54,7 +54,9 @@ export class SelectableCell extends React.Component {
                             onFocus={this.onFocus}
                         >
                             {
-                                this.props.options.map((option, i) => { return <Option key={option + "_" + i} value={option}> {option} </Option> })
+                                this.props.optionsJSX !== undefined
+                                    ? this.props.optionsJSX
+                                    : this.props.options.map((option, i) => { return <Option key={option + "_" + i} value={option}> {option} </Option> })
                             }
                         </Select>
                         :

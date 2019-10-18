@@ -5,51 +5,84 @@ import SapAccounts from '../panes/SapAccounts';
 import BscsToSegmentAndOrderMappings from '../panes/BscsToSegmentAndOrderMappings';
 import Segments from '../panes/Segments';
 import { Tabs } from 'antd';
+import { connect } from "react-redux";
+import {
+    GetDictionaryAccountBscs,
+    GetDictionaryAccountSap,
+    GetDictionarySegment
+} from "../../api/api-func";
+import { Select } from 'antd';
+import { getBscsAccountsReduxProperty, getBscsAccountsResponseReduxProperty } from '../../reducers/bscs-accounts/bscs-accounts-store-type';
 
 const TabPane = Tabs.TabPane;
+const { Option } = Select;
 
-const tabPanes = [
-    {
-        id: 1,
-        title: 'Konta SAP OFI',
-        content: <SapAccounts />
-    },
-    {
-        id: 2,
-        title: 'Segmenty rynku',
-        content: <Segments key="2" />
-    },
-    {
-        id: 3,
-        title: 'Mapowania kont BSCS na konta SAP OFI',
-        content: <BscsToSapMappings />
-    },
-    {
-        id: 4,
-        title: 'Mapowania kont BSCS na segmenty rynku i numery zamówień',
-        content: <BscsToSegmentAndOrderMappings />
-    },
-    {
-        id: 5,
-        title: 'Logi',
-        content: <Logs />
-    }
-];
-
-export default class MainScreenBody extends Component {
+class MainScreenBody extends Component {
 
     constructor(props) {
         super(props);
 
-        // TODO FEATURE change activeKey to cookie value
-        this.state = { activeKey: "4" };
+        this.state = {
+            activeKey: "4",   // TODO FEATURE change activeKey to cookie value
+            bscsAccountsOptionsJSX: []
+        };
+
+        this.props.getSegmentsDictionary();
+        this.props.getBscsAccountsDictionary();
+        this.props.getSapOfiAccountDictionary();
     }
+
+    componentDidUpdate(prevProps) {
+        if (getBscsAccountsReduxProperty(this.props, "GET", "fail", true) !== true
+            && getBscsAccountsReduxProperty(this.props, "GET", "fetching", true) === false
+            && getBscsAccountsReduxProperty(prevProps, "GET", "fetching", false) === true) {
+            this.setState((state, props) => ({
+                ...state,
+                bscsAccountsOptionsJSX: getBscsAccountsResponseReduxProperty(this.props, "GET", "data", []).map(item => {
+                    return <Option key={item.account} value={item.account}> {item.account + " - " + item.name} </Option>
+                })
+            }));
+        }
+    }
+
+    getTabPanes = () => [
+        {
+            id: 1,
+            title: 'Konta SAP OFI',
+            content: <SapAccounts />
+        },
+        {
+            id: 2,
+            title: 'Segmenty rynku',
+            content: <Segments key="2" />
+        },
+        {
+            id: 3,
+            title: 'Mapowania kont BSCS na konta SAP OFI',
+            content: <BscsToSapMappings />
+        },
+        {
+            id: 4,
+            title: 'Mapowania kont BSCS na segmenty rynku i numery zamówień',
+            content:
+                <BscsToSegmentAndOrderMappings
+                    bscsAccountsOptionsJSX={this.state.bscsAccountsOptionsJSX}
+                />
+        },
+        {
+            id: 5,
+            title: 'Logi',
+            content: <Logs />
+        }
+    ];
 
     onChange = (activeKey) => {
         this.setState({ activeKey });
     };
 
     render() {
+        let tabPanes = this.getTabPanes();
+
         return (
             <div className='main-screen-body'>
                 <Tabs
@@ -72,3 +105,27 @@ export default class MainScreenBody extends Component {
         );
     }
 }
+
+export default connect(
+    state => ({
+        store: state,
+        bscsAccounts: state.bscsAccounts
+    }),
+    dispatch => ({
+        getSegmentsDictionary: () => {
+            dispatch(
+                GetDictionarySegment()
+            )
+        },
+        getBscsAccountsDictionary: () => {
+            dispatch(
+                GetDictionaryAccountBscs()
+            )
+        },
+        getSapOfiAccountDictionary: () => {
+            dispatch(
+                GetDictionaryAccountSap()
+            )
+        }
+    })
+)(MainScreenBody);

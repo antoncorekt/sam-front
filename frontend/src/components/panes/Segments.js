@@ -259,6 +259,7 @@ class Segments extends Component<{
                                     ? 0
                                     : Math.min(getSegmentsResponseReduxProperty(this.props, "GET", "count", 0), this.state.filteredCount));
                         }}
+                        current={this.state.currentPage + 1}
                         pageSize={this.state.pageSize}
                         onChange={(page, pageSize) => {
                             this.setState({
