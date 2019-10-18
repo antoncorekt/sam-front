@@ -2,11 +2,11 @@ import {_, ActionRequestData, ActionResponseData} from "../../api/common-middlew
 import {
     Account,
     DeleteAccountByStatusByReleaseByBscsAccountQueryParams, DeleteReleaseByReleaseQueryParams,
-    GetAccountByStatusByReleaseQueryParams,
+    GetAccountByStatusByReleaseQueryParams, GetAccountLogQueryParams,
     PatchAccountByStatusByReleaseByBscsAccountQueryParams,
     PutAccountByStatusByReleaseByBscsAccountQueryParams,
     RequestSetAccount,
-    ResultSetAccount,
+    ResultSetAccount, ResultSetAccountLogs,
     ResultSetAccounts,
     ResultSetCount,
     ResultSetError, ResultSetOk
@@ -144,6 +144,20 @@ export const DeleteReleaseByReleaseHandler = () => {
             });
             showErrorModal("Błąd przy przywróceniu releaseId", action);
             return {...state, revertRelease: action};
+        },
+    }
+};
+
+export const GetAccountLogHandler = () => {
+    return {
+        GetAccountLogRequest:(state:any, action:ActionRequestData<null, GetAccountLogQueryParams>)=>{
+            return {...state, accountLog: action};
+        },
+        GetAccountLogSuccess:(state:any, action:ActionResponseData<ResultSetAccountLogs,ActionRequestData<null, GetAccountLogQueryParams>>)=>{
+            return {...state, accountLog: action};
+        },
+        GetAccountLogFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, GetAccountLogQueryParams>>)=>{
+            return {...state, accountLog: action};
         },
     }
 };

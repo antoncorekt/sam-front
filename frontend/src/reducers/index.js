@@ -34,7 +34,7 @@ import { GetDictionaryAccountBscsHandler } from "./bscs-accounts/bscs-accounts-r
 import {
     DeleteAccountByStatusByReleaseByBscsAccountHandler,
     DeleteReleaseByReleaseHandler,
-    GetAccount,
+    GetAccount, GetAccountLogHandler,
     PatchAccountByStatusByReleaseByBscsAccountHandler,
     PostAccountHandler,
     UsersBscsToSapMappings
@@ -84,7 +84,8 @@ export const mainReducer = combineReducers(
                 PostAccountHandler(),
                 DeleteAccountByStatusByReleaseByBscsAccountHandler(),
                 PatchAccountByStatusByReleaseByBscsAccountHandler(),
-                DeleteReleaseByReleaseHandler()
+                DeleteReleaseByReleaseHandler(),
+                GetAccountLogHandler()
             ]),
         orderMappings: createReducer(new OrderMappingsType(),
             [

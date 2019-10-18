@@ -286,7 +286,7 @@ export const GetAccountByStatusByRelease = (status:Status15,release:Release) => 
 // call AccountReadLog
 export const GetAccountLog = (account:string) => {
 	const settings = {		// set settings data
-		url:`/account/log`,
+		url:`/account/log/${account}`,
 		contentType:'application/json',
 		httpMethod: 'GET',
 		body:undefined,

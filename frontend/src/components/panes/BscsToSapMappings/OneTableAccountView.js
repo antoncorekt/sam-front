@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Checkbox, DatePicker, Icon, Pagination, Spin} from "antd";
+import {Button, Checkbox, DatePicker, Icon, Pagination, Spin, Modal} from "antd";
 import {AccountMappingType} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import ReactTable from "react-table";
 import {
@@ -17,12 +17,14 @@ import {SelectableCell} from "../common/SelectableCell";
 import {EditableCell} from "../common/EditableCell";
 import SecuredComponent from "../common/SecuredComponent";
 import type {AccountEntry} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
+import {HistoryForAccount} from "./HistoryForAccount";
 import moment from "moment";
-import {getBscsAccountsResponseReduxProperty} from "../../../reducers/bscs-accounts/bscs-accounts-store-type";
-import SearchColumn from "../common/searches/SearchColumn";
+
+
 const { MonthPicker } = DatePicker;
 
-const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithAccount) =>
+
+const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithAccount, showHistoryHandler) =>
     (sapAccountsDictionary, bscsAccountDictionary) => [
     // {
     //     Cell: item => <Icon onClick={()=>deleteNewAccountHandler(item.original)} style={{ cursor: (deleteAccountOperationFetching === true ? "loading" : "pointer") }} type="delete" />,
@@ -34,18 +36,21 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
         // Header: <SearchColumn/>,
         accessor: Account.ObjectProps.bscsAccount,
         Cell: item => (
-            <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
-                <SelectableCell
-                    rowId={item.original.frontendId}
-                    field_key={Account.ObjectProps.bscsAccount}
-                    dropdownStyle={{ width: "400px" }} // TODO_TKB: update this
-                    value={item.original.bscsAccount}
-                    options={
-                        bscsAccountDictionary
-                    }
-                    handleCellModification={(key, value) => {setAccountHandler({...item.original, bscsAccount:value}) }}
-                />
-            </SecuredComponent>
+            <div className="flex space-between">
+                <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
+                    <SelectableCell
+                        rowId={item.original.frontendId}
+                        field_key={Account.ObjectProps.bscsAccount}
+                        dropdownStyle={{ width: "400px" }}
+                        value={item.original.bscsAccount}
+                        options={
+                            bscsAccountDictionary
+                        }
+                        handleCellModification={(key, value) => {setAccountHandler({...item.original, bscsAccount:value}) }}
+                    />
+                </SecuredComponent>
+                <Icon type={"history"} onClick={()=>showHistoryHandler(item.original)}/>
+            </div>
         )
     },
 
@@ -66,7 +71,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
         width: 28,
         Cell: (item) => {
             return (
-                <SecuredComponent opacity={false} group={Role.BOOKER}>
+                <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
                     <Checkbox className="checkbox" id={null}
                               checked={item.original.vatCodeInd === "1"}
                               onChange={(e)=>{setAccountHandler({...item.original, vatCodeInd:e.target.checked === true ? "1" : "0"})}} />
@@ -82,7 +87,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
         Cell: item => {
 
             return (
-                <SecuredComponent opacity={false} group={Role.BOOKER}>
+                <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
                     <SelectableCell options={["1", "0", "PUSTE"]}
                         value={item.original.citMarkerVatFlag}
                         rowId={item.original.frontendId}
@@ -96,9 +101,10 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
         Header: 'Ważne od',
         accessor: Account.ObjectProps.validFromDate,
         width: 140,
-        Cell: item => (<SecuredComponent opacity={false} group={Role.BOOKER}>
+        Cell: item => (<SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
                 <div>
                     <MonthPicker
+                        disabled={!((item.original.status === Status15.W || item.original.status === Status15.F) && Role.BOOKER)}
                         className="month-picker"
                         size="small"
                         format="YYYY-MM-01"
@@ -106,13 +112,14 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
                         placeholder="Wybierz miesiąc"
                         onChange={(date, dateString) => { setAccountHandler({...item.original, validFromDate:dateString+"T00:00:00.000Z"}) }}
                     />
+
                 </div>
             </SecuredComponent>
             )
     },
     {
         Header: 'Kod WBS',
-        Cell: item => <SecuredComponent opacity={false} group={Role.CONTROL}>
+        Cell: item => <SecuredComponent opacity={false} group={item.original.status === Status15.C ? Role.CONTROL : "N"}>
             <EditableCell
                 rowId={item.index}
                 field_key={Account.ObjectProps.ofiSapWbsCode}
@@ -185,6 +192,27 @@ export default class OneTableAccountView extends Component<{
             compareFunc: Filter.defaultStringComparator
         }],
         sortedBy: Account.ObjectProps.updateDate
+    };
+
+    componentDidUpdate(prevProps: Readonly<{accountsStore: AccountMappingType}>, prevState: Readonly<S>, snapshot: SS): void {
+
+        if (prevProps.accountsStore.accountLog.fetching === true
+            && this.props.accountsStore.accountLog.fetching === false
+        ) {
+
+            Modal.info({
+                title: "History for",
+                content: <HistoryForAccount data={AccountMappingType.getAccountLogs(this.props.accountLog)}/>,
+                width: 1000
+            })
+        }
+    }
+
+    showHistoryHandler = (getAccountHistoryHandler) => (account: Account) => {
+
+
+
+        getAccountHistoryHandler(account.bscsAccount);
     };
 
     renderUserActionWithAccount = (accountStore: AccountMappingType, userRole: Role, currentRelease: number) => (account: Account) => {
@@ -283,7 +311,8 @@ export default class OneTableAccountView extends Component<{
                         columns={columns(
                             this.props.modifyAccount,
                             this.props.getSapOfi,
-                            this.renderUserActionWithAccount(this.props.accountsStore, AuthType.getUserData(this.props.userInfo).role, this.props.currentRelease)
+                            this.renderUserActionWithAccount(this.props.accountsStore, AuthType.getUserData(this.props.userInfo).role, this.props.currentRelease),
+                            this.showHistoryHandler(this.props.getAccountHistory, this.props.accountLog)
                         )(
                             sapAccountDictName,
                             bscsAccountDictName,

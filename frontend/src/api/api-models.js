@@ -142,6 +142,43 @@ export class ResultSetAccounts {
     static get ObjectProps() {class ObjectProps {static get status() { return 'status';} static get count() { return 'count';} static get data() { return 'data';} } return ObjectProps;}
 }
 
+export class ResultSetAccountLogs {
+    status:Status;
+    count:number;
+    data:Array<AccountLog>;
+
+    static get Builder() {class Builder { _model: ResultSetAccountLogs = new ResultSetAccountLogs();withStatus(status:Status): Builder { this._model.status=status; return this;}withCount(count:number): Builder { this._model.count=count; return this;}withData(data:Array<AccountLog>): Builder { this._model.data=data; return this;}build(){return this._model;}}return Builder;}
+    static get ObjectProps() {class ObjectProps {static get status() { return 'status';} static get count() { return 'count';} static get data() { return 'data';} } return ObjectProps;}
+}
+
+export class AccountLog {
+    opcode:string;
+    opdate:Date;
+    bscsAccount:string;
+    ofiSapAccount:string;
+    validFromDate:Date;
+    vatCodeInd:string;
+    ofiSapWbsCode:string;
+    citMarkerVatFlag:number;
+    entryDate:Date;
+    entryOwner:string;
+    updateDate:Date;
+    updateOwner:string;
+    releaseDate:Date;
+    releaseOwner:string;
+
+    static get Builder() {class Builder { _model: AccountLog = new AccountLog();withOpcode(opcode:string): Builder { this._model.opcode=opcode; return this;}withOpdate(opdate:Date): Builder { this._model.opdate=opdate; return this;}withBscsAccount(bscsAccount:string): Builder { this._model.bscsAccount=bscsAccount; return this;}withOfiSapAccount(ofiSapAccount:string): Builder { this._model.ofiSapAccount=ofiSapAccount; return this;}withValidFromDate(validFromDate:Date): Builder { this._model.validFromDate=validFromDate; return this;}withVatCodeInd(vatCodeInd:string): Builder { this._model.vatCodeInd=vatCodeInd; return this;}withOfiSapWbsCode(ofiSapWbsCode:string): Builder { this._model.ofiSapWbsCode=ofiSapWbsCode; return this;}withCitMarkerVatFlag(citMarkerVatFlag:number): Builder { this._model.citMarkerVatFlag=citMarkerVatFlag; return this;}withEntryDate(entryDate:Date): Builder { this._model.entryDate=entryDate; return this;}withEntryOwner(entryOwner:string): Builder { this._model.entryOwner=entryOwner; return this;}withUpdateDate(updateDate:Date): Builder { this._model.updateDate=updateDate; return this;}withUpdateOwner(updateOwner:string): Builder { this._model.updateOwner=updateOwner; return this;}withReleaseDate(releaseDate:Date): Builder { this._model.releaseDate=releaseDate; return this;}withReleaseOwner(releaseOwner:string): Builder { this._model.releaseOwner=releaseOwner; return this;}build(){return this._model;}}return Builder;}
+    static get ObjectProps() {class ObjectProps {static get opcode() { return 'opcode';} static get opdate() { return 'opdate';} static get bscsAccount() { return 'bscsAccount';} static get ofiSapAccount() { return 'ofiSapAccount';} static get validFromDate() { return 'validFromDate';} static get vatCodeInd() { return 'vatCodeInd';} static get ofiSapWbsCode() { return 'ofiSapWbsCode';} static get citMarkerVatFlag() { return 'citMarkerVatFlag';} static get entryDate() { return 'entryDate';} static get entryOwner() { return 'entryOwner';} static get updateDate() { return 'updateDate';} static get updateOwner() { return 'updateOwner';} static get releaseDate() { return 'releaseDate';} static get releaseOwner() { return 'releaseOwner';} } return ObjectProps;}
+}
+
+
+export class GetAccountLogQueryParams {
+    account:string;
+
+    static get Builder() {class Builder { _model: GetAccountLogQueryParams = new GetAccountLogQueryParams();withAccount(account:string): Builder { this._model.account=account; return this;}build(){return this._model;}}return Builder;}
+    static get ObjectProps() {class ObjectProps {static get account() { return 'account';} } return ObjectProps;}
+}
+
 export class RequestSetOrder {
     data:Order;
 

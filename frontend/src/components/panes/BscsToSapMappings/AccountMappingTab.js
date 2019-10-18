@@ -3,7 +3,7 @@ import type {MainStateType} from "../../../reducers";
 import {connect} from "react-redux";
 import {Account, Release, RequestSetAccount, Role, Status15, User} from "../../../api/api-models";
 import {
-    DeleteAccountByStatusByReleaseByBscsAccount, DeleteReleaseByRelease, GetAccount,
+    DeleteAccountByStatusByReleaseByBscsAccount, DeleteReleaseByRelease, GetAccount, GetAccountLog,
     GetDictionaryAccountSap, PatchAccountByStatusByReleaseByBscsAccount,
     PostAccount, PostReleaseNew
 } from "../../../api/api-func";
@@ -92,6 +92,7 @@ const mapStateToProps = (state: MainStateType) => ({
     userInfo: state.auth,
     accountsStore: state.accountMapping,
     bscsAccounts: state.bscsAccounts,
+    accountLog: state.accountMapping.accountLog,
 });
 
 export default connect(
@@ -177,6 +178,11 @@ export default connect(
         release: ()=> {
             dispatch(
                 PostReleaseNew()
+            )
+        },
+        getAccountHistory: (bascAccount: string)=> {
+            dispatch(
+                GetAccountLog(bascAccount)
             )
         },
         revertLastRelease: () => {

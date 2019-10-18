@@ -1,14 +1,14 @@
 import {ActionRequestData, ActionResponseData} from "../../api/common-middleware";
 import {
     Account,
-    AccountDictSap,
+    AccountDictSap, AccountLog,
     DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
-    GetAccountByStatusByReleaseQueryParams,
+    GetAccountByStatusByReleaseQueryParams, GetAccountLogQueryParams,
     PatchAccountByStatusByReleaseByBscsAccountQueryParams,
     PutAccountByStatusByReleaseByBscsAccountQueryParams,
     RequestSetAccount,
     ResultSetAccount,
-    ResultSetAccountDictSaps,
+    ResultSetAccountDictSaps, ResultSetAccountLogs,
     ResultSetAccounts,
     ResultSetCount,
     Status,
@@ -74,7 +74,7 @@ export class AccountMappingType {
     postAccount: ActionResponseData<ResultSetAccount,ActionRequestData<RequestSetAccount, null>> = {};
     patchAccount: ActionResponseData<ResultSetAccounts,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>> = {};
     deleteAccount: ActionResponseData<ResultSetCount,ActionRequestData<DeleteAccountByStatusByReleaseByBscsAccountQueryParams, null>> = {};
-    putAccount: ActionResponseData<ResultSetAccounts,ActionRequestData<PutAccountByStatusByReleaseByBscsAccountQueryParams, null>> = {};
+    accountLog: ActionResponseData<ResultSetAccountLogs,ActionRequestData<null, GetAccountLogQueryParams>> = {};
 
     static getBackendAccount(store: AccountMappingType): Array<Account> {
         if (store.backendAccounts.response !== undefined
@@ -137,6 +137,15 @@ export class AccountMappingType {
     static isPatchAccountSuccessful(store: AccountMappingType):boolean {
         return store.patchAccount.response !== undefined
             && store.patchAccount.response.count !== 0;
+    }
+
+    static getAccountLogs(accountLogStore: ActionResponseData<ResultSetAccountLogs,ActionRequestData<null, GetAccountLogQueryParams>>): Array<AccountLog> {
+
+        if (accountLogStore.response !== undefined && accountLogStore.response.data !== undefined){
+            return accountLogStore.response.data;
+        }
+
+        return [];
     }
 
 }
