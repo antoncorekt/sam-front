@@ -271,7 +271,32 @@ class BscsToSegmentAndOrderMappings extends Component<{
     }
 
     handleRowGeneration() {
+        let segmentsToSkip = getOrderMappingsResponseReduxProperty(this.props, "GET", "data", [])
+            .filter(item => item.bscsAccount === this.state.rowGeneration.bscsAccount)
+            .map(item => item.segmentCode);
+
+        getSegmentsResponseReduxProperty(this.props, "GET", "data", [])
+            .filter(item => item.newRow !== true)
+            .map(item => item.modified === true ? item.initial.csTradeRef : item.csTradeRef)
+            .filter(item => !segmentsToSkip.includes(item))
+            .reverse()
+            .map(item => {
+                let orderMappingData = new Order.Builder()
+                    .withBscsAccount(this.state.rowGeneration.bscsAccount)
+                    .withSegmentCode(item)
+                    .withValidFromDate(this.state.rowGeneration.validFromDate)
+                    .withStatus("W")
+                    .withEntryDate(Date.now())
+                    .withEntryOwner(AuthType.getUserData(this.props.auth).user)
+                    .build();
+                orderMappingData.newRow = true;
+                this.props.unshiftOrderMappingInRedux(orderMappingData);
+            });
+
         this.setState({
+            currentPage: DEFAULT_CURRENT_PAGE,
+            filtered: [],
+            filteredCount: DEFAULT_FILTERED_COUNT,
             rowGeneration: {
                 bscsAccount: undefined,
                 validFromDate: null
