@@ -12,7 +12,7 @@ export class BscsAccountsType {
 
 }
 
-export const getBscsAccountsDictReduxProperty = (root, requestType, property, negativeResult) => {
+export const getBscsAccountsReduxProperty = (root, requestType, property, negativeResult) => {
     return root.bscsAccounts !== undefined
         && root.bscsAccounts[requestType] !== undefined
         && root.bscsAccounts[requestType][property] !== undefined

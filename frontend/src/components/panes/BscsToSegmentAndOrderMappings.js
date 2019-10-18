@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
-import { Button, DatePicker, Icon, Input, Modal, Pagination, Select } from 'antd';
+import { Button, DatePicker, Icon, Input, Pagination, Select } from 'antd';
 import { EditableCell } from './common/EditableCell';
 import { SelectableCell } from "./common/SelectableCell";
 import { renderDateTime } from '../../utils/Utils';
@@ -22,7 +22,6 @@ import {
 import { AuthType } from "../../reducers/auth/auth-store-type";
 import { getOrderMappingsReduxProperty, getOrderMappingsResponseReduxProperty, handleApiError } from '../../reducers/order-mappings/order-mappings-store-type';
 import { getSegmentsResponseReduxProperty } from '../../reducers/segments/segments-store-type';
-import { getBscsAccountsResponseReduxProperty } from '../../reducers/bscs-accounts/bscs-accounts-store-type';
 import moment from 'moment';
 
 const DEFAULT_CURRENT_PAGE = 0;
@@ -30,7 +29,6 @@ const DEFAULT_PAGE_SIZE = 30;
 const DEFAULT_FILTERED_COUNT = 1000000;
 
 const InputGroup = Input.Group;
-const { Option } = Select;
 const { MonthPicker } = DatePicker;
 
 const columns = (that) => [
@@ -53,11 +51,7 @@ const columns = (that) => [
                     field_key='bscsAccount'
                     dropdownStyle={{ width: "480px" }}
                     value={x.original.bscsAccount}
-                    options={
-                        getBscsAccountsResponseReduxProperty(that.props, "GET", "data", [])
-                            .map(item => item.account)
-                            .sort()
-                    }
+                    optionsJSX={that.props.bscsAccountsOptionsJSX}
                     handleCellModification={(key, value) => { that.handleCellModification(x.index, key, value) }}
                 />
             </div>
@@ -289,24 +283,6 @@ class BscsToSegmentAndOrderMappings extends Component<{
         alert("Not handled.");
     }
 
-    getBscsAccountsOptions() {
-        return getBscsAccountsResponseReduxProperty(this.props, "GET", "data", [])
-            .slice()
-            .sort((a, b) => {
-                if (a.account > b.account) {
-                    return 1;
-                }
-                else if (a.account === b.account) {
-                    return 0;
-                }
-                else
-                    return -1;
-            })
-            .map(item => {
-                return <Option key={item.account} value={item.account}> {item.account + " - " + item.name} </Option>
-            });
-    }
-
     render() {
         const pageSizeOptions = [
             5,
@@ -354,14 +330,14 @@ class BscsToSegmentAndOrderMappings extends Component<{
                                             }))
                                         }}
                                     >
-                                        {this.getBscsAccountsOptions()}
+                                        {this.props.bscsAccountsOptionsJSX}
                                     </Select>
                                     :
                                     <Input
                                         className="row-generation-input"
                                         placeholder="Wybierz konto BSCS"
                                         value={this.state.rowGeneration.bscsAccount}
-                                        onClick={(state) => this.setState((state, props) => ({
+                                        onClick={() => this.setState((state, props) => ({
                                             ...state,
                                             rowGeneration: {
                                                 ...state.rowGeneration,
@@ -390,7 +366,11 @@ class BscsToSegmentAndOrderMappings extends Component<{
                                     }))
                                 }}
                             />
-                            <Button type="primary" onClick={() => this.handleRowGeneration()}>
+                            <Button
+                                type="primary"
+                                disabled={this.state.rowGeneration.bscsAccount === undefined}
+                                onClick={() => this.handleRowGeneration()}
+                            >
                                 Generuj wiersze
                             </Button>
                         </InputGroup>
@@ -442,6 +422,7 @@ class BscsToSegmentAndOrderMappings extends Component<{
                                     ? 0
                                     : Math.min(getOrderMappingsResponseReduxProperty(this.props, "GET", "count", 0), this.state.filteredCount));
                         }}
+                        current={this.state.currentPage + 1}
                         pageSize={this.state.pageSize}
                         onChange={(page, pageSize) => {
                             this.setState({
@@ -460,7 +441,12 @@ class BscsToSegmentAndOrderMappings extends Component<{
                         type="reload"
                         onClick={() => {
                             this.setState({
-                                filteredCount: DEFAULT_FILTERED_COUNT
+                                filteredCount: DEFAULT_FILTERED_COUNT,
+                                rowGeneration: {
+                                    selectMode: false,
+                                    bscsAccount: undefined,
+                                    validFromDate: null
+                                }
                             });
                             this.props.getAllOrders();
                         }}
@@ -472,9 +458,8 @@ class BscsToSegmentAndOrderMappings extends Component<{
     }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: MainStateType) => ({
     auth: state.auth,
-    bscsAccounts: state.bscsAccounts,
     orderMappings: state.orderMappings,
     segments: state.segments
 });

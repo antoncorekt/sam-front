@@ -16,10 +16,9 @@ import {
 import { globalLoginContext } from "../../api/common-middleware";
 import { AuthType } from "../../reducers/auth/auth-store-type";
 import {
-    GetDictionaryAccountBscs,
-    GetDictionaryAccountSap,
-    GetDictionarySegment, GetSystemVersion,
-    PostUserInfo, PostUserLogoff
+    GetSystemVersion,
+    PostUserInfo,
+    PostUserLogoff
 } from "../../api/api-func";
 
 class MainScreenHeader extends Component<{
@@ -31,9 +30,6 @@ class MainScreenHeader extends Component<{
         super(props);
 
         this.props.getBackendVersion();
-        this.props.getSegmentsDictionary();
-        this.props.getBscsAccountsDictionary();
-        this.props.getSapOfiAccountDictionary();
     }
 
     render() {
@@ -90,21 +86,6 @@ export default connect(
         getUserName: () => {
             dispatch(
                 PostUserInfo()
-            )
-        },
-        getSegmentsDictionary: () => {
-            dispatch(
-                GetDictionarySegment()
-            )
-        },
-        getBscsAccountsDictionary: () => {
-            dispatch(
-                GetDictionaryAccountBscs()
-            )
-        },
-        getSapOfiAccountDictionary: () => {
-            dispatch(
-                GetDictionaryAccountSap()
             )
         }
     })
