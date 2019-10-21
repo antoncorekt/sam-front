@@ -66,7 +66,7 @@ export const getObjectDiff = (obj1:any, obj2:any) => {
 function twoFuncParam(obj1,obj2) {}
 
 export class Filter {
-    orig: string;
+    orig: Array<string>;
     search: string;
     compareFunc: twoFuncParam;
 
@@ -84,9 +84,21 @@ export class Filter {
 
 export const getFilteredAndSortedArray = (array:Array<any>, filters: Array<Filter>, sortedBy: string, desc:boolean = true) => {
 
+    // return array
+    //     .filter(x => filters.reduce(
+    //         (prev, cur) => cur.compareFunc(x[cur.orig], cur.search) && prev,
+    //         true
+    //         )
+    //     )
+
+
+
     return array
-        .filter(arr => filters.reduce(
-            (prev, cur) => cur.compareFunc(arr[cur.orig], cur.search) && prev,
+        .filter(x => filters.reduce(
+            (prev, cur) => cur.orig.reduce(
+                (prevOrig, curOrig) => cur.compareFunc(x[curOrig], cur.search) || prevOrig,
+                false
+                ) && prev,
             true
             )
         )
