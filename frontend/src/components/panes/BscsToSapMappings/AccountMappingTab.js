@@ -49,8 +49,8 @@ class AccountMappingTab extends Component<{
 
         return (
             <div className="flex" style={{marginTop: "-3px"}}>
-                <div  style={{color: "white", fontSize: "10px"}}>Wersia konfiguracji: {currentRelease}</div>
-                <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{alert("Handler Exportuj wszystkie")}}>Exportuj wszystkie</Button>
+                <div  style={{color: "white", fontSize: "10px"}}>Wersja konfiguracji: {currentRelease}</div>
+                <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{alert("Handler Eksportuj wszystkie")}}>Eksportuj wszystkie</Button>
                 <SecuredComponent group={Role.BOOKER} renderIfAccessDenied={false}>
                     <Button style={{marginLeft: "10px"}} size="small" onClick={()=>this.props.addUserAccount(userData.user)}>Dodaj mapowanie</Button>
                 </SecuredComponent>
@@ -58,7 +58,7 @@ class AccountMappingTab extends Component<{
                     <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.release()}}>Zaakceptuj wszystko</Button>
                 </SecuredComponent>
                 <SecuredComponent group={Role.CONTROL} renderIfAccessDenied={false}>
-                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.revertLastRelease()}}>Revert release</Button>
+                    <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.revertLastRelease()}}>Wycofaj release</Button>
                 </SecuredComponent>
                 <SecuredComponent group={Role.BOOKER} renderIfAccessDenied={false}>
                     <Button style={{marginLeft: "10px"}} size="small" onClick={()=>{this.props.release()}}>Wszystko do kontrolingu</Button>

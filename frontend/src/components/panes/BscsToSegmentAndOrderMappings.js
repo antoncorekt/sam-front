@@ -104,8 +104,7 @@ const columns = (that) => [
                     onChange={(date, dateString) => {
                         that.handleCellModification(x.index, "validFromDate", date === null
                             ? null
-                            : moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString());
-                        moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString()
+                            : moment(date).startOf('month').format('YYYY-MM-DD').toString());
                     }}
                 />
             </div>
@@ -386,7 +385,7 @@ class BscsToSegmentAndOrderMappings extends Component<{
                                             ...state.rowGeneration,
                                             validFromDate: date === null
                                                 ? null
-                                                : moment(date).startOf('month').format('YYYY-MM-DDTHH:mm:ssZ').toString()
+                                                : moment(date).startOf('month').format('YYYY-MM-DD').toString()
                                         }
                                     }))
                                 }}
