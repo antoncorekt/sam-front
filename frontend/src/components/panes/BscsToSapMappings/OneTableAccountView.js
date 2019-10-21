@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Checkbox, DatePicker, Icon, Pagination, Spin, Modal} from "antd";
+import {Button, Checkbox, DatePicker, Icon, Pagination, Spin, Modal, Input} from "antd";
 import {AccountMappingType} from "../../../reducers/bscs-to-sap-mappings/bscs-to-sap-mappings-store-type";
 import ReactTable from "react-table";
 import {
@@ -37,18 +37,20 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
         accessor: Account.ObjectProps.bscsAccount,
         Cell: item => (
             <div className="flex space-between">
-                <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
-                    <SelectableCell
-                        rowId={item.original.frontendId}
-                        field_key={Account.ObjectProps.bscsAccount}
-                        dropdownStyle={{ width: "400px" }}
-                        value={item.original.bscsAccount}
-                        options={
-                            bscsAccountDictionary
-                        }
-                        handleCellModification={(key, value) => {setAccountHandler({...item.original, bscsAccount:value}) }}
-                    />
-                </SecuredComponent>
+                <div className="width100">
+                    <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
+                        <SelectableCell
+                            rowId={item.original.frontendId}
+                            field_key={Account.ObjectProps.bscsAccount}
+                            dropdownStyle={{ width: "400px" }}
+                            value={item.original.bscsAccount}
+                            options={
+                                bscsAccountDictionary
+                            }
+                            handleCellModification={(key, value) => {setAccountHandler({...item.original, bscsAccount:value}) }}
+                        />
+                    </SecuredComponent>
+                </div>
                 <Icon type={"history"} onClick={()=>showHistoryHandler(item.original)}/>
             </div>
         )
@@ -187,7 +189,7 @@ export default class OneTableAccountView extends Component<{
         pageSize: 10,
         page: 1,
         filters: [{
-            orig: Account.ObjectProps.bscsAccount,
+            orig: [Account.ObjectProps.bscsAccount, Account.ObjectProps.ofiSapAccount, Account.ObjectProps.entryOwner,Account.ObjectProps.updateOwner, Account.ObjectProps.ofiSapWbsCode],
             search: null,
             compareFunc: Filter.defaultStringComparator
         }],
@@ -201,7 +203,7 @@ export default class OneTableAccountView extends Component<{
         ) {
 
             Modal.info({
-                title: "History for",
+                title: "History",
                 content: <HistoryForAccount data={AccountMappingType.getAccountLogs(this.props.accountLog)}/>,
                 width: 1000
             })
@@ -303,7 +305,47 @@ export default class OneTableAccountView extends Component<{
 
         const paginationArray = getPaginationArray(sortedAndFilteredData, this.state.page, this.state.pageSize);
 
-        return <div className="flex flex-column width100">
+        return <div className="flex flex-column width100 " >
+
+            <div className="flex width100 space-between" style={{marginBottom: "15px"}}>
+
+                <div className="flex ">
+                    <Input placeholder="Szukaj" onChange={(e)=>{this.setState({filters: [{
+                            orig: [Account.ObjectProps.bscsAccount, Account.ObjectProps.ofiSapAccount, Account.ObjectProps.entryOwner,Account.ObjectProps.updateOwner, Account.ObjectProps.ofiSapWbsCode],
+                            search: e.target.value,
+                            compareFunc: Filter.defaultStringComparator
+                        }]})}} size={"small"}/>
+                </div>
+
+                <div className="flex">
+                    <Pagination
+                        size="small"
+                        total={sortedAndFilteredData.length}
+                        showQuickJumper
+                        showSizeChanger
+                        showTotal={() => {
+                            return "Ilość pozycji: " + sortedAndFilteredData.length;
+                        }}
+                        onChange={(page, pageSize) => {
+                            this.setState({pageSize: pageSize, page: page});
+                        }}
+                        onShowSizeChange={(current, size) => {
+                            this.setState({pageSize: size});
+                        }}
+                        pageSizeOptions={getPageSizeOption(sortedAndFilteredData)}
+                    />
+                    <Icon
+                        style={{marginTop:"5px"}}
+                        className="pagination-refresh"
+                        type="reload"
+                        onClick={() => {
+                            this.props.getAccountsFromBackend();
+                        }}
+                        spin={this.props.accountsStore.backendAccounts.fetching}
+                    />
+                </div>
+            </div>
+
             <div className="width100">
                 <Spin tip={"Pobieram mapowania"} spinning={AccountMappingType.isLoading(this.props.accountsStore)}>
                     <ReactTable
@@ -330,34 +372,15 @@ export default class OneTableAccountView extends Component<{
                                 style: getColorTaskByStatus(rowInfo.original.status)
                             };
                         }}
+                        // style={{
+                        //     height: "400px" // This will force the table body to overflow and scroll, since there is not enough room
+                        // }}
                     />
                 </Spin>
             </div>
             <div className="flex">
-                <Pagination
-                    size="small"
-                    total={sortedAndFilteredData.length}
-                    showQuickJumper
-                    showSizeChanger
-                    showTotal={() => {
-                        return "Ilość pozycji: " + sortedAndFilteredData.length;
-                    }}
-                    onChange={(page, pageSize) => {
-                        this.setState({pageSize: pageSize, page: page});
-                    }}
-                    onShowSizeChange={(current, size) => {
-                        this.setState({pageSize: size});
-                    }}
-                    pageSizeOptions={getPageSizeOption(sortedAndFilteredData)}
-                />
-                <Icon
-                    className="pagination-refresh"
-                    type="reload"
-                    onClick={() => {
-                        this.props.getAccountsFromBackend();
-                    }}
-                    spin={this.props.accountsStore.backendAccounts.fetching}
-                />
+
+
             </div>
         </div>;
     }

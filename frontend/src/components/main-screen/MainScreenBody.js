@@ -23,7 +23,7 @@ class MainScreenBody extends Component {
         super(props);
 
         this.state = {
-            activeKey: "4",   // TODO FEATURE change activeKey to cookie value
+            activeKey: "3",   // TODO FEATURE change activeKey to cookie value
             bscsAccountsOptionsJSX: []
         };
 

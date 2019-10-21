@@ -9,7 +9,7 @@ export class Pane extends React.Component{
 
         return <div className="flex pane flex-column">
             {title !== undefined
-               ? <div className="flex space-between pane-title padding10 padding-left">
+               ? <div className="flex space-between pane-title padding15">
                     <div>
                         {icon === undefined
                             ? <Icon type={icon}/>
@@ -26,7 +26,7 @@ export class Pane extends React.Component{
                  </div>
                : ""
             }
-            <div className="pane-body padding10">
+            <div className="pane-body padding15">
                 {this.props.children}
             </div>
         </div>;
