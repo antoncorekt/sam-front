@@ -10,7 +10,7 @@ import {
     ResultSetAccount,
     ResultSetAccountDictSaps, ResultSetAccountLogs,
     ResultSetAccounts,
-    ResultSetCount,
+    ResultSetCount, ResultSetOk,
     Status,
     Status15
 } from "../../api/api-models";
@@ -75,6 +75,7 @@ export class AccountMappingType {
     patchAccount: ActionResponseData<ResultSetAccounts,ActionRequestData<null, PatchAccountByStatusByReleaseByBscsAccountQueryParams>> = {};
     deleteAccount: ActionResponseData<ResultSetCount,ActionRequestData<DeleteAccountByStatusByReleaseByBscsAccountQueryParams, null>> = {};
     accountLog: ActionResponseData<ResultSetAccountLogs,ActionRequestData<null, GetAccountLogQueryParams>> = {};
+    postRelease: ActionResponseData<ResultSetOk,ActionRequestData<null, null>> = {};
 
     static getBackendAccount(store: AccountMappingType): Array<Account> {
         if (store.backendAccounts.response !== undefined
@@ -132,6 +133,11 @@ export class AccountMappingType {
     static isDeleteAccountSuccessful(store: AccountMappingType):boolean {
         return store.deleteAccount.response !== undefined
             && store.deleteAccount.response.count !== 0;
+    }
+
+    static isPostReleaseSuccessful(store: AccountMappingType):boolean {
+        return store.postRelease.response !== undefined
+            && store.postRelease.response.text === "OK";
     }
 
     static isPatchAccountSuccessful(store: AccountMappingType):boolean {

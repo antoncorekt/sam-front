@@ -36,7 +36,7 @@ import {
     DeleteReleaseByReleaseHandler,
     GetAccount, GetAccountLogHandler,
     PatchAccountByStatusByReleaseByBscsAccountHandler,
-    PostAccountHandler,
+    PostAccountHandler, PostReleaseNewHandler,
     UsersBscsToSapMappings
 } from "./bscs-to-sap-mappings/bscs-to-sap-mappings-reducer";
 
@@ -85,7 +85,8 @@ export const mainReducer = combineReducers(
                 DeleteAccountByStatusByReleaseByBscsAccountHandler(),
                 PatchAccountByStatusByReleaseByBscsAccountHandler(),
                 DeleteReleaseByReleaseHandler(),
-                GetAccountLogHandler()
+                GetAccountLogHandler(),
+                PostReleaseNewHandler()
             ]),
         orderMappings: createReducer(new OrderMappingsType(),
             [

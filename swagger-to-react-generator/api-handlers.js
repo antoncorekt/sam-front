@@ -353,19 +353,7 @@ export const GetOrderLogHandler = () => {
 		},
 	}
 };
-export const PostReleaseNewHandler = () => {
-	return {
-		PostReleaseNewRequest:(state:any, action:ActionRequestData<null, null>)=>{
-			 return {...state, ...action};
-		},
-		PostReleaseNewSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-		PostReleaseNewFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
-			 return {...state, ...action};
-		},
-	}
-};
+
 export const PostReleaseByReleaseHandler = () => {
 	return {
 		PostReleaseByReleaseRequest:(state:any, action:ActionRequestData<null, PostReleaseByReleaseQueryParams>)=>{

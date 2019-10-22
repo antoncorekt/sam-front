@@ -31,15 +31,13 @@ class AccountMappingTab extends Component<{
         this.props.getAccountsFromBackend();
     }
 
-    componentDidMount(): void {
-        console.log("AccountMappingTab componentDidMount")
-    }
-
     componentDidUpdate(prevProps: Readonly<{accountsStore: AccountMappingType}>, prevState: Readonly<S>, snapshot: SS): void {
         if ((!AccountMappingType.isDeleteAccountSuccessful(prevProps.accountsStore)
             && AccountMappingType.isDeleteAccountSuccessful(this.props.accountsStore)) ||
             (!AccountMappingType.isPatchAccountSuccessful(prevProps.accountsStore)
-                && AccountMappingType.isPatchAccountSuccessful(this.props.accountsStore))
+                && AccountMappingType.isPatchAccountSuccessful(this.props.accountsStore)) ||
+            (!AccountMappingType.isPostReleaseSuccessful(prevProps.accountsStore)
+                && AccountMappingType.isPostReleaseSuccessful(this.props.accountsStore))
         ){
             this.props.getAccountsFromBackend();
         }
@@ -77,7 +75,7 @@ class AccountMappingTab extends Component<{
         return (
             <div className="flex flex-column">
 
-                <Pane title={"Title"} icon={"add"} buttonsTitle={this.renderOperations(userData, currentRelease)}>
+                <Pane title={"MAPOWANIE KONT BSCS -> SAP OFI"} icon={"add"} buttonsTitle={this.renderOperations(userData, currentRelease)}>
                     <OneTableAccountView {...this.props} allAccounts={allAccounts} currentRelease={currentRelease}/>
                 </Pane>
             </div>
@@ -126,13 +124,11 @@ export default connect(
         },
         deleteAccount: (account: Account) =>{
             if (AccountMappingType.isAccountFromBackend(account)){
-                console.log("del account from backend", account);
                 dispatch(
                     DeleteAccountByStatusByReleaseByBscsAccount(account.status, account.releaseId, account.bscsAccount)
                 )
             }
             else {
-                console.log("del account from frontend memory", account);
                 dispatch(
                     DeleteUsersAccountActionType.createAction(account)
                 )
@@ -151,7 +147,7 @@ export default connect(
             dispatch(
                 PatchAccountByStatusByReleaseByBscsAccount(account.status,
                     account.releaseId,
-                    originalAccount.bscsAccount,
+                    originalAccount.bscsAccount === undefined ? account.bscsAccount : originalAccount.bscsAccount,
                     new RequestSetAccount.Builder()
                         .withData(accountToPatch)
                         .build()

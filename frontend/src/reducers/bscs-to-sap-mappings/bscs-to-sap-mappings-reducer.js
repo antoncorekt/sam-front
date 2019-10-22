@@ -96,6 +96,20 @@ export const GetAccount = () => {
     }
 };
 
+export const PostReleaseNewHandler = () => {
+    return {
+        PostReleaseNewRequest:(state:any, action:ActionRequestData<null, null>)=>{
+            return {...state, postRelease: action};
+        },
+        PostReleaseNewSuccess:(state:any, action:ActionResponseData<ResultSetOk,ActionRequestData<null, null>>)=>{
+            return {...state, postRelease: action};
+        },
+        PostReleaseNewFail:(state:any, action:ActionResponseData<ResultSetError,ActionRequestData<null, null>>)=>{
+            return {...state, postRelease: action};
+        },
+    }
+};
+
 export const DeleteAccountByStatusByReleaseByBscsAccountHandler = () => {
     return {
         DeleteAccountByStatusByReleaseByBscsAccountRequest:(state:any, action:ActionRequestData<null, DeleteAccountByStatusByReleaseByBscsAccountQueryParams>)=>{

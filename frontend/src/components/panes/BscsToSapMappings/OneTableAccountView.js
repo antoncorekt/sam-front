@@ -70,7 +70,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     {
         Header: 'VAT',
         accessor:  Account.ObjectProps.vatCodeInd,
-        width: 28,
+        width: 35,
         Cell: (item) => {
             return (
                 <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
@@ -85,12 +85,12 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
     {
         Header: 'CIT',
         accessor: Account.ObjectProps.citMarkerVatFlag,
-        width: 26,
+        width: 35,
         Cell: item => {
 
             return (
                 <SecuredComponent opacity={false} group={item.original.status === Status15.W || item.original.status === Status15.F ? Role.BOOKER : "N"}>
-                    <SelectableCell options={["1", "0", "PUSTE"]}
+                    <SelectableCell options={[1, 0]}
                         value={item.original.citMarkerVatFlag}
                         rowId={item.original.frontendId}
                         handleCellModification={(key, val)=>setAccountHandler({...item.original, citMarkerVatFlag:val})}/>
@@ -112,7 +112,7 @@ const columns = (setAccountHandler, loadSapAccountHandler, renderUserActionWithA
                         format="YYYY-MM-01"
                         value={item.original.validFromDate !== null && item.original.validFromDate !== undefined ? moment(item.original.validFromDate) : null}
                         placeholder="Wybierz miesiąc"
-                        onChange={(date, dateString) => { setAccountHandler({...item.original, validFromDate:dateString+"T00:00:00.000Z"}) }}
+                        onChange={(date, dateString) => { setAccountHandler({...item.original, validFromDate:dateString}) }}
                     />
 
                 </div>
@@ -178,6 +178,9 @@ const getColorTaskByStatus = (status:Status15) => {
     };
 };
 
+const TEXT_FILTER = "TEXT_FILTER";
+const STATUS_FILTER = "STATUS_FILTER";
+
 export default class OneTableAccountView extends Component<{
     sapOfi: SapAccountStoreType,
     userInfo: AuthType,
@@ -188,11 +191,32 @@ export default class OneTableAccountView extends Component<{
     state: BscsToSapMappingsStateType = {
         pageSize: 10,
         page: 1,
-        filters: [{
-            orig: [Account.ObjectProps.bscsAccount, Account.ObjectProps.ofiSapAccount, Account.ObjectProps.entryOwner,Account.ObjectProps.updateOwner, Account.ObjectProps.ofiSapWbsCode],
-            search: null,
-            compareFunc: Filter.defaultStringComparator
-        }],
+        filters: [
+            {
+                orig: [Account.ObjectProps.bscsAccount, Account.ObjectProps.ofiSapAccount,
+                    Account.ObjectProps.entryOwner,Account.ObjectProps.updateOwner, Account.ObjectProps.ofiSapWbsCode],
+                search: null,
+                compareFunc: Filter.defaultStringComparator,
+                filterId: TEXT_FILTER
+            },
+            {
+                orig: [Account.ObjectProps.status],
+                search: {
+                    [`${Status15.W}`]:true,
+                    [`${Status15.C}`]:true,
+                    [`${Status15.P}`]:true,
+                    [`${Status15.F}`]:true,
+                },
+                compareFunc: (orig, search) => {
+                    if (orig === null || orig === undefined){
+                        return search === null || search === undefined
+                    }
+
+                    return search[orig];
+                },
+                filterId: STATUS_FILTER
+            }
+        ],
         sortedBy: Account.ObjectProps.updateDate
     };
 
@@ -290,6 +314,34 @@ export default class OneTableAccountView extends Component<{
         }
     };
 
+    changeSearchOnFilter = (filterId, seachValue) => {
+        this.setState({
+            filters: this.state.filters.map(filter =>
+                filter.filterId === filterId
+                    ? { ...filter, search: seachValue }
+                    : filter
+            )
+        });
+    };
+
+    renderSearchCheckBox = (status, text, color) => {
+
+        return(
+            <Checkbox checked={this.state.filters.find(filter => filter.filterId === STATUS_FILTER).search[status]}
+                style={{width:"50px"}}
+                onChange={(e) => this.setState({
+                    filters: this.state.filters.map(filter =>
+                        filter.filterId === STATUS_FILTER
+                            ? { ...filter, search: {...filter.search, [status]: e.target.checked } }
+                            : filter
+                    )
+                })}
+            >
+                {text}
+            </Checkbox>
+        )
+    };
+
     render() {
 
         const sapAccountDictName = SapAccountStoreType.getSapAccounts(this.props.sapOfi)
@@ -310,11 +362,19 @@ export default class OneTableAccountView extends Component<{
             <div className="flex width100 space-between" style={{marginBottom: "15px"}}>
 
                 <div className="flex ">
-                    <Input placeholder="Szukaj" onChange={(e)=>{this.setState({filters: [{
-                            orig: [Account.ObjectProps.bscsAccount, Account.ObjectProps.ofiSapAccount, Account.ObjectProps.entryOwner,Account.ObjectProps.updateOwner, Account.ObjectProps.ofiSapWbsCode],
-                            search: e.target.value,
-                            compareFunc: Filter.defaultStringComparator
-                        }]})}} size={"small"}/>
+                    <Input
+                        placeholder="Szukaj.."
+                        onChange={e => {
+                            this.changeSearchOnFilter(TEXT_FILTER, e.target.value)
+                        }}
+                        size={"small"}
+                    />
+                    <div className="flex " style={{marginLeft:"100px", marginTop: "3px"}}>
+                        {this.renderSearchCheckBox(Status15.W, "W")}
+                        {this.renderSearchCheckBox(Status15.C, "C")}
+                        {this.renderSearchCheckBox(Status15.P, "P")}
+                        {this.renderSearchCheckBox(Status15.F, "F")}
+                    </div>
                 </div>
 
                 <div className="flex">
