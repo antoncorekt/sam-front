@@ -2,7 +2,7 @@ import {ActionRequestData, ActionResponseData} from "../../api/common-middleware
 import {
     Account,
     AccountDictSap, AccountLog,
-    DeleteAccountByStatusByReleaseByBscsAccountQueryParams,
+    DeleteAccountByStatusByReleaseByBscsAccountQueryParams, DeleteReleaseByReleaseQueryParams,
     GetAccountByStatusByReleaseQueryParams, GetAccountLogQueryParams,
     PatchAccountByStatusByReleaseByBscsAccountQueryParams,
     PutAccountByStatusByReleaseByBscsAccountQueryParams,
@@ -10,7 +10,7 @@ import {
     ResultSetAccount,
     ResultSetAccountDictSaps, ResultSetAccountLogs,
     ResultSetAccounts,
-    ResultSetCount, ResultSetOk,
+    ResultSetCount, ResultSetError, ResultSetOk,
     Status,
     Status15
 } from "../../api/api-models";
@@ -76,6 +76,7 @@ export class AccountMappingType {
     deleteAccount: ActionResponseData<ResultSetCount,ActionRequestData<DeleteAccountByStatusByReleaseByBscsAccountQueryParams, null>> = {};
     accountLog: ActionResponseData<ResultSetAccountLogs,ActionRequestData<null, GetAccountLogQueryParams>> = {};
     postRelease: ActionResponseData<ResultSetOk,ActionRequestData<null, null>> = {};
+    revertRelease: ActionResponseData<ResultSetError,ActionRequestData<null, DeleteReleaseByReleaseQueryParams>> = {};
 
     static getBackendAccount(store: AccountMappingType): Array<Account> {
         if (store.backendAccounts.response !== undefined
@@ -143,6 +144,11 @@ export class AccountMappingType {
     static isPatchAccountSuccessful(store: AccountMappingType):boolean {
         return store.patchAccount.response !== undefined
             && store.patchAccount.response.count !== 0;
+    }
+
+    static isRevertReleaseSuccessful(store: AccountMappingType):boolean {
+        return store.revertRelease.response !== undefined
+            && store.revertRelease.response.text === "OK";
     }
 
     static getAccountLogs(accountLogStore: ActionResponseData<ResultSetAccountLogs,ActionRequestData<null, GetAccountLogQueryParams>>): Array<AccountLog> {

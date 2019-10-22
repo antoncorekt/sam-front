@@ -36,6 +36,8 @@ class AccountMappingTab extends Component<{
             && AccountMappingType.isDeleteAccountSuccessful(this.props.accountsStore)) ||
             (!AccountMappingType.isPatchAccountSuccessful(prevProps.accountsStore)
                 && AccountMappingType.isPatchAccountSuccessful(this.props.accountsStore)) ||
+            (!AccountMappingType.isRevertReleaseSuccessful(prevProps.accountsStore)
+                && AccountMappingType.isRevertReleaseSuccessful(this.props.accountsStore)) ||
             (!AccountMappingType.isPostReleaseSuccessful(prevProps.accountsStore)
                 && AccountMappingType.isPostReleaseSuccessful(this.props.accountsStore))
         ){
