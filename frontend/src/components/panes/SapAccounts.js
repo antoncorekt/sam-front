@@ -110,7 +110,7 @@ class SapAccounts extends Component<{
             <div className="sap-accounts">
                 <div className="flex-end-row">
                     <TestEnvContainer>
-                        <Button style={{margin:"0px 10px 0px 10px"}} onClick={()=>this.props.deleteDict()} loading={this.props.sapOfi.DELETE.fetching}>Remove All</Button>
+                        <Button style={{margin:"0px 10px 0px 10px"}} onClick={()=>this.props.deleteDict()} loading={this.props.sapOfi.DELETE.fetching}>Usuń wszystko</Button>
                     </TestEnvContainer>
                     <Checkbox className="checkbox" onChange={null}>
                         Aktualizuj opisy istniejących kont

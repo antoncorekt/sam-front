@@ -248,7 +248,7 @@ export default class OneTableAccountView extends Component<{
                     onClick={()=>this.props.deleteAccount(account)}
                     loading={this.props.accountsStore.deleteAccount.fetching}
             >
-                Usun
+                Usuń
             </Button>
         );
 
@@ -267,7 +267,7 @@ export default class OneTableAccountView extends Component<{
                 <Button size="small"
                         onClick={()=>this.props.modifyAccount(originalAccount)}
                 >
-                    Anuluj zmiane
+                    Anuluj zmianę
                 </Button>
             )
         };

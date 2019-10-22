@@ -186,7 +186,7 @@ export const UsersBscsToSapMappings = () => {
                 accounts: [
                 new Account.Builder()
                     .withEntryOwner(action.user)
-                    .withOfiSapAccount("WYBIEZ SAP OFI")
+                    .withOfiSapAccount("Wybierz konto")
                     .withFrontendIdFrontProp(uuidv4())
                     .withEntryDate(new Date())
                     .withStatus("F")

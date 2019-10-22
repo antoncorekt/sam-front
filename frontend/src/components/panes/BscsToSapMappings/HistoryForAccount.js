@@ -18,7 +18,7 @@ import {renderDateTime} from "../../../utils/Utils";
 
 const columns = [
     {
-        Header: 'Operacija',
+        Header: 'Operacja',
         accessor: AccountLog.ObjectProps.opcode
     },
     {
