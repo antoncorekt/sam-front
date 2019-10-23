@@ -6,12 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="swagger-parser" />
         <module name="swagger-spring" />
+        <module name="swagger-parser" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="bscs_db" target="1.5" />
+      <module name="bscs-db" target="1.5" />
       <module name="sam-app" target="1.5" />
       <module name="swagger-parser" target="1.8" />
       <module name="swagger-spring" target="8" />

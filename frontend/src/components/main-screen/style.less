@@ -1,0 +1,225 @@
+@import "../../style/override-antd-parameters.less";
+
+.main-screen-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 0 0 0;
+    background-color: @header-background;
+}
+
+.main-screen-header .logo-img {
+    margin: 4px 2px -1px 2px;
+}
+
+.main-screen-header .horizontal-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.main-screen-header .vertical-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.main-screen-header .revision {
+    font-size: 10px;
+    color: @header-text-color;
+    margin-right: 20px;
+}
+
+.main-screen-header .request-queue-panel {
+    width: 300px;
+    margin: 2px 20px 2px 0px;
+    border: 1px solid;
+    border-color: @header-text-color;
+}
+
+.main-screen-header .request-queue-panel .stats {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    color: @header-text-color;
+    font-size: 14px;
+    margin: 2px 0px 0px 2px;
+}
+
+.main-screen-header .request-queue-panel .drop-down-icon {
+    margin: 2px 4px 0px 0px;
+}
+
+.main-screen-header .reporter-container {
+    margin: 8px 20px 0px 0px;
+}
+
+.main-screen-header .user {
+    font-size: 14px;
+    font-weight: bold;
+    color: @header-text-color;
+    margin-right: 20px;
+}
+
+.main-screen-header .logout-button {
+    margin: 2px 2px
+}
+
+.main-screen-body {
+    background-color: @body-background;
+    width: 100%;
+}
+
+.main-screen-body .tab-panes {
+    margin: 0px 6px 0px 6px;
+}
+
+.req-que-panel {
+    margin-right: 25px;
+    width: 325px;
+    padding: 0 10px 0 10px;
+}
+
+.req-que-panel .top-part {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    color: @header-text-color;
+}
+
+.req-que-panel .in-progress {
+    color: #ffba02;
+    font-weight: bold;
+}
+
+.req-que-panel .success {
+    color: #0e9431;
+}
+
+.req-que-panel .fail {
+    color: #a61200;
+    font-weight: bold;
+}
+
+.req-que-panel .bottom-part-none {
+    display: none;
+}
+
+.req-que-panel .bottom-part-block {
+    position: absolute;
+    display: block;
+    background-color: #eeedff;
+    width: 300px;
+    border: 1px solid #b6c0ca;
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px;
+    z-index: 999;
+    opacity: 0.95;
+}
+
+.req-que-panel .ico {
+    cursor: pointer;
+}
+
+.logo-img {
+
+    margin: 1px 0 3px 2px;
+}
+.req-que-panel {
+    margin-right: 25px;
+    width: 325px;
+    padding: 0 10px 0 10px;
+}
+
+.req-que-panel .top-part {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    color: #aaaaaa;
+}
+
+.req-que-panel .in-progress {
+    color: #ffba02;
+    font-weight: bold;
+}
+
+.req-que-panel .success {
+    color: #0e9431;
+}
+
+.req-que-panel .fail {
+    color: #a61200;
+    font-weight: bold;
+}
+
+.req-que-panel .bottom-part-none {
+    display: none;
+}
+
+.req-que-panel .bottom-part-block {
+    position: absolute;
+    display: block;
+    background-color: #eeedff;
+    width: 300px;
+    border: 1px solid #b6c0ca;
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px;
+    z-index: 999;
+    opacity: 0.95;
+}
+
+.req-que-panel .ico {
+    cursor: pointer;
+}
+
+.logo-img {
+
+    margin: 1px 0 3px 2px;
+}
+.req-que-panel .part{
+    height: 125px;
+    background-color: #afffb6;
+    overflow: auto;
+    border: 1px solid #b6c0ca;
+}
+
+.req-que-panel .success-part{
+    background-color: #afffb6;
+    color: #002410;
+}
+
+.req-que-panel .error-part{
+    background-color: #ffded6;
+    color: #240202;
+}
+
+.req-que-panel .in-progress-part{
+    background-color: #f4ffb6;
+    color: #392000;
+}
+
+
+.req-que-panel .el {
+    font-size: 10px;
+    padding: 0 1px 0 1px;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.trace-modal {
+    overflow: auto;
+    height: 700px;
+}
+
+.revision{
+    margin-right: 10px;
+    font-size: 10px;
+    color: #aaaaaa;
+    margin-top: 10px;
+}

@@ -1,108 +1,29 @@
 // @flow
 
-import {BACKEND_URL} from './conf';
-import {func} from "prop-types";
 import {Dispatch} from "redux";
+import {BACKEND_URL} from "./conf";
+import {UNAUTHORIZED_ACTION} from "../reducers/auth/auth-reducer";
+import {AddToRequestPanelActionBuilder} from "../reducers/request-panel-reducer";
 
-// ----- Enums ------
-type FinancialAccountStatusEnum = 'active' | 'inactive';
-type MarketSegmentCategoryEnum = 'BIZ' | 'PRIV';
-type MarketSegmentReqCategoryEnum = 'PRIV';
-type AccountMapStatusEnum = 'approved' | 'unapproved';
-type AccountMapLogActionEnum = 'insert' | 'update' | 'delete';
-
-// ----- Models ------
-export class FinancialAccount {
-    id:string; // Account number
-    name:string;
-    status:FinancialAccountStatusEnum = 'active';
-    "@type":string;
-
-    get type():string {return this["@type"]}
-    set type(s:string):void {this["@type"]=s}
-
-    static get Builder() {
-        class Builder {
-            _model: FinancialAccount = new FinancialAccount();
-            withId(id: string):Builder {
-                this._model.id = id;
-                if (id.length > 120) throw new Error("Data error. Max id length is " + 120);
-                return this;
-            }
-            withName(name: string):Builder {
-                this._model.name = name;
-                return this;
-            }
-            withType(type: string):Builder {
-                this._model.type = type;
-                return this;
-            }
-            withStatus(status: FinancialAccountStatusEnum):Builder {
-                this._model.type = status;
-                return this;
-            }
-            build():FinancialAccount {
-                return this._model;
-            }
-        }
-        return Builder;
-    }
+export interface BackendAction {
+    get fetching(): boolean;
+    get fail(): boolean;
+    get msg(): string;
+    get errorType(): string;
 }
 
-class MarketSegment { id:string; category:MarketSegmentCategoryEnum; entryDate:Date;  }
-class MarketSegmentReq { id:string; category:MarketSegmentReqCategoryEnum;  }
-class AccountMap { glAccount:FinancialAccount; ofiAccount:FinancialAccount; validFrom:Date; vatCodeInd:boolean; sapSegmentText:string; ofiWbsCode:string; citMarkerVatFlag:number; status:AccountMapStatusEnum;  }
-export class AccountMapReq { glAccountId:string; ofiAccountId:string; validFrom:Date; vatCodeInd:boolean; sapSegmentText:string; ofiWbsCode:string; citMarkerVatFlag:number;  }
-export class AccountMapLog { old:AccountMap; new:AccountMap; user:string; action:AccountMapLogActionEnum; actionDate:Date;  }
-export class SegmentMapEntry { segmentId:string; orderNumber:number;  }
-export class SegmentMap { glAccount:FinancialAccount; validFrom:Date; segments:Array<SegmentMapEntry>;  }
-class SegmentMapReq { validFrom:Date;  }
-
-class GetAccountOfiUrlParametersStatusEnum {
-    static get ACTIVE(){
-        return 'active';
-    }
-    static get INACTIVE(){
-        return 'inactive';
-    }
-    static get ALL(){
-        return 'all';
-    }
-}
-export class GetAccountOfiUrlParameters {
-    status: GetAccountOfiUrlParametersStatusEnum;
-
-    static get Builder() {
-        class Builder {
-            _model: GetAccountOfiUrlParameters = new GetAccountOfiUrlParameters();
-            withStatus(status: GetAccountOfiUrlParametersStatusEnum):Builder {
-                this._model.status=status;
-                return this;
-            }
-            build():GetAccountOfiUrlParameters {
-                return this._model;
-            }
-        }
-        return Builder;
-    }
-}
-
-let params = new GetAccountOfiUrlParameters();
-console.warn("params1", params);
-params.status = GetAccountOfiUrlParametersStatusEnum.INACTIVE;
-
-console.warn("params2", params);
-
-export class ActionRequestData<T, P> {
+export class ActionRequestData<T, P> implements BackendAction{
     body: T;
-    parameners: P;
+    parameters: P;
     date: Date;
     url: string;
     type: string;
     method: string;
+    fetching: true;
+    // requestId: number;
 }
 
-export class ActionResponseData<T, R>  {
+export class ActionResponseData<T, R> implements BackendAction {
     requestAction: R;
     response: T;
     date: Date;
@@ -111,6 +32,8 @@ export class ActionResponseData<T, R>  {
     msg: string;
     code: string;
     errorType: string;
+    fetching: false;
+    // requestId: number;
 }
 
 // general components for function
@@ -124,14 +47,12 @@ const additionalFunctions = ( ) => {
     }
 
 
-
-
-
     function requestActionCreatorFunction(props: ApiProperties): ActionRequestData {
         return {
             body: props.body,
             date: new Date(),
             url: props.url,
+            fetching: true,
             method: props.httpMethod,
             type: props.requestType
         }
@@ -139,21 +60,23 @@ const additionalFunctions = ( ) => {
 
     function successActionCreatorFunction(type:string, response: any, requestAction: ActionRequestData, msg: string, code: string): ActionResponseData {
         const date = new Date();
+        const respDate = requestAction.date === undefined ? new Date() :  requestAction.date.getTime();
         return {
             requestAction: requestAction,
             date: date,
             response: response,
+            fetching: false,
             type: type,
             msg: msg,
             code: code,
-            timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
+            timeDiff: Math.abs(date.getTime() - respDate),
             fail: false
         }
     }
 
-    function failActionCreatorFunctionBackendError(response: any, requestAction: ActionRequestData,  msg: string, code: string): ActionResponseData {
+    function failActionCreatorFunctionBackendError(type:string, response: any, requestAction: ActionRequestData,  msg: string, code: string): ActionResponseData {
         return {
-            ...successActionCreatorFunction(response, requestAction, msg, code),
+            ...successActionCreatorFunction(type, response, requestAction, msg, code),
             fail: true,
             errorType: "backend"
         }
@@ -161,13 +84,15 @@ const additionalFunctions = ( ) => {
 
     function failActionCreatorFunctionNetworkError(type:string, reason:string, requestAction: ActionRequestData,  msg: string, code: string): ResponseData {
         const date = new Date();
+        const respDate = requestAction.date === undefined ? new Date() :  requestAction.date.getTime();
         return {
             type: type,
             requestAction: requestAction,
             date: date,
+            fetching: false,
             msg: msg + " reason[" + reason + "]",
             code: code,
-            timeDiff: Math.abs(date.getTime() - requestAction.date.getTime()),
+            timeDiff: Math.abs(date.getTime() - respDate),
             fail: true,
             errorType: "network"
         }
@@ -184,7 +109,7 @@ const additionalFunctions = ( ) => {
 
 };
 
-export const _ = additionalFunctions();const idGen = _.idMaker;
+export const _ = additionalFunctions();
 type ApiProperties = {
     contentType?: string;
     url: string;
@@ -195,330 +120,171 @@ type ApiProperties = {
     requestType: string;
     headers?: HeadersInit;
 }
+
+type CallApiContextType = {
+    id: number,
+    responseStatus?: number,
+    responseText?: string
+}
+
+class GlobalLoginContext {
+
+    constructor(){
+        this.bearerToken = window.localStorage.getItem("bearerToken") || null;
+    }
+
+    _bearerToken: string;
+
+    set bearerToken(str: string){
+        this._bearerToken = str;
+        window.localStorage.setItem("bearerToken", this._bearerToken);
+    }
+
+    get bearerToken(){
+        return this._bearerToken
+    }
+}
+
+export const globalLoginContext = new GlobalLoginContext();
+
 // function for fetches
 export const commonCallApi = (props: ApiProperties )=> <A>( dispatch: Dispatch<A>) => {
-
-
-
     const idRequest = _.idMaker.next().value;
 
     // setting for fetch function
     const settings = {
         method: props.httpMethod,
         mode: 'cors',
-        headers: props.headers,
+        headers: {
+            "Content-Type": props.contentType === undefined ? "application/json" : props.contentType,
+            // "Content-Type": "application/json",
+            "Authorization": `Bearer ${globalLoginContext.bearerToken}`
+        },
         body: props.body
     };
-    const url = props.url;
+    const url = BACKEND_URL + props.url;
 
-    // const dispFail = res =>
-    //     (failAction === undefined)
-    //         ? dispatch(failedAction(Object.assign(res, {request: data})))
-    //         : dispatch(failAction(Object.assign(res, {request: data})));
-    //
-    // const request = Object.assign({url:url}, data, {message: msg});
+
+    let callApiContext : CallApiContextType = {
+        id: idRequest
+    };
 
     const requestAction =  _.requestActionCreator(props);
-
     dispatch(
         requestAction
     );
-
-    // this will be return fetch function like this
-    // return fetch(url, settings)
-    //     .then(f)
-    //     .then(f1)
-    //     .catch(f2)
-    return fetch(url, settings)
-        .then(typeResolveFunctionBody)
-        .then(handlerFunctionSuccess(props, requestAction, dispatch))
-        .catch(handlerFunctionError(props, requestAction, dispatch));
-};
-
-const typeResolveFunctionBody = (response:any) => {
-
-    // typeResolveFunctionBody
-
-    console.log("typeResolveFunctionBody response", response);
-
-    return response.json();
-
-};
-
-const handlerFunctionError = (props:ApiProperties, requestAction: any, dispatch )=>( error:any) => {
-
-
-    console.error("handlerFunctionError", error);
     dispatch(
-        _.failActionCreatorNetworkError(props.failType, error, requestAction, "Network error: ", "404")
+        AddToRequestPanelActionBuilder.REQ_ACTION(idRequest, requestAction)
     );
 
-};
+    const reqActionWithBody = {
+        ...requestAction,
+        body: typeof requestAction.body === "string" ? JSON.parse(requestAction.body) : null
+    }
 
-const handlerFunctionSuccess = (props:ApiProperties, requestAction: any, dispatch ) => <T>(response:T) => {
+    return fetch(url, settings)
+        .then((response:Response) => {
+            console.log("typeResolveFunctionBody response", response);
 
-    // magic with redux
-    dispatch(
-        _.successActionCreator(props.successType, response, requestAction, "OK", "200")
-    )
-};
+            let contentType = response.headers.get("content-type");
 
+            callApiContext.responseStatus = response.status;
+            callApiContext.responseText = response.statusText;
 
-// functions
-// call Add a new SAP OFI account to dictionary
-const postAccountOfi = (body:FinancialAccount) => {
-    const settings = {		// set settings data
-        url:`/account/ofi`,
-        httpMethod: 'POST',
-        body:JSON.stringify(body),
-        requestType: 'PostAccountOfiRequest',
-        successType: 'PostAccountOfiSuccess',
-        failType: 'PostAccountOfiFail'
-    };
-    return commonCallApi(settings);
-};
-
-// call Import SAP OFI accounts from a file
-const postAccountImportOfi = () => {
-    const settings = {		// set settings data
-        url:`/account/import/ofi`,
-        httpMethod: 'POST',
-        body:undefined,
-        requestType: 'PostAccountImportOfiRequest',
-        successType: 'PostAccountImportOfiSuccess',
-        failType: 'PostAccountImportOfiFail'
-    };
-    return commonCallApi(settings);
-};
-
-// call Add a new market segment to dictionary
-const postSegment = (body:MarketSegmentReq) => {
-    const settings = {		// set settings data
-        url:`/segment`,
-        httpMethod: 'POST',
-        body:JSON.stringify(body),
-        requestType: 'PostSegmentRequest',
-        successType: 'PostSegmentSuccess',
-        failType: 'PostSegmentFail'
-    };
-    return commonCallApi(settings);
-};
-
-const getAccountOfiParam = (status: GetAccountOfiUrlParametersStatusEnum) => {
-    const settings = {		// set settings data
-        url:`/account/ofi?status=${status}`,
-        httpMethod: 'GET',
-        body:undefined,
-        requestType: 'GetAccountOfiRequest',
-        successType: 'GetAccountOfiSuccess',
-        failType: 'GetAccountOfiFail'
-    };
-    return commonCallApi(settings);
-};
-
-// call Return list of SAP OFI accounts
-const getAccountOfi = (urlParams: GetAccountOfiUrlParameters) => {
-    return getAccountOfiParam(urlParams.status)
-};
-
-//
-// class GetAccountOfiCallClassBuilder {
-//     _urlParams: GetAccountOfiUrlParameters = new GetAccountOfiUrlParameters();
-//     _body: FinancialAccount = new FinancialAccount();
-//
-//     uriParams(uriBuilder: GetAccountOfiUrlParameters): GetAccountOfiCallClassBuilder{
-//         this._urlParams = uriBuilder;
-//         return this;
-//     }
-//
-//     bodyParams(finAcc: FinancialAccount): GetAccountOfiCallClassBuilder {
-//         this._body = finAcc;
-//         return this;
-//     }
-//
-//     call(){
-//         const settings = {		// set settings data
-//             url:`/account/ofi?status=${this._urlParams.status}`,
-//             httpMethod: 'GET',
-//             body: this._body,
-//             requestType: 'GetAccountOfiRequest',
-//             successType: 'GetAccountOfiSuccess',
-//             failType: 'GetAccountOfiFail'
-//         };
-//         return commonCallApi(settings);
-//     }
-// }
-//
-// export const getAccountOfiCallCl = new GetAccountOfiCallClassBuilder();
-//
-// getAccountOfiCallCl
-//     .uriParams(new GetAccountOfiUrlParameters.Builder()
-//         .withStatus(GetAccountOfiUrlParametersStatusEnum.ACTIVE)
-//         .build()
-//     )
-//     .bodyParams(new FinancialAccount.Builder()
-//         .withId("id")
-//         .withName("name")
-//         .withType("type")
-//         .build()
-//     )
-//     .call();
+            if (contentType && contentType.includes("application/json")) {
+                console.log("response is json =) try to response.json() ", response) ;
+                // if (response.bodyUsed)
+                return response.json();
+                // else {
+                //     return {}
+                // }
+            }
+            else {
+                console.warn("response.headers", response.headers);
+            }
 
 
-// call Return SAP OFI account by ID
-const getAccountOfiByAccountId = (accountId:number) => {
-    const settings = {		// set settings data
-        url:`/account/ofi/${accountId}`,
-        httpMethod: 'GET',
-        body:undefined,
-        requestType: 'GetAccountOfiByAccountIdRequest',
-        successType: 'GetAccountOfiByAccountIdSuccess',
-        failType: 'GetAccountOfiByAccountIdFail'
-    };
-    return commonCallApi(settings);
-};
+            response.text().then(text => {
+                console.error("error TExt", text)
 
-// call Return list of BSCS GL accounts
-const getAccountGl = (status:string = 'active') => {
-    const settings = {		// set settings data
-        url:`/account/gl?status=${status}`,
-        httpMethod: 'GET',
-        body:undefined,
-        requestType: 'GetAccountGlRequest',
-        successType: 'GetAccountGlSuccess',
-        failType: 'GetAccountGlFail'
-    };
-    return commonCallApi(settings);
-};
+            }).catch(er => console.error("BLOB Error", er));
 
-// call Return BSCS GL account by ID
-const getAccountGlByAccountId = (accountId:string) => {
-    const settings = {		// set settings data
-        url:`/account/gl/${accountId}`,
-        httpMethod: 'GET',
-        body:undefined,
-        requestType: 'GetAccountGlByAccountIdRequest',
-        successType: 'GetAccountGlByAccountIdSuccess',
-        failType: 'GetAccountGlByAccountIdFail'
-    };
-    return commonCallApi(settings);
-};
 
-// call Return list of Market Segments
-const getSegment = () => {
-    const settings = {		// set settings data
-        url:`/segment`,
-        httpMethod: 'GET',
-        body:undefined,
-        requestType: 'GetSegmentRequest',
-        successType: 'GetSegmentSuccess',
-        failType: 'GetSegmentFail'
-    };
-    return commonCallApi(settings);
-};
+            // todo return error json if json parse error
+            return {
+                status: {
+                    code: "NOT_JSON_ERROR",
+                    message: "Not json"
+                }
+            }
+        })
+        .then(<T>(response:T) => {
 
-// call Return a single Market Segment
-const getSegmentBySegmentId = (segmentId:string) => {
-    const settings = {		// set settings data
-        url:`/segment/${segmentId}`,
-        httpMethod: 'GET',
-        body:undefined,
-        requestType: 'GetSegmentBySegmentIdRequest',
-        successType: 'GetSegmentBySegmentIdSuccess',
-        failType: 'GetSegmentBySegmentIdFail'
-    };
-    return commonCallApi(settings);
-};
+            console.log("handlerFunctionSuccess", response);
 
-// call Return account mapping
-const getAccountMap = (status:string = 'all',glAccount:string,ofiAccount:string) => {
-    const settings = {		// set settings data
-        url:`/account/map?status=${status}&glAccount=${glAccount}&ofiAccount=${ofiAccount}`,
-        httpMethod: 'GET',
-        body:undefined,
-        requestType: 'GetAccountMapRequest',
-        successType: 'GetAccountMapSuccess',
-        failType: 'GetAccountMapFail'
-    };
-    return commonCallApi(settings);
-};
+            if (callApiContext.responseStatus >= 300){
 
-// call Return history of changes in account mapping
-const getAccountMapHistory = (dateFrom:string,dateTo:string,user:string,glAccount:string,ofiAccount:string) => {
-    const settings = {		// set settings data
-        url:`/account/map/history?dateFrom=${dateFrom}&dateTo=${dateTo}&user=${user}&glAccount=${glAccount}&ofiAccount=${ofiAccount}`,
-        httpMethod: 'GET',
-        body:undefined,
-        requestType: 'GetAccountMapHistoryRequest',
-        successType: 'GetAccountMapHistorySuccess',
-        failType: 'GetAccountMapHistoryFail'
-    };
-    return commonCallApi(settings);
-};
+                if (callApiContext.responseStatus === 403 && callApiContext.responseText.includes("Unauthorized") || callApiContext.responseStatus === 401  ){
+                    // todo call unauthorized
 
-// call Update SAP OFI account
-const patchAccountOfiByAccountId = (accountId:number,body:FinancialAccount) => {
-    const settings = {		// set settings data
-        url:`/account/ofi/${accountId}`,
-        httpMethod: 'PATCH',
-        body:JSON.stringify(body),
-        requestType: 'PatchAccountOfiByAccountIdRequest',
-        successType: 'PatchAccountOfiByAccountIdSuccess',
-        failType: 'PatchAccountOfiByAccountIdFail'
-    };
-    return commonCallApi(settings);
-};
+                    console.warn("callApiContext", callApiContext)
 
-// call Remove SAP OFI account
-const deleteAccountOfiByAccountId = (accountId:number,body:FinancialAccount) => {
-    const settings = {		// set settings data
-        url:`/account/ofi/${accountId}`,
-        httpMethod: 'DELETE',
-        body:JSON.stringify(body),
-        requestType: 'DeleteAccountOfiByAccountIdRequest',
-        successType: 'DeleteAccountOfiByAccountIdSuccess',
-        failType: 'DeleteAccountOfiByAccountIdFail'
-    };
-    return commonCallApi(settings);
-};
+                    dispatch(
+                        {
+                            type: UNAUTHORIZED_ACTION
+                        }
+                    )
+                }
+                else {
+                    const responseAction = _.failActionCreatorBackendError(props.failType, response, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus);
+                    dispatch(
+                        responseAction
+                    );
+                    dispatch(
+                        AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, responseAction)
+                    );
+                }
 
-// call Remove an existing market segment
-const deleteSegmentBySegmentId = (segmentId:string) => {
-    const settings = {		// set settings data
-        url:`/segment/${segmentId}`,
-        httpMethod: 'DELETE',
-        body:undefined,
-        requestType: 'DeleteSegmentBySegmentIdRequest',
-        successType: 'DeleteSegmentBySegmentIdSuccess',
-        failType: 'DeleteSegmentBySegmentIdFail'
-    };
-    return commonCallApi(settings);
-};
+            }
+            else {
+                const responseAction =  _.successActionCreator(props.successType, response, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus);
+                dispatch(
+                    _.successActionCreator(props.successType, response, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus)
+                );
+                dispatch(
+                    AddToRequestPanelActionBuilder.SUCCESS_ACTION(idRequest, responseAction)
+                );
+            }
+        })
+        .catch(( error:any) => {
 
-export const API = {
-    CALL: {
-        postAccountOfi,
-        postAccountImportOfi,
-        postSegment,
-        getAccountOfi,
-        getAccountOfiByAccountId,
-        getAccountGl,
-        getAccountGlByAccountId,
-        getSegment,
-        getSegmentBySegmentId,
-        getAccountMap,
-        getAccountMapHistory,
-        patchAccountOfiByAccountId,
-        deleteAccountOfiByAccountId,
-        deleteSegmentBySegmentId	},
-    MODELS: {
-        FinancialAccount,
-        MarketSegment,
-        MarketSegmentReq,
-        AccountMap,
-        AccountMapReq,
-        AccountMapLog,
-        SegmentMapEntry,
-        SegmentMap,
-        SegmentMapReq	}
+
+            console.error("handlerFunctionError", error);
+            console.error("callApiContext", callApiContext);
+
+            if (callApiContext.responseStatus < 300){
+                const resp = {
+                    code: callApiContext.responseStatus,
+                    text: callApiContext.responseText
+                };
+
+                const responseAction =  _.successActionCreator(props.successType, resp, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus);
+                dispatch(
+                    _.successActionCreator(props.successType, resp, reqActionWithBody, callApiContext.responseText, callApiContext.responseStatus)
+                );
+                dispatch(
+                    AddToRequestPanelActionBuilder.SUCCESS_ACTION(idRequest, responseAction)
+                );
+            }else {
+
+                const failAction = _.failActionCreatorNetworkError(props.failType, error, reqActionWithBody, "Network error: ", "404")
+                dispatch(
+                    failAction
+                );
+                dispatch(
+                    AddToRequestPanelActionBuilder.FAIL_ACTION(idRequest, {requestAction: reqActionWithBody, response: failAction})
+                );
+            }
+
+    });
 };

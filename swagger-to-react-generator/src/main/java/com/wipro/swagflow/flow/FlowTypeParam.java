@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FlowTypeParam {
 
-    String name;
+    JsWord name;
     String type;
     String description;
     Integer maxLen;
@@ -28,7 +28,13 @@ public class FlowTypeParam {
     public String toCode(){
 
 
-        return name + (type == null ? "" :  ":" + type) + (defaultValue != null ? " = '" + defaultValue.toString() +"'" : "");
+        return name.getJsLexical() + (type == null ? "" :  ":" + type) + (defaultValue != null ? " = '" + defaultValue.toString() +"'" : "");
+    }
+
+    public String toCode(String nameStr){
+
+
+        return nameStr + (type == null ? "" :  ":" + type) + (defaultValue != null ? " = '" + defaultValue.toString() +"'" : "");
     }
 
 
@@ -39,7 +45,7 @@ public class FlowTypeParam {
     }
 
     public static class FlowTypeParamBuilder {
-        private String name;
+        private JsWord name;
         private String type;
         private String description;
         private Integer maxLen;
@@ -50,7 +56,7 @@ public class FlowTypeParam {
         FlowTypeParamBuilder() {
         }
 
-        public FlowTypeParamBuilder name(String name) {
+        public FlowTypeParamBuilder name(JsWord name) {
             this.name = name;
             return this;
         }

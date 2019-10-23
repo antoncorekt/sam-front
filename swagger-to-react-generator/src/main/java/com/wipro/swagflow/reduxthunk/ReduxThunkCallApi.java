@@ -25,7 +25,7 @@ public class ReduxThunkCallApi implements FlowElement {
         this.fetchFunction = fetchFunction;
 
         this.internalLogic = FlowFunction.parseFromString(getStringFromFile(this,"reduxThunkCallApi.js"));
-        name = internalLogic.getName();
+        name = internalLogic.getName().getOriginal();
         internalLogic.setBody(internalLogic.getBody() + "\t return " + fetchFunction.toCode());
     }
 

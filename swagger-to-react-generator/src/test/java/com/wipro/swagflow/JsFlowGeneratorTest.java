@@ -73,15 +73,23 @@ public class JsFlowGeneratorTest {
 
         JsFlowGenerator jsFlowGenerator = new JsFlowGenerator();
 
+        for (Map.Entry<String, Model> p : swagger.getDefinitions().entrySet()) {
+            jsFlowGenerator.addModel(p);
+        }
+
         swagger.getPaths().entrySet().forEach(jsFlowGenerator::addApiCallFunction);
+
 
         for (ApiCallFunctionData apiCallFunctionData : jsFlowGenerator.getApiCallFunctionData()) {
             apiCallFunctionData.init();
         }
 
-        for (Map.Entry<String, Model> p : swagger.getDefinitions().entrySet()) {
-            jsFlowGenerator.addModel(p);
-        }
+//        for (Map.Entry<String, Model> p : swagger.getDefinitions().entrySet()) {
+//            jsFlowGenerator.addModel(p);
+//        }
+
+
+
 
         System.out.println("start");
 

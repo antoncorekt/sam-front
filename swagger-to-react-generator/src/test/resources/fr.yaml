@@ -1,0 +1,2136 @@
+swagger: "2.0"
+info:
+  version: '1.0.0'
+  description: This is backend API of application used to store data about excavations in Dongola!
+  title: Excavations API
+host: '130.180.193.244:8082'
+basePath: /api
+tags:
+  - name: files-controller
+    description: Files Controller
+  - name: find-record-controller
+    description: Find Record Controller
+  - name: hello-world-controller
+    description: Hello World Controller
+  - name: mission-controller
+    description: Mission Controller
+  - name: sample-record-controller
+    description: Sample Record Controller
+  - name: security-controller
+    description: Log in Controller
+  - name: sync-controller
+    description: Sync Controller
+  - name: user-controller
+    description: User Controller
+paths:
+  /hello-world:
+    get:
+      tags:
+        - hello-world-controller
+      summary: sayHello
+      operationId: sayHelloUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: name
+          required: false
+          type: string
+          default: Stranger
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /login:
+    post:
+      tags:
+        - security-controller
+      summary: Log in
+      operationId: loginUsingPOST
+      parameters:
+        - name: password
+          in: query
+          description: The password
+          required: true
+          type: string
+        - name: username
+          in: query
+          description: The username
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+  /logout:
+    post:
+      tags:
+        - security-controller
+      summary: Log out
+      operationId: logoutUsingPOST
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+  /me:
+    get:
+      tags:
+        - user-controller
+      summary: getCurrentUser
+      operationId: getCurrentUserUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - user-controller
+      summary: editCurrentUserPassword
+      operationId: editCurrentUserPasswordUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: password
+          description: password
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /missions:
+    get:
+      tags:
+        - mission-controller
+      summary: getMissions
+      operationId: getMissionsUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MissionDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - mission-controller
+      summary: addMission
+      operationId: addMissionUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/MissionDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/MissionDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{id}':
+    get:
+      tags:
+        - mission-controller
+      summary: getMission
+      operationId: getMissionUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/MissionDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - mission-controller
+      summary: deleteMission
+      operationId: deleteMissionUsingDELETE
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/missions/{missionName}/find-records':
+    get:
+      tags:
+        - find-record-controller
+      summary: getAll
+      operationId: getAllUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: offset
+          in: query
+          required: false
+          type: integer
+          format: int64
+        - name: pageNumber
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: paged
+          in: query
+          required: false
+          type: boolean
+        - name: sort.sorted
+          in: query
+          required: false
+          type: boolean
+        - name: sort.unsorted
+          in: query
+          required: false
+          type: boolean
+        - name: unpaged
+          in: query
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - find-record-controller
+      summary: add
+      operationId: addUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - find-record-controller
+      summary: edit
+      operationId: editUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/find-records/{uuid}':
+    get:
+      tags:
+        - find-record-controller
+      summary: get
+      operationId: getUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - find-record-controller
+      summary: delete
+      operationId: deleteUsingDELETE
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/missions/{missionName}/find-records/{uuid}/photos':
+    post:
+      tags:
+        - find-record-controller
+      summary: addPhoto
+      operationId: addPhotoUsingPOST
+      consumes:
+        - multipart/form-data
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: photo
+          in: formData
+          description: photo
+          required: true
+          type: file
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/find-records/{uuid}/photos/original/{photo-name}':
+    post:
+      tags:
+        - find-record-controller
+      summary: getOriginalPhoto
+      operationId: getOriginalPhotoUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: photo-name
+          in: path
+          description: photo-name
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Resource'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/find-records/{uuid}/photos/scaled/{photo-name}':
+    post:
+      tags:
+        - find-record-controller
+      summary: getScaledPhoto
+      operationId: getScaledPhotoUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: photo-name
+          in: path
+          description: photo-name
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Resource'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/find-records/{uuid}/photos/{photo-name}':
+    delete:
+      tags:
+        - find-record-controller
+      summary: deletePhoto
+      operationId: deletePhotoUsingDELETE
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: photo-name
+          in: path
+          description: photo-name
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/missions/{missionName}/sample-records':
+    get:
+      tags:
+        - sample-record-controller
+      summary: getAll
+      operationId: getAllUsingGET_1
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: offset
+          in: query
+          required: false
+          type: integer
+          format: int64
+        - name: pageNumber
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: paged
+          in: query
+          required: false
+          type: boolean
+        - name: sort.sorted
+          in: query
+          required: false
+          type: boolean
+        - name: sort.unsorted
+          in: query
+          required: false
+          type: boolean
+        - name: unpaged
+          in: query
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - sample-record-controller
+      summary: add
+      operationId: addUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - sample-record-controller
+      summary: edit
+      operationId: editUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/sample-records/{uuid}':
+    get:
+      tags:
+        - sample-record-controller
+      summary: get
+      operationId: getUsingGET_1
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FindRecordDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - sample-record-controller
+      summary: delete
+      operationId: deleteUsingDELETE_1
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/missions/{missionName}/sample-records/{uuid}/photos':
+    post:
+      tags:
+        - sample-record-controller
+      summary: addPhoto
+      operationId: addPhotoUsingPOST_1
+      consumes:
+        - multipart/form-data
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: photo
+          in: formData
+          description: photo
+          required: true
+          type: file
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/sample-records/{uuid}/photos/original/{photo-name}':
+    post:
+      tags:
+        - sample-record-controller
+      summary: getOriginalPhoto
+      operationId: getOriginalPhotoUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: photo-name
+          in: path
+          description: photo-name
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Resource'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/sample-records/{uuid}/photos/scaled/{photo-name}':
+    post:
+      tags:
+        - sample-record-controller
+      summary: getScaledPhoto
+      operationId: getScaledPhotoUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: photo-name
+          in: path
+          description: photo-name
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Resource'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/sample-records/{uuid}/photos/{photo-name}':
+    delete:
+      tags:
+        - sample-record-controller
+      summary: deletePhoto
+      operationId: deletePhotoUsingDELETE_1
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+        - name: photo-name
+          in: path
+          description: photo-name
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/missions/{missionName}/search/find-records':
+    get:
+      tags:
+        - find-record-controller
+      summary: find
+      operationId: findUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: idPattern
+          in: query
+          description: idPattern
+          required: true
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FindRecordDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/missions/{missionName}/search/sample-records':
+    get:
+      tags:
+        - sample-record-controller
+      summary: find
+      operationId: findUsingGET_1
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: idPattern
+          in: query
+          description: idPattern
+          required: true
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FindRecordDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /set-backup-downscaler:
+    get:
+      tags:
+        - files-controller
+      summary: setBackupDownscaler
+      operationId: setBackupDownscalerUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: enabled
+          in: query
+          description: enabled
+          required: true
+          type: boolean
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/external-id:
+    get:
+      tags:
+        - sync-controller
+      summary: getExternalId
+      operationId: getExternalIdUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IdDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/file-root:
+    get:
+      tags:
+        - sync-controller
+      summary: getMissionFileRoot
+      operationId: getMissionFileRootUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: query
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IdDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/initial-load:
+    get:
+      tags:
+        - sync-controller
+      summary: initialLoad
+      operationId: initialLoadUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '202':
+          description: Accepted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/node-type:
+    get:
+      tags:
+        - sync-controller
+      summary: getNodeType
+      operationId: getNodeTypeUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IdDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/open-registration:
+    get:
+      tags:
+        - sync-controller
+      summary: openRegistration
+      operationId: openRegistrationUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: externalId
+          in: query
+          description: externalId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/pull:
+    get:
+      tags:
+        - sync-controller
+      summary: pull
+      operationId: pullUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '202':
+          description: Accepted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/push:
+    get:
+      tags:
+        - sync-controller
+      summary: push
+      operationId: pushUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '202':
+          description: Accepted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/register:
+    get:
+      tags:
+        - sync-controller
+      summary: register
+      operationId: registerUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/remove-node:
+    get:
+      tags:
+        - sync-controller
+      summary: removeNode
+      operationId: removeNodeUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: nodeId
+          in: query
+          description: nodeId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/set-auto-sync:
+    get:
+      tags:
+        - sync-controller
+      summary: setAutoSync
+      operationId: setAutoSyncUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: enabled
+          in: query
+          description: enabled
+          required: true
+          type: boolean
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/status:
+    get:
+      tags:
+        - sync-controller
+      summary: getSyncStatus
+      operationId: getSyncStatusUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+            enum:
+              - OFFLINE
+              - STARTING
+              - STARTED_AUTO_SYNC
+              - STARTED_NO_AUTO_SYNC
+              - NOT_REGISTERED
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/sync-url:
+    get:
+      tags:
+        - sync-controller
+      summary: getSyncUrl
+      operationId: getSyncUrlUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IdDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sync/synchronise:
+    get:
+      tags:
+        - sync-controller
+      summary: synchronise
+      operationId: synchroniseUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '202':
+          description: Accepted
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/sync/{missionName}/pull-files':
+    get:
+      tags:
+        - sync-controller
+      summary: pullFiles
+      operationId: pullFilesUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/sync/{missionName}/push-files':
+    get:
+      tags:
+        - sync-controller
+      summary: pushFiles
+      operationId: pushFilesUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/sync/{missionName}/synchronise-files':
+    get:
+      tags:
+        - sync-controller
+      summary: synchroniseFiles
+      operationId: synchroniseFilesUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: missionName
+          in: path
+          description: missionName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /user:
+    get:
+      tags:
+        - user-controller
+      summary: getUser
+      operationId: getUserUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: username
+          in: query
+          description: username
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - user-controller
+      summary: addUser
+      operationId: addUserUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/UserDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - user-controller
+      summary: editUser
+      operationId: editUserUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - in: body
+          name: dto
+          description: dto
+          required: true
+          schema:
+            $ref: '#/definitions/UserDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - user-controller
+      summary: deleteUser
+      operationId: deleteUserUsingDELETE
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+        - name: username
+          in: query
+          description: username
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /users:
+    get:
+      tags:
+        - user-controller
+      summary: getUsers
+      operationId: getUsersUsingGET
+      produces:
+        - 'application/json'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Authorization token
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+definitions:
+  BaseRecordContextRecordRefDTO:
+    type: object
+    properties:
+      id:
+        type: string
+        readOnly: true
+      type:
+        type: string
+        readOnly: true
+        enum:
+          - DEPOSITION_RECORD
+          - FIND_RECORD
+      uuid:
+        type: string
+    title: BaseRecordContextRecordRefDTO
+  BaseRecordSignatureDTO:
+    type: object
+    properties:
+      auditedBy:
+        type: string
+      enteredBy:
+        type: string
+      recordedBy:
+        type: string
+    title: BaseRecordSignatureDTO
+  File:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      absoluteFile:
+        $ref: '#/definitions/File'
+      absolutePath:
+        type: string
+      canonicalFile:
+        $ref: '#/definitions/File'
+      canonicalPath:
+        type: string
+      directory:
+        type: boolean
+      file:
+        type: boolean
+      freeSpace:
+        type: integer
+        format: int64
+      hidden:
+        type: boolean
+      name:
+        type: string
+      parent:
+        type: string
+      parentFile:
+        $ref: '#/definitions/File'
+      path:
+        type: string
+      totalSpace:
+        type: integer
+        format: int64
+      usableSpace:
+        type: integer
+        format: int64
+    title: File
+  FindRecordDTO:
+    type: object
+    properties:
+      category:
+        type: string
+      condition:
+        type: string
+      dating:
+        type: string
+      description:
+        type: string
+      dimensions:
+        $ref: '#/definitions/FindRecordDimensionsDTO'
+      elevation:
+        $ref: '#/definitions/ItemRecordElevationDTO'
+      fileNames:
+        type: array
+        readOnly: true
+        items:
+          type: string
+      id:
+        $ref: '#/definitions/FindRecordIdDTO'
+      info:
+        $ref: '#/definitions/ItemRecordInfoDTO'
+      lastModificationTime:
+        type: string
+        readOnly: true
+      primaryMaterial:
+        type: string
+      remarks:
+        type: string
+      secondaryMaterial:
+        type: string
+      signature:
+        $ref: '#/definitions/BaseRecordSignatureDTO'
+      state:
+        $ref: '#/definitions/FindRecordStateDTO'
+      technology:
+        type: string
+      todo:
+        $ref: '#/definitions/FindRecordToDoDTO'
+      uuid:
+        type: string
+    title: FindRecordDTO
+  FindRecordDimensionsDTO:
+    type: object
+    properties:
+      diameter:
+        type: number
+        format: float
+      height:
+        type: number
+        format: float
+      length:
+        type: number
+        format: float
+      percentage:
+        type: number
+        format: float
+      remarks:
+        type: string
+      thickness:
+        type: number
+        format: float
+      weight:
+        type: number
+        format: float
+      width:
+        type: number
+        format: float
+    title: FindRecordDimensionsDTO
+  FindRecordIdDTO:
+    type: object
+    properties:
+      inventoryNumber:
+        type: integer
+        format: int32
+      objectFieldNumber:
+        type: string
+      potteryInventoryNumber:
+        type: integer
+        format: int32
+    title: FindRecordIdDTO
+  FindRecordStateDTO:
+    type: object
+    properties:
+      fragmentsNo:
+        type: integer
+        format: int32
+      inscribed:
+        type: boolean
+      reused:
+        type: boolean
+    title: FindRecordStateDTO
+  FindRecordToDoDTO:
+    type: object
+    properties:
+      analysis:
+        $ref: '#/definitions/FindRecordWorkDTO'
+      analysisDescription:
+        type: string
+      drawing:
+        $ref: '#/definitions/FindRecordWorkDTO'
+      photo:
+        $ref: '#/definitions/FindRecordWorkDTO'
+    title: FindRecordToDoDTO
+  FindRecordWorkDTO:
+    type: object
+    properties:
+      dateDone:
+        type: string
+      done:
+        type: boolean
+      doneBy:
+        type: string
+    title: FindRecordWorkDTO
+  IdDTO:
+    type: object
+    properties:
+      id:
+        type: string
+    title: IdDTO
+  InputStream:
+    type: object
+    title: InputStream
+  ItemRecordElevationDTO:
+    type: object
+    properties:
+      lower:
+        type: number
+        format: float
+      remarks:
+        type: string
+      upper:
+        type: number
+        format: float
+    title: ItemRecordElevationDTO
+  ItemRecordInfoDTO:
+    type: object
+    properties:
+      contextRef:
+        $ref: '#/definitions/BaseRecordContextRecordRefDTO'
+      creationDate:
+        type: string
+      sector:
+        type: integer
+        format: int32
+      supervisor:
+        type: string
+      unit:
+        type: integer
+        format: int32
+    title: ItemRecordInfoDTO
+  MissionDTO:
+    type: object
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    title: MissionDTO
+  Pageable:
+    type: object
+    properties:
+      offset:
+        type: integer
+        format: int64
+      pageNumber:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      paged:
+        type: boolean
+      sort:
+        $ref: '#/definitions/Sort'
+      unpaged:
+        type: boolean
+    title: Pageable
+  PageFindRecordDTO:
+    type: object
+    properties:
+      content:
+      content:
+        type: array
+        items:
+          $ref: '#/definitions/FindRecordDTO'
+      empty:
+        type: boolean
+      first:
+        type: boolean
+      last:
+        type: boolean
+      number:
+        type: integer
+        format: int32
+      numberOfElements:
+        type: integer
+        format: int32
+      pageable:
+        $ref: '#/definitions/Pageable'
+      size:
+        type: integer
+        format: int32
+      sort:
+        $ref: '#/definitions/Sort'
+      totalElements:
+        type: integer
+        format: int64
+      totalPages:
+        type: integer
+        format: int32
+    title: PageFindRecordDTO
+  Resource:
+    type: object
+    properties:
+      description:
+        type: string
+      file:
+        $ref: '#/definitions/File'
+      filename:
+        type: string
+      inputStream:
+        $ref: '#/definitions/InputStream'
+      open:
+        type: boolean
+      readable:
+        type: boolean
+      uri:
+        $ref: '#/definitions/URI'
+      url:
+        $ref: '#/definitions/URL'
+    title: Resource
+  Sort:
+    type: object
+    properties:
+      empty:
+        type: boolean
+      sorted:
+        type: boolean
+      unsorted:
+        type: boolean
+    title: Sort
+  URI:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      authority:
+        type: string
+      fragment:
+        type: string
+      host:
+        type: string
+      opaque:
+        type: boolean
+      path:
+        type: string
+      port:
+        type: integer
+        format: int32
+      query:
+        type: string
+      rawAuthority:
+        type: string
+      rawFragment:
+        type: string
+      rawPath:
+        type: string
+      rawQuery:
+        type: string
+      rawSchemeSpecificPart:
+        type: string
+      rawUserInfo:
+        type: string
+      scheme:
+        type: string
+      schemeSpecificPart:
+        type: string
+      userInfo:
+        type: string
+    title: URI
+  URL:
+    type: object
+    properties:
+      authority:
+        type: string
+      content:
+        type: object
+      defaultPort:
+        type: integer
+        format: int32
+      file:
+        type: string
+      host:
+        type: string
+      path:
+        type: string
+      port:
+        type: integer
+        format: int32
+      protocol:
+        type: string
+      query:
+        type: string
+      ref:
+        type: string
+      userInfo:
+        type: string
+    title: URL
+  UserDTO:
+    type: object
+    properties:
+      lastModificationTime:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    title: UserDTO

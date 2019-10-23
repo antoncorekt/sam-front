@@ -1,6 +1,7 @@
 package com.wipro.swagflow;
 
 import com.wipro.swagflow.flow.FlowTypeParam;
+import com.wipro.swagflow.flow.JsWord;
 import com.wipro.swagflow.reduxthunk.ApiCallFunctionData;
 import io.swagger.models.HttpMethod;
 import org.junit.jupiter.api.Test;
@@ -55,7 +56,7 @@ class ApiCallFunctionDataTest {
 
         List<FlowTypeParam> params = new ArrayList<>();
         params.add(FlowTypeParam.builder()
-                .name("id")
+                .name(JsWord.from("id"))
                 .type("number")
                 .build());
         apiCallFunctionData.setParams(params);

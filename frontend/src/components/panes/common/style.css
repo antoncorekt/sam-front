@@ -1,0 +1,57 @@
+.editable-cell {
+    /*background: aliceblue;*/
+    height: 14px;
+    cursor: pointer;
+}
+
+.editable-cell .input {
+    margin: -5px 0px -5px 0px;
+    height: 24px;
+}
+
+.selectable-cell {
+    /*background: aliceblue;*/
+    height: 14px;
+    cursor: pointer;
+}
+
+.selectable-cell .select {
+    margin: -5px 0px -5px 0px;
+    width: 100%;
+}
+
+.secure-denied{
+    pointer-events: none;
+    cursor: not-allowed !important;
+}
+
+.opacity{
+    opacity: 0.3;
+}
+
+.secure-denied:hover::after {
+    content: attr(data-title);
+}
+
+.pane {
+    margin: 15px 15px 15px 15px;
+    border: solid 1px #c6bcb8;
+    border-radius: 5px;
+    overflow: hidden
+}
+
+.pane-title {
+    background: rgba(48, 83, 117, 0.67);
+    height: 46px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.pane-body {
+    background: white;
+}
+
+.padding-left {
+    padding-left: 35px;
+}

@@ -1,0 +1,205 @@
+/* SAP ACCOUNTS */
+
+.sap-accounts .flex-end-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.sap-accounts .checkbox {
+    margin: 8px 12px 0px 0px;
+}
+
+.sap-accounts .table-container {
+    margin-top: 4px;
+    background-color: white;
+}
+
+.sap-accounts .rt-thead {
+    background-color: steelblue;
+    color: white;
+    font-weight: bold;
+}
+
+.sap-accounts .rt-thead.-filters {
+    background-color: lightsteelblue;
+    color: black;
+}
+
+.sap-accounts .pagination-container {
+    display: flex;
+    flex-direction: row;
+    margin: 6px 0px 6px 0px;
+}
+
+.sap-accounts .pagination-refresh {
+    margin-top: 5px;
+}
+
+.sap-accounts .pagination-refresh :hover {
+    color: lightskyblue;
+}
+
+/* SEGMENTS */
+
+.segments .flex-end-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.segments .table-container {
+    margin-top: 4px;
+    background-color: white;
+}
+
+.segments .rt-thead {
+    background-color: steelblue;
+    color: white;
+    font-weight: bold;
+}
+
+.segments .rt-thead.-filters {
+    background-color: lightsteelblue;
+    color: black;
+}
+
+.segments .pagination-container {
+    display: flex;
+    flex-direction: row;
+    margin: 6px 0px 6px 0px;
+}
+
+.segments .pagination-refresh {
+    margin-top: 5px;
+}
+
+.segments .pagination-refresh :hover {
+    color: lightskyblue;
+}
+
+.segments .save-button {
+    margin: -5px 3px -5px 0px;
+}
+
+.segments .cancel-button {
+    margin: -5px 0px -5px 0px;
+}
+
+/* BSCS TO SAP MAPPINGS */
+
+.bscs-to-sap-mappings .flex-end-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.bscs-to-sap-mappings .right-margin {
+    margin-right: 6px;
+}
+
+.bscs-to-sap-mappings .table-container {
+    margin-top: 4px;
+    background-color: white;
+}
+
+.bscs-to-sap-mappings .rt-thead {
+    background-color: steelblue;
+    color: white;
+    font-weight: bold;
+}
+
+.bscs-to-sap-mappings .rt-thead.-filters {
+    background-color: lightsteelblue;
+    color: black;
+}
+
+.bscs-to-sap-mappings .checkbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.bscs-to-sap-mappings .centered-text {
+    text-align: center
+}
+
+.bscs-to-sap-mappings .pagination-container {
+    display: flex;
+    flex-direction: row;
+    margin: 6px 0px 6px 0px;
+}
+
+.bscs-to-sap-mappings .pagination-refresh {
+    margin-top: 5px;
+}
+
+.bscs-to-sap-mappings .pagination-refresh :hover {
+    color: lightskyblue;
+}
+
+/* BSCS TO SEGMENT AND ORDER MAPPINGS */
+
+.bscs-to-segment-and-order-mappings .flex-end-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+.bscs-to-segment-and-order-mappings .right-margin {
+    margin-right: 6px;
+}
+
+.bscs-to-segment-and-order-mappings .row-generation-input {
+    width: 180px;
+}
+
+.bscs-to-segment-and-order-mappings .row-generation-select {
+    width: 180px;
+}
+
+.bscs-to-segment-and-order-mappings .table-container {
+    margin-top: 4px;
+    background-color: white;
+}
+
+.bscs-to-segment-and-order-mappings .rt-thead {
+    background-color: steelblue;
+    color: white;
+    font-weight: bold;
+}
+
+.bscs-to-segment-and-order-mappings .rt-thead.-filters {
+    background-color: lightsteelblue;
+    color: black;
+}
+
+.bscs-to-segment-and-order-mappings .centered-text {
+    text-align: center
+}
+
+.bscs-to-segment-and-order-mappings .pagination-container {
+    display: flex;
+    flex-direction: row;
+    margin: 6px 0px 6px 0px;
+}
+
+.bscs-to-segment-and-order-mappings .pagination-refresh {
+    margin-top: 5px;
+}
+
+.bscs-to-segment-and-order-mappings .pagination-refresh :hover {
+    color: lightskyblue;
+}
+
+.bscs-to-segment-and-order-mappings .month-picker {
+    margin: -5px -10px -5px 0px;
+}
+
+.bscs-to-segment-and-order-mappings .save-button {
+    margin: -5px 3px -5px 0px;
+}
+
+.bscs-to-segment-and-order-mappings .cancel-button {
+    margin: -5px 0px -5px 0px;
+}

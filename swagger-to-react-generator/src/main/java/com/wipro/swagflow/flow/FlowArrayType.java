@@ -1,16 +1,19 @@
 package com.wipro.swagflow.flow;
 
+import lombok.Getter;
+
 /**
  * @author Anton Kozlovskyi
  * @date 20 Aug 2019
  */
-
+@Getter
 public class FlowArrayType extends FlowType {
 
-    private String arrayName;
+    private final String arrayName;
 
-    public FlowArrayType(String name, String arrayName) {
+    public FlowArrayType(JsWord name, String arrayName) {
         super(name);
+//        this.arrayName = "Array<" + name + ">";
         this.arrayName = arrayName;
     }
 
@@ -25,6 +28,10 @@ public class FlowArrayType extends FlowType {
             throw new RuntimeException("Not found type for array " + name);
         }
 
-        return "const " + arrayName + "Var: Array<" + name + ">; // example usage of type " + arrayName + "\n";
+        return "const " + arrayName + "Var: Array<" + name + "> = []; // example usage of type " + arrayName + "\n";
+//        return "";
     }
+
+
+
 }
